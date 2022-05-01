@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import Profile from "./Pages/Profile";
 import Dashboard from "./Pages/Dashboard";
+import CreateTicket from "./Pages/CreateTicket";
 
 class Routing extends React.Component {
   render() {
@@ -11,6 +12,7 @@ class Routing extends React.Component {
       <Routes>
         <Route exact path="/" element={<Dashboard />} />
         <Route exact path="/home" element={<Home />} />
+        <Route exact path="/create-ticket" element={<CreateTicket />} />
         <Route exact path="/profile" element={<Profile />} />
 
         <Route

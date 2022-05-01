@@ -143,7 +143,7 @@ const Header = () => {
         <Link href="/">How It Works</Link>
       </MenuItem>
       <MenuItem>
-        <Link href="/publishArt">Create</Link>
+        <Link href="/create-ticket">Create</Link>
       </MenuItem>
       <MenuItem>
         <p>Sign In</p>
@@ -225,7 +225,7 @@ const Header = () => {
                 marginRight: "20px",
                 textTransform: "none",
               }}
-              onClick={() => history("/publishArt")}
+              onClick={() => history("/create-ticket")}
             >
               Create
             </Button>

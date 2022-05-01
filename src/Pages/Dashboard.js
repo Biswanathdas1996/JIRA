@@ -7,19 +7,29 @@ import Container from "@mui/material/Container";
 import TicketCard from "../components/shared/TicketCard";
 
 const itemsFromBackend = [
-  { id: "1", content: "First task" },
-  { id: "2", content: "Second task" },
+  {
+    id: "1",
+    content: "Each issue can be assigned priority from lowest to highest.",
+  },
+  { id: "2", content: "Click on an issue to see what's behind it." },
   {
     id: "3",
     content:
       "You can track how many hours were spent working on an issue, and how many hours remain.",
   },
-  { id: "4", content: "Fourth task" },
+  {
+    id: "4",
+    content:
+      "Each issue has a single reporter but can have multiple assignees.",
+  },
 ];
 
 const closedItem = [
-  { id: "5", content: "Fifth task" },
-  { id: "6", content: "Sixth Task" },
+  { id: "5", content: "Try leaving a comment on this issue." },
+  {
+    id: "6",
+    content: "You can use rich text with images in issue descriptions.",
+  },
 ];
 
 const columnsFromBackend = {
