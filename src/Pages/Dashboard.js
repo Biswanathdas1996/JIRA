@@ -9,7 +9,11 @@ import TicketCard from "../components/shared/TicketCard";
 const itemsFromBackend = [
   { id: "1", content: "First task" },
   { id: "2", content: "Second task" },
-  { id: "3", content: "Third task" },
+  {
+    id: "3",
+    content:
+      "You can track how many hours were spent working on an issue, and how many hours remain.",
+  },
   { id: "4", content: "Fourth task" },
 ];
 
@@ -114,7 +118,7 @@ function Dashboard() {
                   key={columnId}
                 >
                   <h2>{column.name}</h2>
-                  <div style={{ margin: 8 }}>
+                  <div style={{ margin: 5 }}>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(provided, snapshot) => {
                         return (
