@@ -8,16 +8,30 @@ import Typography from "@mui/material/Typography";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import Avatars from "./Avatars";
-export default function OutlinedCard({ title }) {
+import Badge from "@mui/material/Badge";
+
+export default function OutlinedCard({ title, ticket }) {
   return (
     <Card style={{ borderRadius: 2 }}>
       <CardContent>
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{ fontSize: 15, marginBottom: 1, fontWeight: "bold" }}
+        >
+          {ticket}
+        </Typography>
         <Typography sx={{ fontSize: 14 }} color="text.primary" gutterBottom>
           {title}
         </Typography>
       </CardContent>
       <CardActions>
         <Avatars />
+        <Badge
+          badgeContent={4}
+          color="info"
+          style={{ marginRight: 15 }}
+        ></Badge>
         <ArrowUpwardIcon sx={{ color: "red" }} fontSize="small" />
         <BookmarkIcon sx={{ color: "green" }} fontSize="small" />
       </CardActions>

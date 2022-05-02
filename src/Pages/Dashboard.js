@@ -167,7 +167,10 @@ function Dashboard() {
                                           ...provided.draggableProps.style,
                                         }}
                                       >
-                                        <TicketCard title={item.content} />
+                                        <TicketCard
+                                          title={item.content}
+                                          ticket={`Ticket-1`}
+                                        />
                                       </div>
                                     );
                                   }}
