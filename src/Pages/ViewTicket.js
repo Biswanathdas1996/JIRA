@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
-import { _transction } from "../../src/CONTRACT-ABI/connect";
+import { _transction } from "../CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,8 @@ import DeleteOutlineIcon from "@mui/icons-material/Delete";
 import uuid from "uuid/v4";
 import { pink } from "@mui/material/colors";
 import TransctionModal from "../components/shared/TransctionModal";
+import { useParams } from "react-router-dom";
+import { _fetch } from "../CONTRACT-ABI/connect";
 
 const web3 = new Web3(window.ethereum);
 
@@ -35,10 +37,19 @@ const Mint = () => {
   const [checked, setChecked] = useState(false);
   const [description, setDescription] = useState(null);
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
+  const { tokenId } = useParams();
+
   let history = useNavigate();
+
+  const getData = async () => {
+    const allTickets = await _fetch("getAllTickets");
+
+    const filterTicketsForCurrentUser = await allTickets.filter(
+      (ticket) => ticket.owner === address
+    );
+
+    await setTickets(mapTicketData(filterTicketsForCurrentUser));
+  };
 
   const saveData = async ({ title, type, priority, storypoint }) => {
     setStart(true);

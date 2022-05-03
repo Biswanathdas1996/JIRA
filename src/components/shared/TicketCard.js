@@ -1,39 +1,58 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
 import Avatars from "./Avatars";
 import Badge from "@mui/material/Badge";
+import Type from "../UI/type";
+import Priority from "../UI/Priority";
+import { useNavigate } from "react-router-dom";
 
-export default function OutlinedCard({ title, ticket }) {
+export default function OutlinedCard({ item, ticket, data }) {
+  const [tickets, setTickets] = useState([]);
+  let history = useNavigate();
+  useEffect(() => {
+    frtchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const frtchData = async () => {
+    if (item?.abiLink) {
+      await fetch(item?.abiLink)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          setTickets(data);
+        });
+    }
+  };
+
   return (
-    <Card style={{ borderRadius: 2 }}>
+    <Card style={{ borderRadius: 2 }} onClick={() => history("/ticket/1")}>
       <CardContent>
         <Typography
           variant="h5"
           component="div"
           sx={{ fontSize: 15, marginBottom: 1, fontWeight: "bold" }}
         >
-          {ticket}
+          {/* {ticket} */}
+          {tickets?.name}
         </Typography>
         <Typography sx={{ fontSize: 14 }} color="text.primary" gutterBottom>
-          {title}
+          {tickets?.title}
         </Typography>
       </CardContent>
       <CardActions>
         <Avatars />
         <Badge
-          badgeContent={4}
+          badgeContent={tickets?.storypoint}
           color="info"
           style={{ marginRight: 15 }}
         ></Badge>
-        <ArrowUpwardIcon sx={{ color: "red" }} fontSize="small" />
-        <BookmarkIcon sx={{ color: "green" }} fontSize="small" />
+
+        <Priority priority={tickets?.priority} />
+        <Type type={tickets?.type} />
       </CardActions>
     </Card>
   );
