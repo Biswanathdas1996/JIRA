@@ -101,7 +101,6 @@ function Board({ address }) {
         .then((response) => response.json())
         .then((data) => {
           const anyNewTicket = filterNewlyCreatedTicketys(mappedData, data);
-
           const currentRequestItems = [...data[1].items];
           if (anyNewTicket?.length > 0) {
             anyNewTicket.map((newTicket) => {

@@ -6,7 +6,6 @@ import { Card, Grid } from "@mui/material";
 import { _transction } from "../../CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import _ from "lodash";
@@ -19,23 +18,9 @@ const client = create("https://ipfs.infura.io:5001/api/v0");
 //   royelty: Yup.string().required("Royelty amount is required"),
 // });
 
-const mapTicketData = (data) => {
-  return data.map((val) => {
-    return {
-      index: val?.index,
-      id: val?.id,
-      abiLink: val?.abiLink,
-      owner: val?.owner,
-      repoter: val?.repoter,
-    };
-  });
-};
-
 const TransferTicket = ({ tokenId }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
-  const [ticketindex, setTicketindex] = useState(false);
-  const [description, setDescription] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [users, setusers] = useState([]);
 
@@ -60,7 +45,6 @@ const TransferTicket = ({ tokenId }) => {
     const filterTicketsForCurrentUser = await allTickets.find(
       (ticket) => ticket.id === tokenId
     );
-    setTicketindex(filterTicketsForCurrentUser.index);
 
     if (filterTicketsForCurrentUser?.abiLink) {
       await fetch(filterTicketsForCurrentUser?.abiLink)
@@ -73,52 +57,70 @@ const TransferTicket = ({ tokenId }) => {
   };
 
   const saveData = async ({ receiver }) => {
-    // receiver
+    setStart(true);
     const sender = tickets?.owner;
     let transfredTicket;
     let updatedSenderAbi;
     let updatedReceiverAbi;
 
     const getSenderCurrentABI = await _fetch("users", sender);
+    console.log("get-Sender-Current-ABI");
     await fetch(getSenderCurrentABI?.boardData)
       .then((response) => response.json())
-      .then(async (data) => {
+      .then(async (senderData) => {
         for (let i = 1; i <= 5; i++) {
-          if (data[i].items?.length > 0) {
-            if (data[i].items.find((item) => item.id === tokenId)) {
+          if (senderData[i].items?.length > 0) {
+            if (senderData[i].items.find((item) => item.id === tokenId)) {
               ///-----------------------////////
-              transfredTicket = data[i].items.filter(
+              transfredTicket = senderData[i].items.filter(
                 (item) => item.id === tokenId
               );
+              console.log("transfredTicket--->", transfredTicket);
               ////------------------------/////
-              const result = data[i].items.filter(
+              const result = senderData[i].items.filter(
                 (item) => item.id !== tokenId
               );
-              data[i].items = result;
+              senderData[i].items = result;
             }
           }
         }
-        const resultsSaveMetaData = await client.add(JSON.stringify(data));
+        console.log("results-Save-Meta-Data");
+        console.log("senderData", senderData);
+        const resultsSaveMetaData = await client.add(
+          JSON.stringify(senderData)
+        );
         updatedSenderAbi = `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`;
       });
     //////////////////////////////////////////////////////////////////////////////////////////
     const getRecieverrCurrentABI = await _fetch("users", receiver);
+    console.log("get-Recieverr-Current-ABI");
     await fetch(getRecieverrCurrentABI?.boardData)
       .then((response) => response.json())
-      .then(async (data) => {
-        const updatedColumn = data[1].items;
-        data[1].items = [...updatedColumn, ...transfredTicket];
-        const resultsSaveMetaData = await client.add(JSON.stringify(data));
+      .then(async (receiverData) => {
+        const updatedColumn = receiverData[1].items;
+        receiverData[1].items = [...updatedColumn, ...transfredTicket];
+        console.log("receiverData", receiverData);
+
+        const resultsSaveMetaData = await client.add(
+          JSON.stringify(receiverData)
+        );
         updatedReceiverAbi = `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`;
       });
+    console.log("updated-Column");
+    console.log("updatedSenderAbi", updatedSenderAbi);
+    console.log("updatedReceiverAbi", updatedReceiverAbi);
 
-    await _transction(
+    const finalResponse = await _transction(
       "transferTicket",
       sender,
       receiver,
       updatedSenderAbi,
-      updatedReceiverAbi
+      updatedReceiverAbi,
+      transfredTicket[0]?.index
     );
+
+    setResponse(finalResponse);
+    setStart(false);
   };
 
   const modalClose = () => {
