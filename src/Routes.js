@@ -12,7 +12,7 @@ class Routing extends React.Component {
       <Routes>
         <Route exact path="/" element={<Dashboard />} />
         <Route exact path="/create-ticket" element={<CreateTicket />} />
-        <Route exact path="/view-ticket/:tokenId" element={<ViewTicket />} />
+        <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
         <Route exact path="/profile" element={<Profile />} />
 
         <Route

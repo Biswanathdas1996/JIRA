@@ -36,7 +36,7 @@ const Mint = () => {
   const [preview, setPreview] = useState();
   const [checked, setChecked] = useState(false);
   const [description, setDescription] = useState(null);
-
+  const [tickets, setTickets] = useState(null);
   const { tokenId } = useParams();
 
   let history = useNavigate();
@@ -44,11 +44,20 @@ const Mint = () => {
   const getData = async () => {
     const allTickets = await _fetch("getAllTickets");
 
-    const filterTicketsForCurrentUser = await allTickets.filter(
-      (ticket) => ticket.owner === address
+    const filterTicketsForCurrentUser = await allTickets.find(
+      (ticket) => ticket.id === tokenId
     );
+    console.log(filterTicketsForCurrentUser);
 
-    await setTickets(mapTicketData(filterTicketsForCurrentUser));
+    if (filterTicketsForCurrentUser?.abiLink) {
+      await fetch(filterTicketsForCurrentUser?.abiLink)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          setTickets({ ...data, ...filterTicketsForCurrentUser });
+          console.log(data);
+        });
+    }
   };
 
   const saveData = async ({ title, type, priority, storypoint }) => {
@@ -84,14 +93,9 @@ const Mint = () => {
   };
 
   useEffect(() => {
-    if (!selectedFile) {
-      setPreview(undefined);
-      return;
-    }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -103,231 +107,237 @@ const Mint = () => {
     setResponse(null);
     history("/");
   };
+
+  console.log("=-=-=-=", tickets);
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
         <Grid item lg={6} md={6} sm={12} xs={12}>
-          <div style={{ margin: 20 }}>
-            <Card>
-              <Grid container>
-                <Grid item lg={12} md={12} sm={12} xs={12}>
-                  <div
-                    style={{
-                      padding: "20px",
-                      background: "white",
-                    }}
-                  >
-                    <h4>Create Story</h4>
-                    <Formik
-                      initialValues={{
-                        title: "",
-                        type: "",
-                        priority: "",
-                        storypoint: "",
-                        text: "",
-                      }}
-                      // validationSchema={VendorSchema}
-                      onSubmit={(values, { setSubmitting }) => {
-                        console.log("values=======>", values);
-                        saveData(values);
-                        setSubmitting(false);
+          {tickets && (
+            <div style={{ margin: 20 }}>
+              <Card>
+                <Grid container>
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <div
+                      style={{
+                        padding: "20px",
+                        background: "white",
                       }}
                     >
-                      {({ touched, errors, isSubmitting, values }) => (
-                        <Form>
-                          <Grid container>
-                            {/* // Title */}
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Title <span className="text-danger">*</span>
-                                </label>
-                                <Field
-                                  type="text"
-                                  name="title"
-                                  autoComplete="flase"
-                                  placeholder="Enter title"
-                                  className={`form-control text-muted ${
-                                    touched.title && errors.title
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                  style={{ marginRight: 10, padding: 9 }}
-                                />
-                              </div>
-                            </Grid>
-                            {/* type */}
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Choose Type{" "}
-                                  <span className="text-danger">*</span>
-                                </label>
-                                <Field
-                                  name="type"
-                                  component="select"
-                                  className={`form-control text-muted ${
-                                    touched.type && errors.type
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                  style={{ marginRight: 10, padding: 9 }}
+                      <h4>Create Story</h4>
+                      <Formik
+                        initialValues={{
+                          title: tickets.name,
+                          type: tickets.type,
+                          priority: tickets.priority,
+                          storypoint: tickets.storypoint,
+                          text: tickets.description,
+                        }}
+                        // validationSchema={VendorSchema}
+                        onSubmit={(values, { setSubmitting }) => {
+                          console.log("values=======>", values);
+                          saveData(values);
+                          setSubmitting(false);
+                        }}
+                      >
+                        {({ touched, errors, isSubmitting, values }) => (
+                          <Form>
+                            <Grid container>
+                              {/* // Title */}
+                              <Grid item lg={6} md={6} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{ marginLeft: 10, marginTop: 10 }}
                                 >
-                                  <option>-- Please select --</option>
-                                  <option value="story">Story</option>
-                                  <option value="bug">Bug</option>
-                                </Field>
-                              </div>
-                            </Grid>
-                            {/* priority */}
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Choose Priority{" "}
-                                  <span className="text-danger">*</span>
-                                </label>
-                                <Field
-                                  name="priority"
-                                  component="select"
-                                  className={`form-control text-muted ${
-                                    touched.priority && errors.priority
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                  style={{ marginRight: 10, padding: 9 }}
-                                >
-                                  <option>-- Please select --</option>
-                                  <option value="blocker">Blocker</option>
-                                  <option value="critical">Critical</option>
-                                  <option value="high">High</option>
-                                  <option value="medium">Medium</option>
-                                  <option value="low">Low</option>
-                                </Field>
-                              </div>
-                            </Grid>
-                            {/* Story point */}
-                            <Grid item lg={6} md={6} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Story point{" "}
-                                </label>
-
-                                <Field
-                                  type="number"
-                                  name="storypoint"
-                                  autoComplete="flase"
-                                  placeholder="Enter story point"
-                                  className={`form-control text-muted ${
-                                    touched.storypoint && errors.storypoint
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                  style={{ marginRight: 10, padding: 9 }}
-                                />
-                              </div>
-                            </Grid>
-
-                            {/* Description */}
-                            <Grid item lg={12} md={12} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Description{" "}
-                                  <span className="text-danger">*</span>
-                                </label>
-                                <TextareaAutosize
-                                  aria-label="minimum height"
-                                  minRows={3}
-                                  name="text"
-                                  onChange={(e) =>
-                                    setDescription(e.target.value)
-                                  }
-                                  placeholder="Minimum 3 rows"
-                                  style={{ width: "100%" }}
-                                  className={`form-control text-muted ${
-                                    touched.text && errors.text
-                                      ? "is-invalid"
-                                      : ""
-                                  }`}
-                                />
-                              </div>
-                            </Grid>
-                            {/* Image */}
-                            <Grid item lg={12} md={12} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Choose file{" "}
-                                  <span className="text-danger">*</span>
-                                </label>
-
-                                <input
-                                  className={`form-control text-muted`}
-                                  type="file"
-                                  onChange={onFileChange}
-                                />
-
-                                {selectedFile && (
-                                  <center>
-                                    <img
-                                      src={preview}
-                                      alt="img"
-                                      style={{
-                                        marginTop: 20,
-                                        height: 300,
-                                        width: "auto",
-                                      }}
-                                    />
-                                  </center>
-                                )}
-                              </div>
-                            </Grid>
-
-                            <Grid item lg={12} md={12} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{
-                                  marginLeft: 10,
-                                  marginTop: 10,
-                                  float: "right",
-                                }}
-                              >
-                                <span className="input-group-btn">
-                                  <input
-                                    className="btn btn-default btn-primary float-right"
-                                    type="submit"
-                                    value={"Submit"}
+                                  <label for="title" className="my-2">
+                                    Title <span className="text-danger">*</span>
+                                  </label>
+                                  <Field
+                                    type="text"
+                                    name="title"
+                                    value={values.title}
+                                    autoComplete="flase"
+                                    placeholder="Enter title"
+                                    className={`form-control text-muted ${
+                                      touched.title && errors.title
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                    style={{ marginRight: 10, padding: 9 }}
                                   />
-                                </span>
-                              </div>
+                                </div>
+                              </Grid>
+                              {/* type */}
+                              <Grid item lg={6} md={6} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{ marginLeft: 10, marginTop: 10 }}
+                                >
+                                  <label for="title" className="my-2">
+                                    Choose Type{" "}
+                                    <span className="text-danger">*</span>
+                                  </label>
+                                  <Field
+                                    name="type"
+                                    component="select"
+                                    className={`form-control text-muted ${
+                                      touched.type && errors.type
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                    style={{ marginRight: 10, padding: 9 }}
+                                  >
+                                    <option>-- Please select --</option>
+                                    <option value="story">Story</option>
+                                    <option value="bug">Bug</option>
+                                  </Field>
+                                </div>
+                              </Grid>
+                              {/* priority */}
+                              <Grid item lg={6} md={6} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{ marginLeft: 10, marginTop: 10 }}
+                                >
+                                  <label for="title" className="my-2">
+                                    Choose Priority{" "}
+                                    <span className="text-danger">*</span>
+                                  </label>
+                                  <Field
+                                    name="priority"
+                                    component="select"
+                                    className={`form-control text-muted ${
+                                      touched.priority && errors.priority
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                    style={{ marginRight: 10, padding: 9 }}
+                                  >
+                                    <option>-- Please select --</option>
+                                    <option value="blocker">Blocker</option>
+                                    <option value="critical">Critical</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                  </Field>
+                                </div>
+                              </Grid>
+                              {/* Story point */}
+                              <Grid item lg={6} md={6} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{ marginLeft: 10, marginTop: 10 }}
+                                >
+                                  <label for="title" className="my-2">
+                                    Story point{" "}
+                                  </label>
+
+                                  <Field
+                                    type="number"
+                                    value={values.storypoint}
+                                    name="storypoint"
+                                    autoComplete="flase"
+                                    placeholder="Enter story point"
+                                    className={`form-control text-muted ${
+                                      touched.storypoint && errors.storypoint
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                    style={{ marginRight: 10, padding: 9 }}
+                                  />
+                                </div>
+                              </Grid>
+
+                              {/* Description */}
+                              <Grid item lg={12} md={12} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{ marginLeft: 10, marginTop: 10 }}
+                                >
+                                  <label for="title" className="my-2">
+                                    Description{" "}
+                                    <span className="text-danger">*</span>
+                                  </label>
+                                  <TextareaAutosize
+                                    aria-label="minimum height"
+                                    minRows={3}
+                                    name="text"
+                                    onChange={(e) =>
+                                      setDescription(e.target.value)
+                                    }
+                                    placeholder="Minimum 3 rows"
+                                    style={{ width: "100%" }}
+                                    className={`form-control text-muted ${
+                                      touched.text && errors.text
+                                        ? "is-invalid"
+                                        : ""
+                                    }`}
+                                  />
+                                </div>
+                              </Grid>
+                              {/* Image */}
+                              <Grid item lg={12} md={12} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{ marginLeft: 10, marginTop: 10 }}
+                                >
+                                  <label for="title" className="my-2">
+                                    Choose file{" "}
+                                    <span className="text-danger">*</span>
+                                  </label>
+
+                                  <input
+                                    className={`form-control text-muted`}
+                                    type="file"
+                                    onChange={onFileChange}
+                                  />
+
+                                  {selectedFile && (
+                                    <center>
+                                      <img
+                                        src={preview}
+                                        alt="img"
+                                        style={{
+                                          marginTop: 20,
+                                          height: 300,
+                                          width: "auto",
+                                        }}
+                                      />
+                                    </center>
+                                  )}
+                                </div>
+                              </Grid>
+
+                              <Grid item lg={12} md={12} sm={12} xs={12}>
+                                <div
+                                  className="form-group"
+                                  style={{
+                                    marginLeft: 10,
+                                    marginTop: 10,
+                                    float: "right",
+                                  }}
+                                >
+                                  <span className="input-group-btn">
+                                    <input
+                                      className="btn btn-default btn-primary float-right"
+                                      type="submit"
+                                      value={"Submit"}
+                                    />
+                                  </span>
+                                </div>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        </Form>
-                      )}
-                    </Formik>
-                  </div>
+                          </Form>
+                        )}
+                      </Formik>
+                    </div>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Card>
-          </div>
+              </Card>
+            </div>
+          )}
         </Grid>
         <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
       </Grid>

@@ -22,14 +22,17 @@ export default function OutlinedCard({ item, ticket, data }) {
       await fetch(item?.abiLink)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           setTickets(data);
         });
     }
   };
 
   return (
-    <Card style={{ borderRadius: 2 }} onClick={() => history("/ticket/1")}>
+    <Card
+      style={{ borderRadius: 2 }}
+      onClick={() => history(`/ticket/${tickets?.id}`)}
+    >
       <CardContent>
         <Typography
           variant="h5"

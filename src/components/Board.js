@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import uuid from "uuid/v4";
@@ -6,41 +7,28 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import TicketCard from "../components/shared/TicketCard";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
-
+import _ from "lodash";
 import { create } from "ipfs-http-client";
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
-const itemsFromBackend = [
-  {
-    id: "1",
-    title: "Each issue can be assigned priority from lowest to highest.",
-    type: "story",
-    storypoint: 4,
-    priority: "high",
-  },
-  {
-    id: "2",
-    title: "Click on an issue to see what's behind it.",
-    type: "bug",
-    storypoint: 6,
-    priority: "blocker",
-  },
-  {
-    id: "3",
-    title:
-      "You can track how many hours were spent working on an issue, and how many hours remain.",
-    type: "story",
-    storypoint: 4,
-    priority: "critical",
-  },
-  {
-    id: "4",
-    title: "Each issue has a single reporter but can have multiple assignees.",
-    type: "story",
-    storypoint: 9,
-    priority: "medium",
-  },
-];
+const filterNewlyCreatedTicketys = (alldata, oldDataSet) => {
+  let result = [];
+  for (let i = 1; i <= 5; i++) {
+    const tempData = oldDataSet[i].items;
+    if (tempData.length > 0) {
+      if (tempData.length === 1) {
+        result.push(tempData[0]);
+      } else {
+        tempData.map((val) => {
+          result.push(val);
+        });
+      }
+    }
+  }
+  const uniqueItem = _.xorBy(alldata, result, "id");
+
+  return uniqueItem;
+};
 
 const mapTicketData = (data) => {
   return data.map((val) => {
@@ -103,17 +91,27 @@ function Board({ address }) {
       (ticket) => ticket.owner === address
     );
 
-    await setTickets(mapTicketData(filterTicketsForCurrentUser));
+    const mappedData = mapTicketData(filterTicketsForCurrentUser);
+    await setTickets(mappedData);
 
     const getAllUserUri = result?.boardData;
     if (getAllUserUri) {
       await fetch(getAllUserUri)
         .then((response) => response.json())
         .then((data) => {
+          const anyNewTicket = filterNewlyCreatedTicketys(mappedData, data);
+
+          const currentRequestItems = [...data[1].items];
+          if (anyNewTicket?.length > 0) {
+            anyNewTicket.map((newTicket) => {
+              currentRequestItems.push(newTicket);
+            });
+          }
+          data[1].items = currentRequestItems;
           setColumns(data);
         });
     } else {
-      setColumns(baseTemplate(mapTicketData(filterTicketsForCurrentUser)));
+      setColumns(baseTemplate(mappedData));
     }
   }
 
@@ -159,7 +157,7 @@ function Board({ address }) {
       JSON.stringify(updatedCard)
     );
 
-    const responseData = await _transction(
+    await _transction(
       "setBoardDataToUser",
       `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`,
       address
@@ -174,6 +172,7 @@ function Board({ address }) {
       }}
     >
       <h5>{user?.name}</h5>
+      <h5>{address}</h5>
       <div
         style={{ display: "flex", justifyContent: "center", height: "100%" }}
       >

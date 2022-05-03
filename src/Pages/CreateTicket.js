@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
-import { _transction } from "../../src/CONTRACT-ABI/connect";
+import { _transction, _account } from "../../src/CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +13,6 @@ import DeleteOutlineIcon from "@mui/icons-material/Delete";
 import uuid from "uuid/v4";
 import { pink } from "@mui/material/colors";
 import TransctionModal from "../components/shared/TransctionModal";
-
-const web3 = new Web3(window.ethereum);
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
@@ -29,62 +27,43 @@ const client = create("https://ipfs.infura.io:5001/api/v0");
 const Mint = () => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
-  const [file, setFile] = useState(null);
-  const [selectedFile, setSelectedFile] = useState();
-  const [preview, setPreview] = useState();
-  const [checked, setChecked] = useState(false);
   const [description, setDescription] = useState(null);
+  const [account, setAccount] = useState(null);
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
   let history = useNavigate();
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    const account = await _account();
+    setAccount(account);
+  }
   const saveData = async ({ title, type, priority, storypoint }) => {
     setStart(true);
     let responseData;
     const id = uuid();
-    if (file) {
-      const results = await await client.add(file);
-      console.log("--img fingerpring-->", results.path);
-      const metaData = {
-        id: id,
-        name: title,
-        type: type,
-        priority: priority,
-        storypoint: storypoint,
-        image: `https://ipfs.infura.io/ipfs/${results.path}`,
-        description: description,
-      };
+    const metaData = {
+      id: id,
+      name: title,
+      type: type,
+      priority: priority,
+      storypoint: storypoint,
+      description: description,
+    };
 
-      const resultsSaveMetaData = await await client.add(
-        JSON.stringify(metaData)
-      );
-      console.log("---metadta-->", resultsSaveMetaData.path);
-
-      responseData = await _transction(
-        "createTicket",
-        id,
-        `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`,
-        "0x9A135C4d43b9fc6c4d5669d29e6442D7702F841c"
-      );
-    }
+    const resultsSaveMetaData = await await client.add(
+      JSON.stringify(metaData)
+    );
+    console.log("---metadta-->", resultsSaveMetaData.path);
+    responseData = await _transction(
+      "createTicket",
+      id,
+      `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`,
+      account
+    );
     setResponse(responseData);
-  };
-
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview(undefined);
-      return;
-    }
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
-
-  const onFileChange = (event) => {
-    setFile(event.target.files[0]);
-    setSelectedFile(event.target.files[0]);
   };
 
   const modalClose = () => {
@@ -255,38 +234,6 @@ const Mint = () => {
                                       : ""
                                   }`}
                                 />
-                              </div>
-                            </Grid>
-                            {/* Image */}
-                            <Grid item lg={12} md={12} sm={12} xs={12}>
-                              <div
-                                className="form-group"
-                                style={{ marginLeft: 10, marginTop: 10 }}
-                              >
-                                <label for="title" className="my-2">
-                                  Choose file{" "}
-                                  <span className="text-danger">*</span>
-                                </label>
-
-                                <input
-                                  className={`form-control text-muted`}
-                                  type="file"
-                                  onChange={onFileChange}
-                                />
-
-                                {selectedFile && (
-                                  <center>
-                                    <img
-                                      src={preview}
-                                      alt="img"
-                                      style={{
-                                        marginTop: 20,
-                                        height: 300,
-                                        width: "auto",
-                                      }}
-                                    />
-                                  </center>
-                                )}
                               </div>
                             </Grid>
 
