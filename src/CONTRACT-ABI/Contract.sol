@@ -5,6 +5,7 @@ pragma solidity ^0.8.13;
 contract JIRA  {
 
     struct Ticket {
+        uint index;
         string id;
         string abiLink;
         address repoter;
@@ -15,6 +16,8 @@ contract JIRA  {
         string name;
         string role;
         string boardData;
+        string abiLink;
+        address userAddress;
     }
      
     mapping(address => User) public users;
@@ -26,7 +29,9 @@ contract JIRA  {
         User memory newUser = User({
            name: name,
            role:role,
-           boardData:""
+           boardData:"",
+           abiLink:"",
+           userAddress:msg.sender
         });
         users[msg.sender] = newUser;
         userList.push(msg.sender);
@@ -34,6 +39,11 @@ contract JIRA  {
 
     function getAllUser() public view returns(address[] memory){
         return userList;
+    }
+
+    function setUserAbi(string memory abiLink, address userAddress) public {
+         User storage userData = users[userAddress];
+         userData.abiLink = abiLink;
     }
 
     function setBoardDataToUser(string memory abiLink, address userAddress) public {
@@ -44,6 +54,7 @@ contract JIRA  {
 
     function createTicket(string memory id, string memory abiLink, string memory owner) public  {
         Ticket memory newTicket = Ticket({
+           index:tickets.length,
            id:id,
            abiLink: abiLink,
            repoter:msg.sender,
@@ -51,12 +62,20 @@ contract JIRA  {
         });
         tickets.push(newTicket);
     }
+    
+    function updateTicket(string memory abiLink, uint index) public  {
+         Ticket storage newTicket = tickets[index];
+         newTicket.abiLink = abiLink;
+    }
 
     function getAllTickets() public view returns (Ticket[] memory) {
         return tickets;
     }
 
-    
+    function transferTicket(address sender, address receiver, string memory updatedSenderAbi, string memory updatedReceiverAbi) public {
+        setBoardDataToUser(updatedSenderAbi, sender);
+        setBoardDataToUser(updatedReceiverAbi, receiver);
+    }
     
   
 }

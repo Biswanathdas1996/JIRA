@@ -8,8 +8,9 @@ import Badge from "@mui/material/Badge";
 import Type from "../UI/type";
 import Priority from "../UI/Priority";
 import { useNavigate } from "react-router-dom";
+import { _fetch } from "../../CONTRACT-ABI/connect";
 
-export default function OutlinedCard({ item, ticket, data }) {
+export default function OutlinedCard({ index }) {
   const [tickets, setTickets] = useState([]);
   let history = useNavigate();
   useEffect(() => {
@@ -18,8 +19,11 @@ export default function OutlinedCard({ item, ticket, data }) {
   }, []);
 
   const frtchData = async () => {
-    if (item?.abiLink) {
-      await fetch(item?.abiLink)
+    const ticketAbi = await _fetch("getTokenAbi", index);
+    console.log("ticketAbi=====>", ticketAbi);
+
+    if (ticketAbi) {
+      await fetch(ticketAbi)
         .then((response) => response.json())
         .then((data) => {
           // console.log(data);

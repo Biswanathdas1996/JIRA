@@ -41,11 +41,98 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setBoardDataToUser",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setUserAbi",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "updatedSenderAbi",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "updatedReceiverAbi",
+        "type": "string"
+      }
+    ],
+    "name": "transferTicket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateTicket",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getAllTickets",
     "outputs": [
       {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
           {
             "internalType": "string",
             "name": "id",
@@ -91,19 +178,20 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "abiLink",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "userAddress",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
       }
     ],
-    "name": "setBoardDataToUser",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getTokenAbi",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -116,6 +204,11 @@
     ],
     "name": "tickets",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
       {
         "internalType": "string",
         "name": "id",
@@ -183,6 +276,16 @@
         "internalType": "string",
         "name": "boardData",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

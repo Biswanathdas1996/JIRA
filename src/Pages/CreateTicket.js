@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction, _account } from "../../src/CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import Web3 from "web3";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-import Switch from "@mui/material/Switch";
-import DeleteOutlineIcon from "@mui/icons-material/Delete";
 import uuid from "uuid/v4";
-import { pink } from "@mui/material/colors";
 import TransctionModal from "../components/shared/TransctionModal";
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -56,7 +51,6 @@ const Mint = () => {
     const resultsSaveMetaData = await await client.add(
       JSON.stringify(metaData)
     );
-    console.log("---metadta-->", resultsSaveMetaData.path);
     responseData = await _transction(
       "createTicket",
       id,
@@ -98,7 +92,6 @@ const Mint = () => {
                       }}
                       // validationSchema={VendorSchema}
                       onSubmit={(values, { setSubmitting }) => {
-                        console.log("values=======>", values);
                         saveData(values);
                         setSubmitting(false);
                       }}

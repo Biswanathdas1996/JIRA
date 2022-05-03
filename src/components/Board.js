@@ -33,6 +33,7 @@ const filterNewlyCreatedTicketys = (alldata, oldDataSet) => {
 const mapTicketData = (data) => {
   return data.map((val) => {
     return {
+      index: val?.index,
       id: val?.id,
       abiLink: val?.abiLink,
       owner: val?.owner,
@@ -153,9 +154,7 @@ function Board({ address }) {
       await setColumns(updatedCard);
     }
 
-    const resultsSaveMetaData = await await client.add(
-      JSON.stringify(updatedCard)
-    );
+    const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
 
     await _transction(
       "setBoardDataToUser",
@@ -230,11 +229,7 @@ function Board({ address }) {
                                           ...provided.draggableProps.style,
                                         }}
                                       >
-                                        <TicketCard
-                                          item={item}
-                                          ticket={`Ticket-${item?.id}`}
-                                          data={tickets}
-                                        />
+                                        <TicketCard index={item?.index} />
                                       </div>
                                     );
                                   }}
