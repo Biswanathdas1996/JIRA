@@ -45,6 +45,7 @@ const UpadteTicket = ({ tokenId }) => {
         .then((data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
+          console.log(updatesTicket?.description);
           getDescription(data.description);
         });
     }
@@ -62,8 +63,14 @@ const UpadteTicket = ({ tokenId }) => {
     setStart(true);
     let responseData;
     const id = tokenId;
-
-    const saveHtmlDescription = await await client.add(htmlCode);
+    let saveHtmlDescription;
+    let descIpfsLink;
+    if (htmlCode) {
+      saveHtmlDescription = await client.add(htmlCode);
+      descIpfsLink = `https://ipfs.infura.io/ipfs/${saveHtmlDescription.path}`;
+    } else {
+      descIpfsLink = tickets?.description;
+    }
 
     const metaData = {
       id: id,
@@ -71,9 +78,10 @@ const UpadteTicket = ({ tokenId }) => {
       type: type,
       priority: priority,
       storypoint: storypoint,
-      description: `https://ipfs.infura.io/ipfs/${saveHtmlDescription.path}`,
+      description: descIpfsLink,
     };
 
+    console.log(metaData);
     const resultsSaveMetaData = await await client.add(
       JSON.stringify(metaData)
     );
