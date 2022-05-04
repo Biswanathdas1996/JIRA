@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,7 +8,6 @@ import Menu from "@mui/material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Button } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
@@ -18,6 +16,8 @@ import Link from "@material-ui/core/Link";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../shared/SearchBar";
 import PwcLogo from "../../assets/images/nft.png";
+import { Avatar } from "@mui/material";
+import { _account, _fetch } from "../../CONTRACT-ABI/connect";
 
 const pages = [
   {
@@ -35,12 +35,24 @@ const pages = [
 ];
 
 const Header = () => {
+  const [account, setAccount] = useState(null);
+
   // const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   let history = useNavigate();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    const account = await _account();
+    const user = await _fetch("users", account);
+    setAccount(user);
+  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -229,14 +241,31 @@ const Header = () => {
             >
               Create
             </Button>
-            <Button
-              aria-controls={menuId}
-              variant="outlined"
-              sx={{ textTransform: "none" }}
-              onClick={() => history("/register")}
-            >
-              Sign In
-            </Button>
+            {account?.name ? (
+              <>
+                <Avatar
+                  alt="Remy Sharp"
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                  }}
+                  src={account?.profileImg}
+                ></Avatar>
+                <p style={{ color: "black", margin: 10, fontWeight: "bold" }}>
+                  {account?.name}
+                </p>
+              </>
+            ) : (
+              <Button
+                aria-controls={menuId}
+                variant="outlined"
+                sx={{ textTransform: "none" }}
+                onClick={() => history("/register")}
+              >
+                Register
+              </Button>
+            )}
           </Box>
 
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

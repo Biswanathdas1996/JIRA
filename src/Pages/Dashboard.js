@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
 import { _fetch } from "../CONTRACT-ABI/connect";
 import Board from "../components/Board";
 import Loader from "../components/shared/Loader";
+import NoData from "../components/shared/NoData";
 import Box from "@mui/material/Box";
 function Dashboard() {
   const [users, setusers] = useState([]);
@@ -31,6 +31,8 @@ function Dashboard() {
       {users.map((address, index) => {
         return <Board address={address} key={`user_${index}`} />;
       })}
+
+      {!loading && users?.length === 0 && <NoData text="No user added" />}
     </Box>
   );
 }

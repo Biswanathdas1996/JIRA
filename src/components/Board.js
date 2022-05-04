@@ -114,11 +114,12 @@ function Board({ address }) {
   };
 
   return (
-    <Accordion style={{ marginTop: 5 }}>
+    <Accordion style={{ marginTop: 5, border: "1px solid #80808073" }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
         id={`panel1a-header_${address}`}
+        style={{ background: "#d3d3d363" }}
       >
         <Avatar
           alt="Remy Sharp"
@@ -160,7 +161,16 @@ function Board({ address }) {
                     }}
                     key={columnId}
                   >
-                    <h2>{column.name}</h2>
+                    <Typography
+                      style={{
+                        margin: "1rem",
+                        fontSize: 18,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {column.name}
+                    </Typography>
+
                     <div style={{ margin: 5 }}>
                       <Droppable droppableId={columnId} key={columnId}>
                         {(provided, snapshot) => {
@@ -217,11 +227,13 @@ function Board({ address }) {
                 );
               })}
             </DragDropContext>
-          ) : (
+          ) : loading ? (
             <Loader count="5" xs={12} sm={2.4} md={2.4} lg={2.4} />
+          ) : (
+            ""
           )}
           {!loading && tickets && tickets?.length === 0 && (
-            <NoData text="You does noy have any NFT" />
+            <NoData text="No ticket assigned" />
           )}
         </div>
       </AccordionDetails>

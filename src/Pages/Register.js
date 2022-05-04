@@ -106,7 +106,7 @@ const Register = () => {
                           className="form-group"
                           style={{ marginLeft: 10, marginTop: 10 }}
                         >
-                          <label for="title" className="my-2">
+                          <label htmlFor="title" className="my-2">
                             Title <span className="text-danger">*</span>
                           </label>
                           <Field
@@ -127,7 +127,7 @@ const Register = () => {
                           className="form-group"
                           style={{ marginLeft: 10, marginTop: 10 }}
                         >
-                          <label for="title" className="my-2">
+                          <label htmlFor="type" className="my-2">
                             Choose Type <span className="text-danger">*</span>
                           </label>
                           <Field
@@ -153,7 +153,7 @@ const Register = () => {
                           className="form-group"
                           style={{ marginLeft: 10, marginTop: 10 }}
                         >
-                          <label for="title" className="my-2">
+                          <label htmlFor="img" className="my-2">
                             Choose file <span className="text-danger">*</span>
                           </label>
 
@@ -161,6 +161,7 @@ const Register = () => {
                             className={`form-control text-muted`}
                             type="file"
                             onChange={onFileChange}
+                            name="img"
                           />
 
                           {selectedFile && (
