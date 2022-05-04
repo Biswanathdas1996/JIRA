@@ -10,6 +10,16 @@
         "internalType": "string",
         "name": "role",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "image",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "initialBoardData",
+        "type": "string"
       }
     ],
     "name": "addUser",
@@ -298,6 +308,11 @@
       {
         "internalType": "string",
         "name": "boardData",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "profileImg",
         "type": "string"
       },
       {

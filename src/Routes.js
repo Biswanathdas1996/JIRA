@@ -5,6 +5,7 @@ import Profile from "./Pages/Profile";
 import Dashboard from "./Pages/Dashboard";
 import CreateTicket from "./Pages/CreateTicket";
 import ViewTicket from "./Pages/ViewTicket";
+import Register from "./Pages/Register";
 
 class Routing extends React.Component {
   render() {
@@ -14,6 +15,7 @@ class Routing extends React.Component {
         <Route exact path="/create-ticket" element={<CreateTicket />} />
         <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
         <Route exact path="/profile" element={<Profile />} />
+        <Route exact path="/register" element={<Register />} />
 
         <Route
           render={function () {

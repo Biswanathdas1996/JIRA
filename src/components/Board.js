@@ -6,6 +6,8 @@ import TicketCard from "../components/shared/TicketCard";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
 import _ from "lodash";
 import { create } from "ipfs-http-client";
+import { baseTemplate } from "./utility/BaseBoardDataTemplate";
+
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
 const filterNewlyCreatedTicketys = (alldata, oldDataSet) => {
@@ -37,37 +39,6 @@ const mapTicketData = (data) => {
       repoter: val?.repoter,
     };
   });
-};
-
-const baseTemplate = (initialTickets = []) => {
-  const columnsFromBackend = {
-    // eslint-disable-next-line no-useless-computed-key
-    [1]: {
-      name: "Requested",
-      items: initialTickets,
-    },
-    // eslint-disable-next-line no-useless-computed-key
-    [2]: {
-      name: "To do",
-      items: [],
-    },
-    // eslint-disable-next-line no-useless-computed-key
-    [3]: {
-      name: "In Progress",
-      items: [],
-    },
-    // eslint-disable-next-line no-useless-computed-key
-    [4]: {
-      name: "Done",
-      items: [],
-    },
-    // eslint-disable-next-line no-useless-computed-key
-    [5]: {
-      name: "Closed",
-      items: [],
-    },
-  };
-  return columnsFromBackend;
 };
 
 function Board({ address }) {

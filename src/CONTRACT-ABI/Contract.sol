@@ -9,13 +9,14 @@ contract JIRA  {
         string id;
         string abiLink;
         address repoter;
-        string owner;
+        address owner;
     }
     
     struct User {
         string name;
         string role;
         string boardData;
+        string profileImg;
         string abiLink;
         address userAddress;
     }
@@ -25,11 +26,12 @@ contract JIRA  {
     Ticket[] public tickets;
     address[] public userList ;
 
-    function addUser(string memory name , string memory role) public virtual {
+    function addUser(string memory name , string memory role ,string memory image,  string memory initialBoardData) public virtual {
         User memory newUser = User({
            name: name,
            role:role,
-           boardData:"",
+           boardData: initialBoardData,
+           profileImg:image,
            abiLink:"",
            userAddress:msg.sender
         });
@@ -52,7 +54,7 @@ contract JIRA  {
     }
 
 
-    function createTicket(string memory id, string memory abiLink, string memory owner) public  {
+    function createTicket(string memory id, string memory abiLink, address owner) public  {
         Ticket memory newTicket = Ticket({
            index:tickets.length,
            id:id,
@@ -72,10 +74,24 @@ contract JIRA  {
         return tickets;
     }
 
-    function transferTicket(address sender, address receiver, string memory updatedSenderAbi, string memory updatedReceiverAbi) public {
+    function getTokenAbi(uint index) public view returns(string memory){
+        Ticket storage newTicket = tickets[index];
+         return newTicket.abiLink;
+    }
+
+
+    function transferTicket(address sender, address receiver, string memory updatedSenderAbi, string memory updatedReceiverAbi, uint index) public {
         setBoardDataToUser(updatedSenderAbi, sender);
         setBoardDataToUser(updatedReceiverAbi, receiver);
+        updateTicketOwner(receiver,index);
+
     }
+
+    function updateTicketOwner(address newOwner, uint index) public  {
+         Ticket storage newTicket = tickets[index];
+         newTicket.owner = newOwner;
+    }
+    
     
   
 }

@@ -18,11 +18,24 @@ const client = create("https://ipfs.infura.io:5001/api/v0");
 //   royelty: Yup.string().required("Royelty amount is required"),
 // });
 
+const mapTicketData = (data) => {
+  return data.map((val) => {
+    return {
+      index: val?.index,
+      id: val?.id,
+      abiLink: val?.abiLink,
+      owner: val?.owner,
+      repoter: val?.repoter,
+    };
+  });
+};
+
 const TransferTicket = ({ tokenId }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [users, setusers] = useState([]);
+  const [transfredTicket, setTransfredTicket] = useState(null);
 
   let history = useNavigate();
 
@@ -42,10 +55,11 @@ const TransferTicket = ({ tokenId }) => {
     });
 
     const allTickets = await _fetch("getAllTickets");
-    const filterTicketsForCurrentUser = await allTickets.find(
+    const filterTicketsForCurrentUser = await mapTicketData(allTickets).find(
       (ticket) => ticket.id === tokenId
     );
 
+    await setTransfredTicket(filterTicketsForCurrentUser);
     if (filterTicketsForCurrentUser?.abiLink) {
       await fetch(filterTicketsForCurrentUser?.abiLink)
         .then((response) => response.json())
@@ -59,7 +73,7 @@ const TransferTicket = ({ tokenId }) => {
   const saveData = async ({ receiver }) => {
     setStart(true);
     const sender = tickets?.owner;
-    let transfredTicket;
+
     let updatedSenderAbi;
     let updatedReceiverAbi;
 
@@ -71,12 +85,6 @@ const TransferTicket = ({ tokenId }) => {
         for (let i = 1; i <= 5; i++) {
           if (senderData[i].items?.length > 0) {
             if (senderData[i].items.find((item) => item.id === tokenId)) {
-              ///-----------------------////////
-              transfredTicket = senderData[i].items.filter(
-                (item) => item.id === tokenId
-              );
-              console.log("transfredTicket--->", transfredTicket);
-              ////------------------------/////
               const result = senderData[i].items.filter(
                 (item) => item.id !== tokenId
               );
@@ -94,18 +102,23 @@ const TransferTicket = ({ tokenId }) => {
     //////////////////////////////////////////////////////////////////////////////////////////
     const getRecieverrCurrentABI = await _fetch("users", receiver);
     console.log("get-Recieverr-Current-ABI");
-    await fetch(getRecieverrCurrentABI?.boardData)
-      .then((response) => response.json())
-      .then(async (receiverData) => {
-        const updatedColumn = receiverData[1].items;
-        receiverData[1].items = [...updatedColumn, ...transfredTicket];
-        console.log("receiverData", receiverData);
+    if (getRecieverrCurrentABI?.boardData) {
+      await fetch(getRecieverrCurrentABI?.boardData)
+        .then((response) => response.json())
+        .then(async (receiverData) => {
+          console.log("receiverData", receiverData);
+          console.log("transfredTicket", transfredTicket);
+          const updatedColumn = receiverData[1].items;
+          receiverData[1].items = [...updatedColumn, transfredTicket];
+          console.log("receiverData", receiverData);
 
-        const resultsSaveMetaData = await client.add(
-          JSON.stringify(receiverData)
-        );
-        updatedReceiverAbi = `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`;
-      });
+          const resultsSaveMetaData = await client.add(
+            JSON.stringify(receiverData)
+          );
+          updatedReceiverAbi = `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`;
+        });
+    }
+
     console.log("updated-Column");
     console.log("updatedSenderAbi", updatedSenderAbi);
     console.log("updatedReceiverAbi", updatedReceiverAbi);
@@ -116,7 +129,7 @@ const TransferTicket = ({ tokenId }) => {
       receiver,
       updatedSenderAbi,
       updatedReceiverAbi,
-      transfredTicket[0]?.index
+      transfredTicket.index
     );
 
     setResponse(finalResponse);
@@ -133,93 +146,86 @@ const TransferTicket = ({ tokenId }) => {
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
-        <Grid item lg={6} md={6} sm={12} xs={12}>
+        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
+        <Grid item lg={8} md={8} sm={12} xs={12}>
           {tickets && (
             <div style={{ margin: 20 }}>
-              <Card>
-                <Grid container>
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <div
-                      style={{
-                        padding: "20px",
-                        background: "white",
-                      }}
-                    >
-                      <h4> Transfer</h4>
-                      <Formik
-                        initialValues={{
-                          receiver: "",
-                        }}
-                        // validationSchema={VendorSchema}
-                        onSubmit={(values, { setSubmitting }) => {
-                          saveData(values);
-                          setSubmitting(false);
-                        }}
-                      >
-                        {({ touched, errors, isSubmitting, values }) => (
-                          <Form>
-                            <Grid container>
-                              <Grid item lg={12} md={12} sm={12} xs={12}>
-                                <div
-                                  className="form-group"
-                                  style={{ marginLeft: 10, marginTop: 10 }}
-                                >
-                                  <label for="title" className="my-2">
-                                    Select User{" "}
-                                    <span className="text-danger">*</span>
-                                  </label>
-                                  <Field
-                                    name="receiver"
-                                    component="select"
-                                    className={`form-control text-muted ${
-                                      touched.receiver && errors.receiver
-                                        ? "is-invalid"
-                                        : ""
-                                    }`}
-                                    style={{ marginRight: 10, padding: 9 }}
-                                  >
-                                    <option>-- Please select --</option>
-                                    {users?.map((user) => {
-                                      return (
-                                        <option value={user?.userAddress}>
-                                          {user?.name}
-                                        </option>
-                                      );
-                                    })}
-                                  </Field>
-                                </div>
-                              </Grid>
-                              <Grid item lg={12} md={12} sm={12} xs={12}>
-                                <div
-                                  className="form-group"
-                                  style={{
-                                    marginLeft: 10,
-                                    marginTop: 10,
-                                    float: "right",
-                                  }}
-                                >
-                                  <span className="input-group-btn">
-                                    <input
-                                      className="btn btn-default btn-primary float-right"
-                                      type="submit"
-                                      value={"Update"}
-                                    />
-                                  </span>
-                                </div>
-                              </Grid>
-                            </Grid>
-                          </Form>
-                        )}
-                      </Formik>
-                    </div>
-                  </Grid>
-                </Grid>
+              <Card
+                style={{
+                  padding: "20px",
+                  background: "white",
+                }}
+              >
+                <h4> Transfer</h4>
+                <Formik
+                  initialValues={{
+                    receiver: "",
+                  }}
+                  // validationSchema={VendorSchema}
+                  onSubmit={(values, { setSubmitting }) => {
+                    saveData(values);
+                    setSubmitting(false);
+                  }}
+                >
+                  {({ touched, errors, isSubmitting, values }) => (
+                    <Form>
+                      <Grid container>
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <div
+                            className="form-group"
+                            style={{ marginLeft: 10, marginTop: 10 }}
+                          >
+                            <label for="title" className="my-2">
+                              Select User <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              name="receiver"
+                              component="select"
+                              className={`form-control text-muted ${
+                                touched.receiver && errors.receiver
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              style={{ marginRight: 10, padding: 9 }}
+                            >
+                              <option>-- Please select --</option>
+                              {users?.map((user) => {
+                                return (
+                                  <option value={user?.userAddress}>
+                                    {user?.name}
+                                  </option>
+                                );
+                              })}
+                            </Field>
+                          </div>
+                        </Grid>
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <div
+                            className="form-group"
+                            style={{
+                              marginLeft: 10,
+                              marginTop: 10,
+                              float: "right",
+                            }}
+                          >
+                            <span className="input-group-btn">
+                              <input
+                                className="btn btn-default btn-primary float-right"
+                                type="submit"
+                                value={"Update"}
+                              />
+                            </span>
+                          </div>
+                        </Grid>
+                      </Grid>
+                    </Form>
+                  )}
+                </Formik>
               </Card>
             </div>
           )}
         </Grid>
-        <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
+        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
       </Grid>
     </>
   );

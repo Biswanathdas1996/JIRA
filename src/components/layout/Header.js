@@ -230,10 +230,10 @@ const Header = () => {
               Create
             </Button>
             <Button
-              disabled
               aria-controls={menuId}
               variant="outlined"
               sx={{ textTransform: "none" }}
+              onClick={() => history("/register")}
             >
               Sign In
             </Button>
