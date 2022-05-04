@@ -1,10 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import uuid from "uuid/v4";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import TicketCard from "../components/shared/TicketCard";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
 import _ from "lodash";

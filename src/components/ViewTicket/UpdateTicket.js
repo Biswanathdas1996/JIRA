@@ -5,9 +5,10 @@ import { Card, Grid } from "@mui/material";
 import { _transction } from "../../CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
+
+import TextEditor from "../UI/TextEditor";
 
 const client = create("https://ipfs.infura.io:5001/api/v0");
 
@@ -23,8 +24,9 @@ const UpadteTicket = ({ tokenId }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
   const [ticketindex, setTicketindex] = useState(false);
-  const [description, setDescription] = useState(null);
+  const [htmlCode, setHtmlCode] = useState(null);
   const [tickets, setTickets] = useState(null);
+  const [defaultEditorValue, setDefaultEditorValue] = useState(null);
 
   let history = useNavigate();
 
@@ -43,9 +45,17 @@ const UpadteTicket = ({ tokenId }) => {
         .then((data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
-          setDescription(updatesTicket?.description);
+          getDescription(data.description);
         });
     }
+  };
+
+  const getDescription = (URI) => {
+    fetch(URI)
+      .then((descResponse) => descResponse.text())
+      .then((descriptionData) => {
+        setDefaultEditorValue(descriptionData);
+      });
   };
 
   const saveData = async ({ title, type, priority, storypoint }) => {
@@ -53,13 +63,15 @@ const UpadteTicket = ({ tokenId }) => {
     let responseData;
     const id = tokenId;
 
+    const saveHtmlDescription = await await client.add(htmlCode);
+
     const metaData = {
       id: id,
       name: title,
       type: type,
       priority: priority,
       storypoint: storypoint,
-      description: description,
+      description: `https://ipfs.infura.io/ipfs/${saveHtmlDescription.path}`,
     };
 
     const resultsSaveMetaData = await await client.add(
@@ -79,6 +91,11 @@ const UpadteTicket = ({ tokenId }) => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getEditorValue = (val) => {
+    console.log("-getEditorValue->", val);
+    setHtmlCode(val);
+  };
 
   const modalClose = () => {
     setStart(false);
@@ -236,22 +253,17 @@ const UpadteTicket = ({ tokenId }) => {
                                     Description{" "}
                                     <span className="text-danger">*</span>
                                   </label>
-                                  <TextareaAutosize
-                                    aria-label="minimum height"
-                                    minRows={3}
-                                    name="text"
-                                    defaultValue={tickets.description}
-                                    onChange={(e) =>
-                                      setDescription(e.target.value)
-                                    }
-                                    placeholder="Minimum 3 rows"
-                                    style={{ width: "100%" }}
-                                    className={`form-control text-muted ${
-                                      touched.text && errors.text
-                                        ? "is-invalid"
-                                        : ""
-                                    }`}
-                                  />
+
+                                  {defaultEditorValue && (
+                                    <TextEditor
+                                      name="description"
+                                      label="Description"
+                                      tip="Describe the project in as much detail as you'd like."
+                                      value={htmlCode}
+                                      defaultValue={defaultEditorValue}
+                                      onChange={getEditorValue}
+                                    />
+                                  )}
                                 </div>
                               </Grid>
 
