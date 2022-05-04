@@ -10,12 +10,12 @@ import { IPFSLink, IpfsViewLink } from "../config";
 import { filterNewlyCreatedTicketys, mapTicketData } from "../functions/index";
 import Loader from "../components/shared/Loader";
 import NoData from "../components/shared/NoData";
-
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import _ from "lodash";
 
 const client = create(IPFSLink);
 
@@ -34,17 +34,13 @@ function Board({ address }) {
   async function fetchData(address) {
     setLoading(true);
     const result = await _fetch("users", address);
-
     setUser(result);
     const allTickets = await _fetch("getAllTickets");
-
     const filterTicketsForCurrentUser = await allTickets.filter(
       (ticket) => ticket.owner === address
     );
-
     const mappedData = mapTicketData(filterTicketsForCurrentUser);
     await setTickets(mappedData);
-
     const getAllUserUri = result?.boardData;
     if (getAllUserUri) {
       await fetch(getAllUserUri)
@@ -104,13 +100,16 @@ function Board({ address }) {
       await setColumns(updatedCard);
     }
 
-    const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
-
-    await _transction(
-      "setBoardDataToUser",
-      IpfsViewLink(resultsSaveMetaData.path),
-      address
-    );
+    if (!_.isEqual(columns, updatedCard)) {
+      setLoading(true);
+      const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
+      await _transction(
+        "setBoardDataToUser",
+        IpfsViewLink(resultsSaveMetaData.path),
+        address
+      );
+      setLoading(false);
+    }
   };
 
   return (
