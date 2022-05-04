@@ -8,7 +8,9 @@ import { useNavigate } from "react-router-dom";
 import uuid from "uuid/v4";
 import TransctionModal from "../components/shared/TransctionModal";
 import TextEditor from "../components/UI/TextEditor";
-const client = create("https://ipfs.infura.io:5001/api/v0");
+import { IPFSLink, IpfsViewLink } from "../config";
+
+const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -47,7 +49,7 @@ const Mint = () => {
       type: type,
       priority: priority,
       storypoint: storypoint,
-      description: `https://ipfs.infura.io/ipfs/${saveHtmlDescription.path}`,
+      description: IpfsViewLink(saveHtmlDescription.path),
     };
 
     const resultsSaveMetaData = await await client.add(
@@ -56,7 +58,7 @@ const Mint = () => {
     responseData = await _transction(
       "createTicket",
       id,
-      `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`,
+      IpfsViewLink(resultsSaveMetaData.path),
       account
     );
     setResponse(responseData);

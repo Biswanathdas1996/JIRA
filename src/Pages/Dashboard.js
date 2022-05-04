@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import { _fetch } from "../CONTRACT-ABI/connect";
 import Board from "../components/Board";
-
+import Loader from "../components/shared/Loader";
+import Box from "@mui/material/Box";
 function Dashboard() {
   const [users, setusers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,11 +20,18 @@ function Dashboard() {
   }
 
   return (
-    <Container>
+    <Box
+      sx={{
+        pt: 4,
+        pb: 2,
+        mx: 12,
+      }}
+    >
+      {loading && <Loader count="5" xs={12} sm={2.4} md={2.4} lg={2.4} />}
       {users.map((address, index) => {
-        return <Board address={address} />;
+        return <Board address={address} key={`user_${index}`} />;
       })}
-    </Container>
+    </Box>
   );
 }
 

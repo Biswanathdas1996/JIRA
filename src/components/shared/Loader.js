@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import { Grid } from "@mui/material";
 
 export default function Variants({ count, itemPerRow, xs, sm, md, lg }) {
+  // <Loader count="8" xs={12} sm={3} md={3} lg={3} />
   let items = [];
   for (let i = 0; i < count; i++) {
     items.push(i);

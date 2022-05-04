@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
-import { _transction, _account } from "../../src/CONTRACT-ABI/connect";
+import { _transction } from "../../src/CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
-import uuid from "uuid/v4";
 import TransctionModal from "../components/shared/TransctionModal";
 import { baseTemplate } from "../components/utility/BaseBoardDataTemplate";
+import { IPFSLink, IpfsViewLink } from "../config";
 
-const client = create("https://ipfs.infura.io:5001/api/v0");
+const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -22,17 +22,11 @@ const client = create("https://ipfs.infura.io:5001/api/v0");
 const Register = () => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
-  const [htmlCode, setHtmlCode] = useState(null);
-  const [account, setAccount] = useState(null);
   const [file, setFile] = useState(null);
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
 
   let history = useNavigate();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -44,10 +38,6 @@ const Register = () => {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
-  async function fetchData() {
-    const account = await _account();
-    setAccount(account);
-  }
   const saveData = async ({ title, type }) => {
     setStart(true);
     let responseData;
@@ -56,8 +46,8 @@ const Register = () => {
 
     const initialBoardData = await client.add(JSON.stringify(baseTemplate()));
 
-    const imgLink = `https://ipfs.infura.io/ipfs/${results.path}`;
-    const initialBoardDataLink = `https://ipfs.infura.io/ipfs/${initialBoardData?.path}`;
+    const imgLink = IpfsViewLink(results.path);
+    const initialBoardDataLink = IpfsViewLink(initialBoardData?.path);
     responseData = await _transction(
       "addUser",
       title,

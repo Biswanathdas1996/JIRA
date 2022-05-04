@@ -1,11 +1,11 @@
 import React from "react";
 import { Typography, Stack } from "@mui/material";
-import { TabPanel } from "@mui/lab";
+import Box from "@mui/material/Box";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 
 const Bid = ({ text }) => {
   return (
-    <TabPanel
+    <Box
       value="3"
       sx={{ backgroundColor: "#F0F6FF", width: "100%", height: 380 }}
     >
@@ -31,7 +31,7 @@ const Bid = ({ text }) => {
           {text}
         </Typography>
       </Stack>
-    </TabPanel>
+    </Box>
   );
 };
 

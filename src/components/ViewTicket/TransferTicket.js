@@ -9,7 +9,9 @@ import { useNavigate } from "react-router-dom";
 import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import _ from "lodash";
-const client = create("https://ipfs.infura.io:5001/api/v0");
+import { IPFSLink, IpfsViewLink } from "../../config";
+
+const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -97,7 +99,7 @@ const TransferTicket = ({ tokenId }) => {
         const resultsSaveMetaData = await client.add(
           JSON.stringify(senderData)
         );
-        updatedSenderAbi = `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`;
+        updatedSenderAbi = IpfsViewLink(resultsSaveMetaData.path);
       });
     //////////////////////////////////////////////////////////////////////////////////////////
     const getRecieverrCurrentABI = await _fetch("users", receiver);
@@ -115,7 +117,7 @@ const TransferTicket = ({ tokenId }) => {
           const resultsSaveMetaData = await client.add(
             JSON.stringify(receiverData)
           );
-          updatedReceiverAbi = `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`;
+          updatedReceiverAbi = IpfsViewLink(resultsSaveMetaData.path);
         });
     }
 

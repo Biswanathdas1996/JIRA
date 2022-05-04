@@ -7,10 +7,10 @@ import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
 import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
-
+import { IPFSLink, IpfsViewLink } from "../../config";
 import TextEditor from "../UI/TextEditor";
 
-const client = create("https://ipfs.infura.io:5001/api/v0");
+const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -67,7 +67,7 @@ const UpadteTicket = ({ tokenId }) => {
     let descIpfsLink;
     if (htmlCode) {
       saveHtmlDescription = await client.add(htmlCode);
-      descIpfsLink = `https://ipfs.infura.io/ipfs/${saveHtmlDescription.path}`;
+      descIpfsLink = IpfsViewLink(saveHtmlDescription.path);
     } else {
       descIpfsLink = tickets?.description;
     }
@@ -88,7 +88,7 @@ const UpadteTicket = ({ tokenId }) => {
 
     responseData = await _transction(
       "updateTicket",
-      `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`,
+      IpfsViewLink(resultsSaveMetaData.path),
       ticketindex
     );
 

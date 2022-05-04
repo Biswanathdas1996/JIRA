@@ -1,58 +1,40 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import Box from "@mui/material/Box";
+import { Avatar } from "@mui/material";
 import TicketCard from "../components/shared/TicketCard";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
-import _ from "lodash";
 import { create } from "ipfs-http-client";
 import { baseTemplate } from "./utility/BaseBoardDataTemplate";
+import { IPFSLink, IpfsViewLink } from "../config";
+import { filterNewlyCreatedTicketys, mapTicketData } from "../functions/index";
+import Loader from "../components/shared/Loader";
+import NoData from "../components/shared/NoData";
 
-const client = create("https://ipfs.infura.io:5001/api/v0");
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const filterNewlyCreatedTicketys = (alldata, oldDataSet) => {
-  let result = [];
-  for (let i = 1; i <= 5; i++) {
-    const tempData = oldDataSet[i].items;
-    if (tempData.length > 0) {
-      if (tempData.length === 1) {
-        result.push(tempData[0]);
-      } else {
-        tempData.map((val) => {
-          result.push(val);
-        });
-      }
-    }
-  }
-  const uniqueItem = _.xorBy(alldata, result, "id");
-
-  return uniqueItem;
-};
-
-const mapTicketData = (data) => {
-  return data.map((val) => {
-    return {
-      index: val?.index,
-      id: val?.id,
-      abiLink: val?.abiLink,
-      owner: val?.owner,
-      repoter: val?.repoter,
-    };
-  });
-};
+const client = create(IPFSLink);
 
 function Board({ address }) {
   const [columns, setColumns] = useState([]);
   const [user, setUser] = useState([]);
   const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchData(address);
-    setColumns(baseTemplate());
+    // setColumns(baseTemplate());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function fetchData(address) {
+    setLoading(true);
     const result = await _fetch("users", address);
+
     setUser(result);
     const allTickets = await _fetch("getAllTickets");
 
@@ -81,6 +63,7 @@ function Board({ address }) {
     } else {
       setColumns(baseTemplate(mappedData));
     }
+    setLoading(false);
   }
 
   const onDragEnd = async (result, columns, setColumns) => {
@@ -125,97 +108,124 @@ function Board({ address }) {
 
     await _transction(
       "setBoardDataToUser",
-      `https://ipfs.infura.io/ipfs/${resultsSaveMetaData.path}`,
+      IpfsViewLink(resultsSaveMetaData.path),
       address
     );
   };
 
   return (
-    <Box
-      sx={{
-        pt: 4,
-        pb: 2,
-      }}
-    >
-      <h5>{user?.name}</h5>
-      <h5>{address}</h5>
-      <div
-        style={{ display: "flex", justifyContent: "center", height: "100%" }}
+    <Accordion style={{ marginTop: 5 }}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id={`panel1a-header_${address}`}
       >
-        {tickets && tickets?.length > 0 && (
-          <DragDropContext
-            onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-          >
-            {Object.entries(columns).map(([columnId, column], index) => {
-              return (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                  key={columnId}
-                >
-                  <h2>{column.name}</h2>
-                  <div style={{ margin: 5 }}>
-                    <Droppable droppableId={columnId} key={columnId}>
-                      {(provided, snapshot) => {
-                        return (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={{
-                              background: snapshot.isDraggingOver
-                                ? "lightblue"
-                                : "lightgrey",
-                              padding: 4,
-                              width: 250,
-                              minHeight: 500,
-                            }}
-                          >
-                            {column.items.map((item, index) => {
-                              return (
-                                <Draggable
-                                  key={item.id}
-                                  draggableId={item.id}
-                                  index={index}
-                                >
-                                  {(provided, snapshot) => {
-                                    return (
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        style={{
-                                          userSelect: "none",
-                                          margin: "5px 2px",
-                                          backgroundColor: snapshot.isDragging
-                                            ? "#263B4A"
-                                            : "#456C86",
-                                          color: "white",
-                                          ...provided.draggableProps.style,
-                                        }}
-                                      >
-                                        <TicketCard index={item?.index} />
-                                      </div>
-                                    );
-                                  }}
-                                </Draggable>
-                              );
-                            })}
-                            {provided.placeholder}
-                          </div>
-                        );
-                      }}
-                    </Droppable>
+        <Avatar
+          alt="Remy Sharp"
+          sx={{
+            width: 70,
+            height: 70,
+            borderRadius: "50%",
+          }}
+          src={user?.profileImg}
+        ></Avatar>
+        <Typography
+          style={{ margin: "1rem", fontSize: 18, fontWeight: "bold" }}
+        >
+          {user?.name}
+        </Typography>
+        <Typography style={{ marginTop: "1rem", fontSize: 14 }}>
+          {tickets?.length} issue(s)
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          {!loading && tickets && tickets?.length > 0 ? (
+            <DragDropContext
+              onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+            >
+              {Object.entries(columns).map(([columnId, column], index) => {
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                    key={columnId}
+                  >
+                    <h2>{column.name}</h2>
+                    <div style={{ margin: 5 }}>
+                      <Droppable droppableId={columnId} key={columnId}>
+                        {(provided, snapshot) => {
+                          return (
+                            <div
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                              style={{
+                                background: snapshot.isDraggingOver
+                                  ? "lightblue"
+                                  : "lightgrey",
+                                padding: 4,
+                                width: 250,
+                                minHeight: 500,
+                              }}
+                            >
+                              {column.items.map((item, index) => {
+                                return (
+                                  <Draggable
+                                    key={item.id}
+                                    draggableId={item.id}
+                                    index={index}
+                                  >
+                                    {(provided, snapshot) => {
+                                      return (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          style={{
+                                            userSelect: "none",
+                                            margin: "5px 2px",
+                                            backgroundColor: snapshot.isDragging
+                                              ? "#263B4A"
+                                              : "#456C86",
+                                            color: "white",
+                                            ...provided.draggableProps.style,
+                                          }}
+                                        >
+                                          <TicketCard index={item?.index} />
+                                        </div>
+                                      );
+                                    }}
+                                  </Draggable>
+                                );
+                              })}
+                              {provided.placeholder}
+                            </div>
+                          );
+                        }}
+                      </Droppable>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </DragDropContext>
-        )}
-      </div>
-    </Box>
+                );
+              })}
+            </DragDropContext>
+          ) : (
+            <Loader count="5" xs={12} sm={2.4} md={2.4} lg={2.4} />
+          )}
+          {!loading && tickets && tickets?.length === 0 && (
+            <NoData text="You does noy have any NFT" />
+          )}
+        </div>
+      </AccordionDetails>
+    </Accordion>
   );
 }
 

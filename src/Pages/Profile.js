@@ -8,8 +8,7 @@ import BackgroundImg from "../assets/images/bckimg.png";
 import MyProfileCard from "../components/ProfilePage/MyProfileCard";
 import MyTransaction from "../components/ProfilePage/MyTransaction";
 import MyWallet from "../components/ProfilePage/MyWallet";
-import MyCollections from "../components/ProfilePage/MyCollections";
-import MyFavorites from "../components/ProfilePage/MyFavorites";
+
 import TabPanel from "@mui/lab/TabPanel";
 
 const ProfilePage = () => {
@@ -99,12 +98,9 @@ const ProfilePage = () => {
                 </TabPanel>
                 <TabPanel value="3">
                   {" "}
-                  <MyCollections />
+                  <h1>Test</h1>
                 </TabPanel>
-                <TabPanel value="4">
-                  {" "}
-                  <MyFavorites />
-                </TabPanel>
+                <TabPanel value="4"> MyCollections</TabPanel>
               </TabContext>
             </Box>
           </Grid>
