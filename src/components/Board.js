@@ -210,7 +210,10 @@ function Board({ address }) {
                                             ...provided.draggableProps.style,
                                           }}
                                         >
-                                          <TicketCard index={item?.index} />
+                                          <TicketCard
+                                            index={item?.index}
+                                            item={item}
+                                          />
                                         </div>
                                       );
                                     }}
