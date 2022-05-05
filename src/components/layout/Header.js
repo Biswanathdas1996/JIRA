@@ -7,11 +7,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Button } from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
-import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
-import GridViewIcon from "@mui/icons-material/GridView";
 import Link from "@material-ui/core/Link";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../shared/SearchBar";
@@ -28,20 +23,13 @@ const pages = [
     label: "My profile",
     href: "/profile",
   },
-  {
-    label: "How it works",
-    href: "/HowItWorks",
-  },
 ];
 
 const Header = () => {
   const [account, setAccount] = useState(null);
-
-  // const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   let history = useNavigate();
-  const isMenuOpen = Boolean(anchorEl);
+
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   useEffect(() => {
@@ -54,22 +42,8 @@ const Header = () => {
     setAccount(user);
   }
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = (category = "") => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-    if (category !== "all") {
-      history(`/category/${category.toLowerCase()}`);
-    } else {
-      history("/");
-    }
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -77,56 +51,7 @@ const Header = () => {
   };
 
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem
-        onClick={() => {
-          handleMenuClose("all");
-        }}
-      >
-        <GridViewIcon sx={{ marginRight: "10px" }} />
-        All
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          handleMenuClose("art");
-        }}
-      >
-        <ColorLensIcon sx={{ marginRight: "10px" }} />
-        Arts
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          handleMenuClose("music");
-        }}
-      >
-        <MusicNoteIcon sx={{ marginRight: "10px" }} />
-        Music
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          handleMenuClose("sports");
-        }}
-      >
-        <SportsSoccerIcon sx={{ marginRight: "10px" }} />
-        Sports
-      </MenuItem>
-    </Menu>
-  );
+
   //  MENU itemssss
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -148,12 +73,7 @@ const Header = () => {
       <MenuItem>
         <Link to="/profile">My Profile</Link>
       </MenuItem>
-      <MenuItem disabled>
-        <Link href="/mentors">Activity</Link>
-      </MenuItem>
-      <MenuItem disabled>
-        <Link href="/">How It Works</Link>
-      </MenuItem>
+
       <MenuItem>
         <Link href="/create-ticket">Create</Link>
       </MenuItem>
@@ -186,22 +106,6 @@ const Header = () => {
             <SearchBar />
           </Button>
 
-          {/* Explore menu list========================================= */}
-          <Button
-            endIcon={<ArrowDropDownIcon />}
-            size="medium"
-            edge="end"
-            aria-label="account of current user"
-            aria-controls={menuId}
-            aria-haspopup="true"
-            onClick={handleProfileMenuOpen}
-            color="inherit"
-            sx={{ color: "black", fontWeight: "bold", textTransform: "none" }}
-          >
-            Explore
-          </Button>
-
-          {/* // Menu items-------------------------------------------- */}
           <Box
             sx={{
               flexGrow: 1,
@@ -284,7 +188,6 @@ const Header = () => {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
     </Box>
   );
 };
