@@ -10,6 +10,9 @@ import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import _ from "lodash";
 import { IPFSLink, IpfsViewLink } from "../../config";
+import { mapTicketData } from "../../functions/index";
+import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 
 const client = create(IPFSLink);
 
@@ -20,24 +23,14 @@ const client = create(IPFSLink);
 //   royelty: Yup.string().required("Royelty amount is required"),
 // });
 
-const mapTicketData = (data) => {
-  return data.map((val) => {
-    return {
-      index: val?.index,
-      id: val?.id,
-      abiLink: val?.abiLink,
-      owner: val?.owner,
-      repoter: val?.repoter,
-    };
-  });
-};
-
 const TransferTicket = ({ tokenId }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [users, setusers] = useState([]);
+  const [totalUserCount, setTotalUserCount] = useState(0);
   const [transfredTicket, setTransfredTicket] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   let history = useNavigate();
 
@@ -47,8 +40,9 @@ const TransferTicket = ({ tokenId }) => {
   }, []);
 
   const getData = async () => {
+    setLoading(true);
     const allUser = await _fetch("getAllUser");
-
+    setTotalUserCount(allUser?.length);
     let tempUserData = [];
     await allUser.map(async (address) => {
       const result = await _fetch("users", address);
@@ -68,6 +62,10 @@ const TransferTicket = ({ tokenId }) => {
         .then((data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
         });
     }
   };
@@ -80,7 +78,7 @@ const TransferTicket = ({ tokenId }) => {
     let updatedReceiverAbi;
 
     const getSenderCurrentABI = await _fetch("users", sender);
-    console.log("get-Sender-Current-ABI");
+
     await fetch(getSenderCurrentABI?.boardData)
       .then((response) => response.json())
       .then(async (senderData) => {
@@ -94,8 +92,7 @@ const TransferTicket = ({ tokenId }) => {
             }
           }
         }
-        console.log("results-Save-Meta-Data");
-        console.log("senderData", senderData);
+
         const resultsSaveMetaData = await client.add(
           JSON.stringify(senderData)
         );
@@ -103,16 +100,13 @@ const TransferTicket = ({ tokenId }) => {
       });
     //////////////////////////////////////////////////////////////////////////////////////////
     const getRecieverrCurrentABI = await _fetch("users", receiver);
-    console.log("get-Recieverr-Current-ABI");
+
     if (getRecieverrCurrentABI?.boardData) {
       await fetch(getRecieverrCurrentABI?.boardData)
         .then((response) => response.json())
         .then(async (receiverData) => {
-          console.log("receiverData", receiverData);
-          console.log("transfredTicket", transfredTicket);
           const updatedColumn = receiverData[1].items;
           receiverData[1].items = [...updatedColumn, transfredTicket];
-          console.log("receiverData", receiverData);
 
           const resultsSaveMetaData = await client.add(
             JSON.stringify(receiverData)
@@ -120,10 +114,6 @@ const TransferTicket = ({ tokenId }) => {
           updatedReceiverAbi = IpfsViewLink(resultsSaveMetaData.path);
         });
     }
-
-    console.log("updated-Column");
-    console.log("updatedSenderAbi", updatedSenderAbi);
-    console.log("updatedReceiverAbi", updatedReceiverAbi);
 
     const finalResponse = await _transction(
       "transferTicket",
@@ -135,7 +125,6 @@ const TransferTicket = ({ tokenId }) => {
     );
 
     setResponse(finalResponse);
-    setStart(false);
   };
 
   const modalClose = () => {
@@ -150,18 +139,18 @@ const TransferTicket = ({ tokenId }) => {
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
         <Grid item lg={8} md={8} sm={12} xs={12}>
-          {tickets && (
-            <div style={{ margin: 20 }}>
-              <Card
-                style={{
-                  padding: "20px",
-                  background: "white",
-                }}
-              >
-                <h4> Transfer</h4>
+          <div style={{ margin: 20 }}>
+            <Card
+              style={{
+                padding: "20px",
+                background: "white",
+              }}
+            >
+              <h4> Assign</h4>
+              {!loading && (
                 <Formik
                   initialValues={{
-                    receiver: "",
+                    receiver: transfredTicket?.owner,
                   }}
                   // validationSchema={VendorSchema}
                   onSubmit={(values, { setSubmitting }) => {
@@ -171,61 +160,76 @@ const TransferTicket = ({ tokenId }) => {
                 >
                   {({ touched, errors, isSubmitting, values }) => (
                     <Form>
-                      <Grid container>
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <div
-                            className="form-group"
-                            style={{ marginLeft: 10, marginTop: 10 }}
-                          >
-                            <label for="title" className="my-2">
-                              Select User <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              name="receiver"
-                              component="select"
-                              className={`form-control text-muted ${
-                                touched.receiver && errors.receiver
-                                  ? "is-invalid"
-                                  : ""
-                              }`}
-                              style={{ marginRight: 10, padding: 9 }}
+                      {totalUserCount === users?.length && (
+                        <Grid container>
+                          <Grid item lg={12} md={12} sm={12} xs={12}>
+                            <div
+                              className="form-group"
+                              style={{ marginLeft: 10, marginTop: 10 }}
                             >
-                              <option>-- Please select --</option>
-                              {users?.map((user) => {
-                                return (
-                                  <option value={user?.userAddress}>
-                                    {user?.name}
-                                  </option>
-                                );
-                              })}
-                            </Field>
-                          </div>
+                              <label for="title" className="my-2">
+                                Select User{" "}
+                                <span className="text-danger">*</span>
+                              </label>
+                              <Field
+                                name="receiver"
+                                component="select"
+                                className={`form-control text-muted ${
+                                  touched.receiver && errors.receiver
+                                    ? "is-invalid"
+                                    : ""
+                                }`}
+                                style={{ marginRight: 10, padding: 9 }}
+                              >
+                                <option>-- Please select --</option>
+                                {users?.map((user) => {
+                                  return (
+                                    <option value={user?.userAddress}>
+                                      {user?.name}
+                                    </option>
+                                  );
+                                })}
+                              </Field>
+                            </div>
+                          </Grid>
+                          <Grid item lg={12} md={12} sm={12} xs={12}>
+                            <div
+                              className="form-group"
+                              style={{
+                                marginLeft: 10,
+                                marginTop: 10,
+                                float: "right",
+                              }}
+                            >
+                              <span className="input-group-btn">
+                                <input
+                                  className="btn btn-default btn-primary float-right"
+                                  type="submit"
+                                  value={"Assign"}
+                                />
+                              </span>
+                            </div>
+                          </Grid>
                         </Grid>
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <div
-                            className="form-group"
-                            style={{
-                              marginLeft: 10,
-                              marginTop: 10,
-                              float: "right",
-                            }}
-                          >
-                            <span className="input-group-btn">
-                              <input
-                                className="btn btn-default btn-primary float-right"
-                                type="submit"
-                                value={"Update"}
-                              />
-                            </span>
-                          </div>
-                        </Grid>
-                      </Grid>
+                      )}
                     </Form>
                   )}
                 </Formik>
-              </Card>
-            </div>
-          )}
+              )}
+
+              {loading && (
+                <Stack spacing={1} style={{ marginTop: 10 }}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={118}
+                  />
+                  <Skeleton animation="wave" />
+                  <Skeleton animation="wave" />
+                </Stack>
+              )}
+            </Card>
+          </div>
         </Grid>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
       </Grid>

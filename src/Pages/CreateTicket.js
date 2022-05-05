@@ -107,7 +107,7 @@ const Mint = () => {
                   <Form>
                     <Grid container>
                       {/* // Title */}
-                      <Grid item lg={6} md={6} sm={12} xs={12}>
+                      <Grid item lg={12} md={12} sm={12} xs={12}>
                         <div
                           className="form-group"
                           style={{ marginLeft: 10, marginTop: 10 }}

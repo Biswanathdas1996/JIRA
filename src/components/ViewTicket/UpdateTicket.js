@@ -9,6 +9,8 @@ import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import { IPFSLink, IpfsViewLink } from "../../config";
 import TextEditor from "../UI/TextEditor";
+import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 
 const client = create(IPFSLink);
 
@@ -27,12 +29,13 @@ const UpadteTicket = ({ tokenId }) => {
   const [htmlCode, setHtmlCode] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [defaultEditorValue, setDefaultEditorValue] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   let history = useNavigate();
 
   const getData = async () => {
+    setLoading(true);
     const allTickets = await _fetch("getAllTickets");
-
     const filterTicketsForCurrentUser = await allTickets.find(
       (ticket) => ticket.id === tokenId
     );
@@ -45,8 +48,10 @@ const UpadteTicket = ({ tokenId }) => {
         .then((data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
-          console.log(updatesTicket?.description);
           getDescription(data.description);
+        })
+        .catch((err) => {
+          setLoading(false);
         });
     }
   };
@@ -56,6 +61,10 @@ const UpadteTicket = ({ tokenId }) => {
       .then((descResponse) => descResponse.text())
       .then((descriptionData) => {
         setDefaultEditorValue(descriptionData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
       });
   };
 
@@ -81,7 +90,6 @@ const UpadteTicket = ({ tokenId }) => {
       description: descIpfsLink,
     };
 
-    console.log(metaData);
     const resultsSaveMetaData = await await client.add(
       JSON.stringify(metaData)
     );
@@ -101,7 +109,6 @@ const UpadteTicket = ({ tokenId }) => {
   }, []);
 
   const getEditorValue = (val) => {
-    console.log("-getEditorValue->", val);
     setHtmlCode(val);
   };
 
@@ -117,15 +124,15 @@ const UpadteTicket = ({ tokenId }) => {
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
         <Grid item lg={8} md={8} sm={12} xs={12}>
-          {tickets && (
-            <div style={{ margin: 20 }}>
-              <Card
-                style={{
-                  padding: "20px",
-                  background: "white",
-                }}
-              >
-                <h4> Update</h4>
+          <div style={{ margin: 20 }}>
+            <Card
+              style={{
+                padding: "20px",
+                background: "white",
+              }}
+            >
+              <h4> Update</h4>
+              {!loading && tickets && (
                 <Formik
                   initialValues={{
                     title: tickets.name,
@@ -144,7 +151,7 @@ const UpadteTicket = ({ tokenId }) => {
                     <Form>
                       <Grid container>
                         {/* // Title */}
-                        <Grid item lg={6} md={6} sm={12} xs={12}>
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
@@ -244,7 +251,6 @@ const UpadteTicket = ({ tokenId }) => {
                             />
                           </div>
                         </Grid>
-
                         {/* Description */}
                         <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div
@@ -267,7 +273,6 @@ const UpadteTicket = ({ tokenId }) => {
                             )}
                           </div>
                         </Grid>
-
                         <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div
                             className="form-group"
@@ -290,9 +295,20 @@ const UpadteTicket = ({ tokenId }) => {
                     </Form>
                   )}
                 </Formik>
-              </Card>
-            </div>
-          )}
+              )}
+              {loading && (
+                <Stack spacing={1} style={{ marginTop: 10 }}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={118}
+                  />
+                  <Skeleton animation="wave" />
+                  <Skeleton animation="wave" />
+                </Stack>
+              )}
+            </Card>
+          </div>
         </Grid>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
       </Grid>
