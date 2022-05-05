@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
-import { Card, Grid } from "@mui/material";
+import { Card, Grid, Button } from "@mui/material";
 import { _transction } from "../../CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
@@ -146,7 +146,14 @@ const TransferTicket = ({ tokenId }) => {
                 background: "white",
               }}
             >
-              <h4> Assign</h4>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <h4> Assign</h4>
+
+                <Button type="button" onClick={() => getData()}>
+                  Refresh
+                </Button>
+              </div>
+
               {!loading && (
                 <Formik
                   initialValues={{
