@@ -20,6 +20,7 @@
     "FormData": "^0.10.1",
     "axios": "^0.26.1",
     "date-fns": "^2.28.0",
+    "ethereumjs-tx": "^2.1.2",
     "fontsource-roboto": "^4.0.0",
     "formik": "^2.2.9",
     "ganache": "^7.0.3",

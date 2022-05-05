@@ -3,43 +3,22 @@ import Web3 from "web3";
 import ABI from "./JIRA.json";
 import ADDRESS from "./Address.json";
 
-const myPrivateKeyHex =
-  "8c5948e0dbc4163b176ea8cfb7ca6a3d2e9c52d2d1df7c363fababb8f2eb6f42";
+window?.ethereum?.request({
+  method: "eth_requestAccounts",
+});
 
-const web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    `https://rinkeby.infura.io/v3/24022fda545f41beb59334bdbaf3ef32`
-  )
-);
-
-const signer = web3.eth.accounts.privateKeyToAccount(myPrivateKeyHex);
-web3.eth.accounts.wallet.add(signer);
-
-// const myAccount = web3.eth.accounts.privateKeyToAccount(myPrivateKeyHex);
-
-// Interact with existing, already deployed, smart contract on Ethereum mainnet
+const web3 = new Web3(window.ethereum);
 const contract = new web3.eth.Contract(ABI, ADDRESS);
-
-console.log(contract);
 
 export const _transction = async (service, ...props) => {
   const callService = _.get(contract, ["methods", service]);
-
-  const tx = callService(...props);
-
-  const responseData = await tx
+  const accounts = await web3.eth.getAccounts();
+  const responseData = await callService(...props)
     .send({
-      from: signer.address,
-      // gas: await tx.estimateGas(),
-      gas: "4700000",
+      from: accounts[0],
       value: 0,
     })
-    // .then((data) => data)
-    .once("transactionHash", (txhash) => {
-      console.log(`Mining transaction ...`);
-      console.log(txhash);
-      return txhash;
-    })
+    .then((data) => data)
     .catch((error) => {
       const errorData = { error };
       return { error: errorData.error };
@@ -49,10 +28,10 @@ export const _transction = async (service, ...props) => {
 
 export const _paid_transction = async (cost, service, ...props) => {
   const callService = _.get(contract, ["methods", service]);
-
+  const accounts = await web3.eth.getAccounts();
   const responseData = await callService(...props)
     .send({
-      from: signer.address,
+      from: accounts[0],
       value: cost,
     })
     .then((data) => data)
@@ -65,8 +44,8 @@ export const _paid_transction = async (cost, service, ...props) => {
 
 export const _account = async () => {
   // const accounts = await web3?.eth.accounts._provider.selectedAddress;
-
-  return signer.address;
+  const accounts = await web3.eth.getAccounts();
+  return accounts[0];
 };
 
 export const _fetch = async (service, ...props) => {
