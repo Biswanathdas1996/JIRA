@@ -4,3 +4,6 @@ export const IPFSLink = `https://ipfs.infura.io:5001/api/v0`;
 
 export const IpfsViewLink = (fingerprint) =>
   `https://ipfs.infura.io/ipfs/${fingerprint}`;
+
+export const ViewTransctionDetailsLink = (transactionHash) =>
+  `https://rinkeby.etherscan.io/tx/${transactionHash}`;

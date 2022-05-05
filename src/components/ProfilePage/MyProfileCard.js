@@ -146,7 +146,7 @@ const MyProfileCard = () => {
             <strong>212</strong> Following
           </Typography>
         </div>
-        <Link href="https://facebook.com" target="_blank">
+        <Link href="/" target="_blank">
           <Box
             component="img"
             sx={{
@@ -161,7 +161,7 @@ const MyProfileCard = () => {
             src={Facebook}
           ></Box>
         </Link>
-        <Link href="https://twitter.com/" target="_blank">
+        <Link href="/" target="_blank">
           <Box
             component="img"
             sx={{
@@ -176,7 +176,7 @@ const MyProfileCard = () => {
             src={Twitter}
           ></Box>
         </Link>
-        <Link href="https://www.instagram.com/" target="_blank">
+        <Link href="/" target="_blank">
           <Box
             component="img"
             sx={{
@@ -191,10 +191,7 @@ const MyProfileCard = () => {
             src={Instagram}
           ></Box>
         </Link>
-        <Link
-          href="https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin"
-          target="_blank"
-        >
+        <Link href="/" target="_blank">
           <Box
             component="img"
             sx={{

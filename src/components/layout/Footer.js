@@ -14,9 +14,6 @@ function Copyright() {
       align="center"
       fontWeight="600"
     >
-      {/* <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "} */}
       {"© "}
       {new Date().getFullYear()}
       {" - 2023"}
@@ -37,7 +34,7 @@ function Footer() {
       <Container maxWidth="lg">
         <Toolbar>
           <Link
-            href="https://www.pwc.com/"
+            href="/"
             style={{ textDecoration: "none", marginRight: "30px" }}
           >
             <img src={PwcLogo} height={"60px"} width={"60px"} alt="img" />

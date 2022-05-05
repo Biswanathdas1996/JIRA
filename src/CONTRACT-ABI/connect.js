@@ -1,6 +1,6 @@
 import _ from "lodash";
 import Web3 from "web3";
-import ABI from "./NFT.json";
+import ABI from "./JIRA.json";
 import ADDRESS from "./Address.json";
 
 window?.ethereum?.request({
