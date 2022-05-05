@@ -3,6 +3,7 @@ import { Grid, Card, Typography, Tooltip } from "@material-ui/core";
 import Box from "@mui/material/Box";
 import Web3 from "web3";
 import { _account } from "../../CONTRACT-ABI/connect";
+import { getNetworkName } from "../../functions/getNetworkName";
 const styles = {
   card: {
     height: "180px",
@@ -48,22 +49,7 @@ const WalledCard = () => {
     const balnceInETH = await web3?.utils?.fromWei(balance, "ether");
     setBalance(balnceInETH);
 
-    switch (networkId) {
-      case 1:
-        setNetwork("Mainnet");
-        break;
-      case 2:
-        setNetwork("Morden");
-        break;
-      case 3:
-        setNetwork("Ropsten");
-        break;
-      case 4:
-        setNetwork("Rinkeby");
-        break;
-      default:
-        setNetwork("Unknown");
-    }
+    setNetwork(getNetworkName(networkId));
   };
 
   return (
