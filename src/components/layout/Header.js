@@ -134,19 +134,19 @@ const Header = () => {
           <Box sx={{ flexGrow: 1 }} />
 
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button
-              type="button"
-              variant="contained"
-              sx={{
-                marginRight: "20px",
-                textTransform: "none",
-              }}
-              onClick={() => history("/create-ticket")}
-            >
-              Create
-            </Button>
             {account?.name ? (
               <>
+                <Button
+                  type="button"
+                  variant="contained"
+                  sx={{
+                    marginRight: "20px",
+                    textTransform: "none",
+                  }}
+                  onClick={() => history("/create-ticket")}
+                >
+                  Create
+                </Button>
                 <Avatar
                   alt="Remy Sharp"
                   sx={{

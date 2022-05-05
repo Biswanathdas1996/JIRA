@@ -69,8 +69,8 @@ export default function OutlinedCard({ index, item }) {
               <Avatar
                 alt="Remy Sharp"
                 sx={{
-                  width: 25,
-                  height: 25,
+                  width: 40,
+                  height: 40,
                   borderRadius: "50%",
                 }}
                 src={repoterImg}
