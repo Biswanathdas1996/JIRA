@@ -12,9 +12,8 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../shared/SearchBar";
 import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { AccountContext } from "../../App";
 import Typography from "@mui/material/Typography";
-
+import { AccountContext } from "../../App";
 const pages = [
   {
     label: "Home",

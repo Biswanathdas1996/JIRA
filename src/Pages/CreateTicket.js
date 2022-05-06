@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
-import { _transction, _account } from "../../src/CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
 import uuid from "uuid/v4";
+import { Avatar } from "@mui/material";
 import TransctionModal from "../components/shared/TransctionModal";
 import TextEditor from "../components/UI/TextEditor";
 import { IPFSLink, IpfsViewLink } from "../config";
+import { AccountContext } from "../App";
+import { _transction, _account } from "../../src/CONTRACT-ABI/connect";
+import Box from "@mui/material/Box";
 
 const client = create(IPFSLink);
 
@@ -24,18 +27,10 @@ const Mint = () => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
   const [htmlCode, setHtmlCode] = useState(null);
-  const [account, setAccount] = useState(null);
 
+  const { account, fetchUserData, projectData } = useContext(AccountContext);
   let history = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
-    const account = await _account();
-    setAccount(account);
-  }
   const saveData = async ({ title, type, priority, storypoint }) => {
     setStart(true);
     let responseData;
@@ -107,27 +102,6 @@ const Mint = () => {
                 {({ touched, errors, isSubmitting, values }) => (
                   <Form>
                     <Grid container>
-                      {/* // Title */}
-                      <Grid item lg={12} md={12} sm={12} xs={12}>
-                        <div
-                          className="form-group"
-                          style={{ marginLeft: 10, marginTop: 10 }}
-                        >
-                          <label for="title" className="my-2">
-                            Title <span className="text-danger">*</span>
-                          </label>
-                          <Field
-                            type="text"
-                            name="title"
-                            autoComplete="flase"
-                            placeholder="Enter title"
-                            className={`form-control text-muted ${
-                              touched.title && errors.title ? "is-invalid" : ""
-                            }`}
-                            style={{ marginRight: 10, padding: 9 }}
-                          />
-                        </div>
-                      </Grid>
                       {/* type */}
                       <Grid item lg={6} md={6} sm={12} xs={12}>
                         <div
@@ -135,7 +109,7 @@ const Mint = () => {
                           style={{ marginLeft: 10, marginTop: 10 }}
                         >
                           <label for="title" className="my-2">
-                            Choose Type <span className="text-danger">*</span>
+                            Issue Type <span className="text-danger">*</span>
                           </label>
                           <Field
                             name="type"
@@ -151,6 +125,64 @@ const Mint = () => {
                           </Field>
                         </div>
                       </Grid>
+                      {/* // repoter */}
+                      <Grid item lg={6} md={6} sm={12} xs={12}>
+                        <div
+                          className="form-group"
+                          style={{ marginLeft: 10, marginTop: 10 }}
+                        >
+                          <label for="title" className="my-2">
+                            Repoter <span className="text-danger">*</span>
+                          </label>
+
+                          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                            {account?.name && (
+                              <>
+                                <Avatar
+                                  alt="Remy Sharp"
+                                  sx={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: "50%",
+                                  }}
+                                  src={account?.profileImg}
+                                ></Avatar>
+                                <p
+                                  style={{
+                                    color: "black",
+                                    margin: 10,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {account?.name}
+                                </p>
+                              </>
+                            )}
+                          </Box>
+                        </div>
+                      </Grid>
+                      {/* summary */}
+                      <Grid item lg={12} md={12} sm={12} xs={12}>
+                        <div
+                          className="form-group"
+                          style={{ marginLeft: 10, marginTop: 10 }}
+                        >
+                          <label for="title" className="my-2">
+                            Summary <span className="text-danger">*</span>
+                          </label>
+                          <Field
+                            type="text"
+                            name="title"
+                            autoComplete="flase"
+                            placeholder="Enter Summary"
+                            className={`form-control text-muted ${
+                              touched.title && errors.title ? "is-invalid" : ""
+                            }`}
+                            style={{ marginRight: 10, padding: 9 }}
+                          />
+                        </div>
+                      </Grid>
+
                       {/* priority */}
                       <Grid item lg={6} md={6} sm={12} xs={12}>
                         <div
@@ -180,6 +212,25 @@ const Mint = () => {
                           </Field>
                         </div>
                       </Grid>
+
+                      {/* Description */}
+                      <Grid item lg={12} md={12} sm={12} xs={12}>
+                        <div
+                          className="form-group"
+                          style={{ marginLeft: 10, marginTop: 10 }}
+                        >
+                          <label for="title" className="my-2">
+                            Description <span className="text-danger">*</span>
+                          </label>
+                          <TextEditor
+                            name="description"
+                            label="Description"
+                            tip="Describe the project in as much detail as you'd like."
+                            value={htmlCode}
+                            onChange={getEditorValue}
+                          />
+                        </div>
+                      </Grid>
                       {/* Story point */}
                       <Grid item lg={6} md={6} sm={12} xs={12}>
                         <div
@@ -204,27 +255,6 @@ const Mint = () => {
                           />
                         </div>
                       </Grid>
-
-                      {/* Description */}
-
-                      <Grid item lg={12} md={12} sm={12} xs={12}>
-                        <div
-                          className="form-group"
-                          style={{ marginLeft: 10, marginTop: 10 }}
-                        >
-                          <label for="title" className="my-2">
-                            Description <span className="text-danger">*</span>
-                          </label>
-                          <TextEditor
-                            name="description"
-                            label="Description"
-                            tip="Describe the project in as much detail as you'd like."
-                            value={htmlCode}
-                            onChange={getEditorValue}
-                          />
-                        </div>
-                      </Grid>
-
                       <Grid item lg={12} md={12} sm={12} xs={12}>
                         <div
                           className="form-group"
