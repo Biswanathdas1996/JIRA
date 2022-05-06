@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./Pages/Dashboard";
+import CreateSprint from "./Pages/Sprint";
 import CreateTicket from "./Pages/CreateTicket";
 import ViewTicket from "./Pages/ViewTicket";
 import Register from "./Pages/Register";
@@ -11,6 +12,7 @@ class Routing extends React.Component {
     return (
       <Routes>
         <Route exact path="/" element={<Dashboard />} />
+        <Route exact path="/sprints" element={<CreateSprint />} />
         <Route exact path="/create-ticket" element={<CreateTicket />} />
         <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
         <Route exact path="/register" element={<Register />} />

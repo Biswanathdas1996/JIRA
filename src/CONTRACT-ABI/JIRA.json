@@ -13,6 +13,32 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "activeNewSprint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "activeSprintId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "uid",
         "type": "string"
@@ -47,6 +73,39 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "startDate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "enddate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      }
+    ],
+    "name": "createSprint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "sprintId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
         "name": "id",
         "type": "string"
       },
@@ -73,6 +132,46 @@
   },
   {
     "inputs": [],
+    "name": "getAllSprints",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "startDate",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "enddate",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "abiLink",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct JIRA.Sprint[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getAllTickets",
     "outputs": [
       {
@@ -80,6 +179,11 @@
           {
             "internalType": "uint256",
             "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sprintId",
             "type": "uint256"
           },
           {
@@ -101,6 +205,11 @@
             "internalType": "string",
             "name": "owner",
             "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "status",
+            "type": "bool"
           }
         ],
         "internalType": "struct JIRA.Ticket[]",
@@ -132,7 +241,7 @@
         "type": "uint256"
       }
     ],
-    "name": "getTokenAbi",
+    "name": "getTicketsAbi",
     "outputs": [
       {
         "internalType": "string",
@@ -232,11 +341,55 @@
         "type": "uint256"
       }
     ],
+    "name": "sprints",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "startDate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "enddate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "tickets",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "index",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "sprintId",
         "type": "uint256"
       },
       {
@@ -258,6 +411,11 @@
         "internalType": "string",
         "name": "owner",
         "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -307,6 +465,11 @@
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
       }
     ],
     "name": "updateTicket",

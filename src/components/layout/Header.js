@@ -23,6 +23,10 @@ const pages = [
     label: "My profile",
     href: "/profile",
   },
+  {
+    label: "Sprints",
+    href: "/sprints",
+  },
 ];
 
 const Header = () => {

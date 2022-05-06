@@ -28,7 +28,7 @@ const Mint = () => {
   const [response, setResponse] = useState(null);
   const [htmlCode, setHtmlCode] = useState(null);
 
-  const { account, fetchUserData, projectData } = useContext(AccountContext);
+  const { account } = useContext(AccountContext);
   let history = useNavigate();
 
   const saveData = async ({ title, type, priority, storypoint }) => {
@@ -50,8 +50,12 @@ const Mint = () => {
     const resultsSaveMetaData = await await client.add(
       JSON.stringify(metaData)
     );
+
+    const sprintId = 1;
+
     responseData = await _transction(
       "createTicket",
+      sprintId,
       id,
       IpfsViewLink(resultsSaveMetaData.path),
       account,

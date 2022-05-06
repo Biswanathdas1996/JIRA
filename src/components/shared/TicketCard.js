@@ -25,7 +25,7 @@ export default function OutlinedCard({ index, item }) {
 
   const frtchData = async () => {
     setLoading(true);
-    const ticketAbi = await _fetch("getTokenAbi", index);
+    const ticketAbi = await _fetch("getTicketsAbi", index);
 
     const repoterData = await _fetch("users", item?.repoter);
     setRepoterImg(repoterData?.profileImg);

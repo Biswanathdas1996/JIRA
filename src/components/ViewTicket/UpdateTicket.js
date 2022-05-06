@@ -97,7 +97,8 @@ const UpadteTicket = ({ tokenId }) => {
     responseData = await _transction(
       "updateTicket",
       IpfsViewLink(resultsSaveMetaData.path),
-      ticketindex
+      ticketindex,
+      true
     );
 
     setResponse(responseData);
