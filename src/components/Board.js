@@ -27,6 +27,7 @@ function Board({ address }) {
   const [loading, setLoading] = useState(false);
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
+
   useEffect(() => {
     fetchData(address);
     // setColumns(baseTemplate());
@@ -35,12 +36,13 @@ function Board({ address }) {
 
   async function fetchData(address) {
     setLoading(true);
+    const activeSprintId = await _fetch("activeSprintId");
     const result = await _fetch("users", address);
     setUser(result);
     const allTickets = await _fetch("getAllTickets");
-    console.log(allTickets);
     const filterTicketsForCurrentUser = await allTickets.filter(
-      (ticket) => ticket.owner === address
+      (ticket) =>
+        ticket.owner === address && ticket?.sprintId === activeSprintId
     );
     const mappedData = mapTicketData(filterTicketsForCurrentUser);
     await setTickets(mappedData);
