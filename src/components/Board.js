@@ -38,6 +38,7 @@ function Board({ address }) {
     const result = await _fetch("users", address);
     setUser(result);
     const allTickets = await _fetch("getAllTickets");
+    console.log(allTickets);
     const filterTicketsForCurrentUser = await allTickets.filter(
       (ticket) => ticket.owner === address
     );

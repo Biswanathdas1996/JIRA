@@ -29,6 +29,7 @@ const Mint = () => {
   const [htmlCode, setHtmlCode] = useState(null);
 
   const { account } = useContext(AccountContext);
+
   let history = useNavigate();
 
   const saveData = async ({ title, type, priority, storypoint }) => {
@@ -53,15 +54,17 @@ const Mint = () => {
 
     const sprintId = 1;
 
-    responseData = await _transction(
-      "createTicket",
-      sprintId,
-      id,
-      IpfsViewLink(resultsSaveMetaData.path),
-      account,
-      account
-    );
-    setResponse(responseData);
+    if (account?.uid) {
+      responseData = await _transction(
+        "createTicket",
+        sprintId,
+        id,
+        IpfsViewLink(resultsSaveMetaData.path),
+        account?.uid,
+        account?.uid
+      );
+      setResponse(responseData);
+    }
   };
 
   const modalClose = () => {
