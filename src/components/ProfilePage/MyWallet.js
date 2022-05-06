@@ -41,15 +41,18 @@ const WalledCard = () => {
     const web3 = new Web3(window.ethereum);
     // const account = await web3?.eth?.accounts?._provider?.selectedAddress;
     const account = await _account();
-    console.log("------account---->", account);
-    setAccount(account);
-    const networkId = await web3?.eth?.accounts?._ethereumCall?.getNetworkId();
-    setNetworkId(networkId);
-    const balance = await web3?.eth?.getBalance(account);
-    const balnceInETH = await web3?.utils?.fromWei(balance, "ether");
-    setBalance(balnceInETH);
+    if (account) {
+      console.log("------account---->", account);
+      setAccount(account);
+      const networkId =
+        await web3?.eth?.accounts?._ethereumCall?.getNetworkId();
+      setNetworkId(networkId);
+      const balance = await web3?.eth?.getBalance(account);
+      const balnceInETH = await web3?.utils?.fromWei(balance, "ether");
+      setBalance(balnceInETH);
 
-    setNetwork(getNetworkName(networkId));
+      setNetwork(getNetworkName(networkId));
+    }
   };
 
   return (

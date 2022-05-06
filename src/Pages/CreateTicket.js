@@ -59,6 +59,7 @@ const Mint = () => {
       "createTicket",
       id,
       IpfsViewLink(resultsSaveMetaData.path),
+      account,
       account
     );
     setResponse(responseData);

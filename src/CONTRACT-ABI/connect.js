@@ -3,6 +3,7 @@ import Web3 from "web3";
 import ABI from "./JIRA.json";
 import ADDRESS from "./Address.json";
 import { WalletPrivateKey, InfuraNodeURL } from "../config";
+import { decode } from "js-base64";
 
 const web3 = new Web3(new Web3.providers.HttpProvider(InfuraNodeURL));
 const signer = web3.eth.accounts.privateKeyToAccount(WalletPrivateKey);
@@ -51,9 +52,12 @@ export const _paid_transction = async (cost, service, ...props) => {
 };
 
 export const _account = async () => {
-  // const accounts = await web3?.eth.accounts._provider.selectedAddress;
-
-  return signer.address;
+  const uid = localStorage.getItem("uid");
+  if (uid) {
+    return decode(uid);
+  } else {
+    return null;
+  }
 };
 
 export const _fetch = async (service, ...props) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,7 +12,8 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../shared/SearchBar";
 import PwcLogo from "../../assets/images/nft.png";
 import { Avatar } from "@mui/material";
-import { _account, _fetch } from "../../CONTRACT-ABI/connect";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { AccountContext } from "../../App";
 
 const pages = [
   {
@@ -26,21 +27,11 @@ const pages = [
 ];
 
 const Header = () => {
-  const [account, setAccount] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   let history = useNavigate();
+  const { account, fetchUserData } = useContext(AccountContext);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
-    const account = await _account();
-    const user = await _fetch("users", account);
-    setAccount(user);
-  }
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -48,6 +39,13 @@ const Header = () => {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const logout = () => {
+    localStorage.clear();
+    fetchUserData();
+    history("/login");
+    return;
   };
 
   const menuId = "primary-search-account-menu";
@@ -129,6 +127,19 @@ const Header = () => {
                 {label}
               </Button>
             ))}
+            {account?.name && (
+              <Button
+                type="button"
+                variant="contained"
+                sx={{
+                  margin: "12px",
+                  textTransform: "none",
+                }}
+                onClick={() => history("/create-ticket")}
+              >
+                Create
+              </Button>
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 1 }} />
@@ -136,17 +147,6 @@ const Header = () => {
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             {account?.name ? (
               <>
-                <Button
-                  type="button"
-                  variant="contained"
-                  sx={{
-                    marginRight: "20px",
-                    textTransform: "none",
-                  }}
-                  onClick={() => history("/create-ticket")}
-                >
-                  Create
-                </Button>
                 <Avatar
                   alt="Remy Sharp"
                   sx={{
@@ -159,16 +159,36 @@ const Header = () => {
                 <p style={{ color: "black", margin: 10, fontWeight: "bold" }}>
                   {account?.name}
                 </p>
+                <Button
+                  aria-controls={menuId}
+                  variant="outlined"
+                  sx={{ textTransform: "none" }}
+                  style={{ marginLeft: 10 }}
+                  onClick={() => logout()}
+                >
+                  <LogoutIcon />
+                </Button>
               </>
             ) : (
-              <Button
-                aria-controls={menuId}
-                variant="outlined"
-                sx={{ textTransform: "none" }}
-                onClick={() => history("/register")}
-              >
-                Register
-              </Button>
+              <>
+                <Button
+                  aria-controls={menuId}
+                  variant="contained"
+                  sx={{ textTransform: "none" }}
+                  style={{ marginRight: 10 }}
+                  onClick={() => history("/login")}
+                >
+                  Login
+                </Button>
+                <Button
+                  aria-controls={menuId}
+                  variant="outlined"
+                  sx={{ textTransform: "none" }}
+                  onClick={() => history("/register")}
+                >
+                  Register
+                </Button>
+              </>
             )}
           </Box>
 

@@ -133,6 +133,7 @@ const TransferTicket = ({ tokenId }) => {
     history("/");
   };
 
+  console.log("transfredTicket---->", users);
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
@@ -191,7 +192,7 @@ const TransferTicket = ({ tokenId }) => {
                                 <option>-- Please select --</option>
                                 {users?.map((user) => {
                                   return (
-                                    <option value={user?.userAddress}>
+                                    <option value={user?.uid}>
                                       {user?.name}
                                     </option>
                                   );

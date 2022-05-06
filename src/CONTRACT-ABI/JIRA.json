@@ -3,6 +3,22 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "projectName",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "uid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
@@ -40,9 +56,14 @@
         "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
+        "internalType": "string",
+        "name": "ownerUid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "repoterUid",
+        "type": "string"
       }
     ],
     "name": "createTicket",
@@ -72,14 +93,14 @@
             "type": "string"
           },
           {
-            "internalType": "address",
+            "internalType": "string",
             "name": "repoter",
-            "type": "address"
+            "type": "string"
           },
           {
-            "internalType": "address",
+            "internalType": "string",
             "name": "owner",
-            "type": "address"
+            "type": "string"
           }
         ],
         "internalType": "struct JIRA.Ticket[]",
@@ -95,9 +116,9 @@
     "name": "getAllUser",
     "outputs": [
       {
-        "internalType": "address[]",
+        "internalType": "string[]",
         "name": "",
-        "type": "address[]"
+        "type": "string[]"
       }
     ],
     "stateMutability": "view",
@@ -126,13 +147,58 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "uid",
+        "type": "string"
+      }
+    ],
+    "name": "login",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "manager",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "project",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
         "name": "abiLink",
         "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "userAddress",
-        "type": "address"
+        "internalType": "string",
+        "name": "uid",
+        "type": "string"
       }
     ],
     "name": "setBoardDataToUser",
@@ -148,9 +214,9 @@
         "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "userAddress",
-        "type": "address"
+        "internalType": "string",
+        "name": "uid",
+        "type": "string"
       }
     ],
     "name": "setUserAbi",
@@ -184,14 +250,14 @@
         "type": "string"
       },
       {
-        "internalType": "address",
+        "internalType": "string",
         "name": "repoter",
-        "type": "address"
+        "type": "string"
       },
       {
-        "internalType": "address",
+        "internalType": "string",
         "name": "owner",
-        "type": "address"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -200,14 +266,14 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
+        "internalType": "string",
+        "name": "senderUid",
+        "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
+        "internalType": "string",
+        "name": "receiverUid",
+        "type": "string"
       },
       {
         "internalType": "string",
@@ -251,9 +317,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
+        "internalType": "string",
+        "name": "newOwnerUid",
+        "type": "string"
       },
       {
         "internalType": "uint256",
@@ -277,9 +343,9 @@
     "name": "userList",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "string",
         "name": "",
-        "type": "address"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -288,9 +354,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "string",
         "name": "",
-        "type": "address"
+        "type": "string"
       }
     ],
     "name": "users",
@@ -321,9 +387,9 @@
         "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "userAddress",
-        "type": "address"
+        "internalType": "string",
+        "name": "uid",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

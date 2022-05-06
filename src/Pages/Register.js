@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
@@ -8,6 +8,10 @@ import { useNavigate } from "react-router-dom";
 import TransctionModal from "../components/shared/TransctionModal";
 import { baseTemplate } from "../components/utility/BaseBoardDataTemplate";
 import { IPFSLink, IpfsViewLink } from "../config";
+import uuid from "uuid/v4";
+import swal from "sweetalert";
+import { AccountContext } from "../App";
+import { encode } from "js-base64";
 
 const client = create(IPFSLink);
 
@@ -17,7 +21,6 @@ const client = create(IPFSLink);
 //   price: Yup.string().required("Price is required"),
 //   royelty: Yup.string().required("Royelty amount is required"),
 // });
-// WCVDU52748WW4F7EKDEDB89HKH41BIA4N2
 
 const Register = () => {
   const [start, setStart] = useState(false);
@@ -25,6 +28,7 @@ const Register = () => {
   const [file, setFile] = useState(null);
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
+  const { fetchUserData } = useContext(AccountContext);
 
   let history = useNavigate();
 
@@ -40,7 +44,6 @@ const Register = () => {
 
   const saveData = async ({ title, type }) => {
     setStart(true);
-    let responseData;
 
     const results = await client.add(file);
 
@@ -48,14 +51,30 @@ const Register = () => {
 
     const imgLink = IpfsViewLink(results.path);
     const initialBoardDataLink = IpfsViewLink(initialBoardData?.path);
-    responseData = await _transction(
+    const uid = uuid();
+    await _transction(
       "addUser",
+      uid,
       title,
       type,
       imgLink,
       initialBoardDataLink
     );
-    setResponse(responseData);
+    localStorage.setItem("uid", encode(uid));
+    fetchUserData();
+    swal({
+      title: `${uid}`,
+      text: "Please note your privet key",
+      icon: "success",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        history("/");
+      }
+    });
+
+    setStart(false);
   };
 
   const modalClose = () => {

@@ -42,13 +42,15 @@ const MyTransaction = () => {
   }, []);
   const fetchData = async () => {
     const account = await _account();
-    await fetchWallatTransction(account)
-      .then((response) => response.json())
-      .then((result) => {
-        settransctions(result.result);
-        console.log(result.result);
-      })
-      .catch((error) => console.log("error", error));
+    if (account) {
+      await fetchWallatTransction(account)
+        .then((response) => response.json())
+        .then((result) => {
+          settransctions(result.result);
+          console.log(result.result);
+        })
+        .catch((error) => console.log("error", error));
+    }
   };
 
   return (
