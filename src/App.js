@@ -12,12 +12,16 @@ import { _account, _fetch } from "./CONTRACT-ABI/connect";
 export const AccountContext = createContext();
 const App = () => {
   const [account, setAccount] = useState(null);
+  const [projectData, setProjectData] = useState(null);
 
   useEffect(() => {
     fetchUserData();
   }, []);
 
   async function fetchUserData() {
+    const projectName = await _fetch("project");
+    const projectManager = await _fetch("manager");
+    setProjectData({ projectName, projectManager });
     const account = await _account();
     if (account) {
       const user = await _fetch("users", account);
@@ -30,7 +34,7 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      <AccountContext.Provider value={{ account, fetchUserData }}>
+      <AccountContext.Provider value={{ account, fetchUserData, projectData }}>
         <Header />
         <Routes />
         <Footer />

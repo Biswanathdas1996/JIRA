@@ -10,10 +10,10 @@ import { Button } from "@mui/material";
 import Link from "@material-ui/core/Link";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../shared/SearchBar";
-import PwcLogo from "../../assets/images/nft.png";
 import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AccountContext } from "../../App";
+import Typography from "@mui/material/Typography";
 
 const pages = [
   {
@@ -29,7 +29,7 @@ const pages = [
 const Header = () => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   let history = useNavigate();
-  const { account, fetchUserData } = useContext(AccountContext);
+  const { account, fetchUserData, projectData } = useContext(AccountContext);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -92,13 +92,12 @@ const Header = () => {
         //   color="red"
       >
         <Toolbar>
-          <img
-            src={PwcLogo}
-            height={"60px"}
-            width={"60px"}
-            alt="logo"
-            onClick={() => history("/")}
-          />
+          <Typography
+            className="project-name"
+            style={{ fontSize: 22, fontWeight: "bold" }}
+          >
+            {projectData?.projectName}
+          </Typography>
 
           <Button disabled>
             <SearchBar />

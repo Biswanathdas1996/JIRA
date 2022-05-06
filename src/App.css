@@ -47,3 +47,9 @@
   color: "white";
   background-color: "#FD6412";
 }
+
+.project-name {
+  background: linear-gradient(to right, #30cfd0 0%, #330867 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
