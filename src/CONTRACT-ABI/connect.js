@@ -2,25 +2,12 @@ import _ from "lodash";
 import Web3 from "web3";
 import ABI from "./JIRA.json";
 import ADDRESS from "./Address.json";
+import { WalletPrivateKey, InfuraNodeURL } from "../config";
 
-const myPrivateKeyHex =
-  "8c5948e0dbc4163b176ea8cfb7ca6a3d2e9c52d2d1df7c363fababb8f2eb6f42";
-
-const web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    `https://rinkeby.infura.io/v3/24022fda545f41beb59334bdbaf3ef32`
-  )
-);
-
-const signer = web3.eth.accounts.privateKeyToAccount(myPrivateKeyHex);
+const web3 = new Web3(new Web3.providers.HttpProvider(InfuraNodeURL));
+const signer = web3.eth.accounts.privateKeyToAccount(WalletPrivateKey);
 web3.eth.accounts.wallet.add(signer);
-
-// const myAccount = web3.eth.accounts.privateKeyToAccount(myPrivateKeyHex);
-
-// Interact with existing, already deployed, smart contract on Ethereum mainnet
 const contract = new web3.eth.Contract(ABI, ADDRESS);
-
-console.log(contract);
 
 export const _transction = async (service, ...props) => {
   const callService = _.get(contract, ["methods", service]);
