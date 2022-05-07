@@ -103,6 +103,16 @@
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "uid",
+        "type": "string"
       }
     ],
     "name": "changePosition",

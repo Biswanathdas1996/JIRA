@@ -69,6 +69,8 @@ function Board({ address }) {
 
   const onDragEnd = async (result, columns, setColumns) => {
     if (!result.destination) return;
+    let updatedPosition;
+    let dragedCardIndex;
     const { source, destination } = result;
     let updatedCard;
     if (source.droppableId !== destination.droppableId) {
@@ -89,6 +91,8 @@ function Board({ address }) {
           items: destItems,
         },
       };
+      updatedPosition = destColumn?.position;
+      dragedCardIndex = destItems[0].index;
       await setColumns(updatedCard);
     } else {
       const column = columns[source.droppableId];
@@ -109,11 +113,19 @@ function Board({ address }) {
       setLoading(true);
       setStart(true);
       const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
+
       const responseData = await _transction(
-        "setBoardDataToUser",
+        "changePosition",
+        updatedPosition.toString(),
+        Number(dragedCardIndex),
         IpfsViewLink(resultsSaveMetaData.path),
         address
       );
+      // const responseData = await _transction(
+      //   "setBoardDataToUser",
+      //   IpfsViewLink(resultsSaveMetaData.path),
+      //   address
+      // );
       setResponse(responseData);
       setLoading(false);
 

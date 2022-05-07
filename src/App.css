@@ -53,3 +53,11 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.ticket-status {
+  color: white;
+  text-align: center;
+  padding: 5px;
+  border-radius: 20px;
+  margin-top: 10px;
+}

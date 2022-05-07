@@ -5,11 +5,11 @@ import AssignTickets from "./AssignTickets";
 
 export default function CheckboxListSecondary({ data }) {
   return (
-    <List dense sx={{ width: "100%", bgcolor: "background.paper" }}>
+    <List dense sx={{ width: "100%" }}>
       {data?.map((value) => {
         return (
           <div style={{ marginBottom: 10 }}>
-            <TicketCard index={value?.index} item={value} />
+            <TicketCard index={value?.index} item={value} showStatus={true} />
             <AssignTickets index={value?.index} item={value} />
           </div>
         );

@@ -46,6 +46,7 @@ export const mapTicketData = (data) => {
       abiLink: val?.abiLink,
       owner: val?.owner,
       repoter: val?.repoter,
+      position: val?.position,
     };
   });
 };
@@ -58,5 +59,6 @@ export const mapSingleTicketData = (data) => {
     abiLink: data?.abiLink,
     owner: data?.owner,
     repoter: data?.repoter,
+    position: data?.position,
   };
 };

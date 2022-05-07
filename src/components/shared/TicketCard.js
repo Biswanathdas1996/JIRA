@@ -11,8 +11,9 @@ import { useNavigate } from "react-router-dom";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
+import { Status, StatusColor } from "../utility/Status";
 
-export default function OutlinedCard({ index, item }) {
+export default function OutlinedCard({ index, item, showStatus = false }) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [repoterImg, setRepoterImg] = useState(null);
@@ -65,9 +66,18 @@ export default function OutlinedCard({ index, item }) {
                 component="div"
                 sx={{ fontSize: 15, marginBottom: 1, fontWeight: "bold" }}
               >
-                {/* {ticket} */}
                 {tickets?.name}
+
+                {showStatus && item?.position && (
+                  <div
+                    className="ticket-status"
+                    style={{ backgroundColor: StatusColor(item?.position) }}
+                  >
+                    {Status(item?.position)}
+                  </div>
+                )}
               </Typography>
+
               <Avatar
                 alt="Owner"
                 title="Owner"
