@@ -4,12 +4,22 @@ pragma solidity ^0.8.13;
 
 contract JIRA  {
 
+    struct Sprint {
+        uint id;
+        string name;
+        string startDate;
+        string enddate;
+        string abiLink;
+    }
+
     struct Ticket {
         uint index;
+        uint sprintId;
         string id;
         string abiLink;
-        address repoter;
-        address owner;
+        string repoter;
+        string owner;
+        bool status;
     }
     
     struct User {
@@ -18,78 +28,126 @@ contract JIRA  {
         string boardData;
         string profileImg;
         string abiLink;
-        address userAddress;
+        string uid;
     }
+
+    
      
-    mapping(address => User) public users;
+    mapping(string => User) public users;
 
+    Sprint[] public sprints;
     Ticket[] public tickets;
-    address[] public userList ;
+    string[] public userList ;
+    address public manager;
+    string public project;
+    uint public activeSprintId;
 
-    function addUser(string memory name , string memory role ,string memory image,  string memory initialBoardData) public virtual {
+
+    constructor(string memory projectName)  {
+        manager = msg.sender;
+        project = projectName;
+        activeSprintId = 0;
+    }  
+
+    function createSprint(string memory name, string memory startDate, string memory enddate, string memory abiLink) public  {
+        Sprint memory newSprint = Sprint({
+           id:sprints.length,
+           name:name,
+           startDate:startDate,
+           enddate:enddate,
+           abiLink: abiLink
+        });
+        sprints.push(newSprint);
+    }
+
+    function activeNewSprint(uint id) public  {
+        activeSprintId = id;
+    }
+
+    function getAllSprints() public view returns (Sprint[] memory) {
+        return sprints;
+    }
+
+    function login(string memory uid) public view returns(bool){
+       bytes memory tempEmptyStringTest = bytes(users[uid].name);
+        if(tempEmptyStringTest.length == 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    function addUser(string memory uid, string memory name , string memory role ,string memory image,  string memory initialBoardData) public virtual {
         User memory newUser = User({
            name: name,
            role:role,
            boardData: initialBoardData,
            profileImg:image,
            abiLink:"",
-           userAddress:msg.sender
+           uid:uid
         });
-        users[msg.sender] = newUser;
-        userList.push(msg.sender);
+        users[uid] = newUser;
+        userList.push(uid);
     }
 
-    function getAllUser() public view returns(address[] memory){
+    function getAllUser() public view returns(string[] memory){
         return userList;
     }
 
-    function setUserAbi(string memory abiLink, address userAddress) public {
-         User storage userData = users[userAddress];
+    function setUserAbi(string memory abiLink, string memory uid) public {
+         User storage userData = users[uid];
          userData.abiLink = abiLink;
     }
 
-    function setBoardDataToUser(string memory abiLink, address userAddress) public {
-         User storage userData = users[userAddress];
+    function setBoardDataToUser(string memory abiLink, string memory uid) public {
+         User storage userData = users[uid];
          userData.boardData = abiLink;
     }
 
 
-    function createTicket(string memory id, string memory abiLink, address owner) public  {
+    function createTicket(uint sprintId, string memory id, string memory abiLink, string memory ownerUid, string memory repoterUid) public  {
         Ticket memory newTicket = Ticket({
            index:tickets.length,
+           sprintId:sprintId,
            id:id,
            abiLink: abiLink,
-           repoter:msg.sender,
-           owner:owner
+           repoter:repoterUid,
+           owner:ownerUid,
+           status:true
         });
         tickets.push(newTicket);
     }
-    
-    function updateTicket(string memory abiLink, uint index) public  {
+
+    function updateTicket(string memory abiLink, uint index, bool status) public  {
          Ticket storage newTicket = tickets[index];
          newTicket.abiLink = abiLink;
+         newTicket.status = status;
     }
 
     function getAllTickets() public view returns (Ticket[] memory) {
         return tickets;
     }
 
-    function getTokenAbi(uint index) public view returns(string memory){
+    function getTicketsAbi(uint index) public view returns(string memory){
         Ticket storage newTicket = tickets[index];
          return newTicket.abiLink;
     }
 
+    function getTicketsOwnerImg(uint index) public view returns(string memory){
+        Ticket storage newTicket = tickets[index];
+         return users[newTicket.owner].profileImg;
+    }
 
-    function transferTicket(address sender, address receiver, string memory updatedSenderAbi, string memory updatedReceiverAbi, uint index) public {
-        setBoardDataToUser(updatedSenderAbi, sender);
-        setBoardDataToUser(updatedReceiverAbi, receiver);
-        updateTicketOwner(receiver,index);
+    function transferTicket(string memory senderUid, string memory receiverUid, string memory updatedSenderAbi, string memory updatedReceiverAbi, uint index) public {
+        setBoardDataToUser(updatedSenderAbi, senderUid);
+        setBoardDataToUser(updatedReceiverAbi, receiverUid);
+        updateTicketOwner(receiverUid,index);
 
     }
 
-    function updateTicketOwner(address newOwner, uint index) public  {
+    function updateTicketOwner(string memory newOwnerUid, uint index) public  {
          Ticket storage newTicket = tickets[index];
-         newTicket.owner = newOwner;
+         newTicket.owner = newOwnerUid;
     }
     
     

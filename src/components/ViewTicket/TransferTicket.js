@@ -115,6 +115,7 @@ const TransferTicket = ({ tokenId }) => {
         });
     }
 
+    // return;
     const finalResponse = await _transction(
       "transferTicket",
       sender,
@@ -133,7 +134,6 @@ const TransferTicket = ({ tokenId }) => {
     history("/");
   };
 
-  console.log("transfredTicket---->", users);
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}

@@ -16,6 +16,7 @@ export default function OutlinedCard({ index, item }) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [repoterImg, setRepoterImg] = useState(null);
+  const [ownerImg, setOwnerImg] = useState(null);
 
   let history = useNavigate();
   useEffect(() => {
@@ -26,16 +27,16 @@ export default function OutlinedCard({ index, item }) {
   const frtchData = async () => {
     setLoading(true);
     const ticketAbi = await _fetch("getTicketsAbi", index);
-
     const repoterData = await _fetch("users", item?.repoter);
     setRepoterImg(repoterData?.profileImg);
+    const ownerDataImg = await _fetch("getTicketsOwnerImg", index);
+    setOwnerImg(ownerDataImg);
 
     if (ticketAbi) {
       await fetch(ticketAbi)
         .then((response) => response.json())
         .then((data) => {
           setTickets(data);
-
           setLoading(false);
         })
         .catch((error) => {
@@ -52,25 +53,41 @@ export default function OutlinedCard({ index, item }) {
           onClick={() => history(`/ticket/${tickets?.id}`)}
         >
           <CardContent>
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ fontSize: 15, marginBottom: 1, fontWeight: "bold" }}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
             >
-              {/* {ticket} */}
-              {tickets?.name}
-            </Typography>
-            <Typography sx={{ fontSize: 14 }} color="text.primary" gutterBottom>
-              {tickets?.title}
-            </Typography>
+              <Typography
+                variant="h5"
+                component="div"
+                sx={{ fontSize: 15, marginBottom: 1, fontWeight: "bold" }}
+              >
+                {/* {ticket} */}
+                {tickets?.name}
+              </Typography>
+              <Avatar
+                alt="Owner"
+                title="Owner"
+                sx={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: "50%",
+                }}
+                src={ownerImg}
+              ></Avatar>
+            </div>
           </CardContent>
           <CardActions>
             <Grid container justify="flex-start">
               <Avatar
-                alt="Remy Sharp"
+                alt="Repoter"
+                title="Repoter"
                 sx={{
-                  width: 40,
-                  height: 40,
+                  width: 30,
+                  height: 30,
                   borderRadius: "50%",
                 }}
                 src={repoterImg}

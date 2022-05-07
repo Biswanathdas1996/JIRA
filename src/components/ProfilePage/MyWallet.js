@@ -42,7 +42,6 @@ const WalledCard = () => {
     // const account = await web3?.eth?.accounts?._provider?.selectedAddress;
     const account = await _account();
     if (account) {
-      console.log("------account---->", account);
       setAccount(account);
       const networkId =
         await web3?.eth?.accounts?._ethereumCall?.getNetworkId();

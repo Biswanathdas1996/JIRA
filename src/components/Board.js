@@ -7,7 +7,11 @@ import { _fetch, _transction } from "../CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { baseTemplate } from "./utility/BaseBoardDataTemplate";
 import { IPFSLink, IpfsViewLink } from "../config";
-import { filterNewlyCreatedTicketys, mapTicketData } from "../functions/index";
+import {
+  filterNewlyCreatedTicketys,
+  mapTicketData,
+  sanatizeData,
+} from "../functions/index";
 import Loader from "../components/shared/Loader";
 import NoData from "../components/shared/NoData";
 import Accordion from "@mui/material/Accordion";
@@ -27,6 +31,7 @@ function Board({ address }) {
   const [loading, setLoading] = useState(false);
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
+  const [currentSprint, setCurrentSprint] = useState(null);
 
   useEffect(() => {
     fetchData(address);
@@ -37,20 +42,25 @@ function Board({ address }) {
   async function fetchData(address) {
     setLoading(true);
     const activeSprintId = await _fetch("activeSprintId");
+    setCurrentSprint(activeSprintId);
     const result = await _fetch("users", address);
     setUser(result);
     const allTickets = await _fetch("getAllTickets");
+
     const filterTicketsForCurrentUser = await allTickets.filter(
       (ticket) =>
         ticket.owner === address && ticket?.sprintId === activeSprintId
     );
     const mappedData = mapTicketData(filterTicketsForCurrentUser);
-    await setTickets(mappedData);
+    setTickets(mappedData);
+
     const getAllUserUri = result?.boardData;
+
     if (getAllUserUri) {
       await fetch(getAllUserUri)
         .then((response) => response.json())
-        .then((data) => {
+        .then((allData) => {
+          const data = sanatizeData(allData, activeSprintId);
           const anyNewTicket = filterNewlyCreatedTicketys(mappedData, data);
           const currentRequestItems = [...data[1].items];
           if (anyNewTicket?.length > 0) {
@@ -154,7 +164,7 @@ function Board({ address }) {
             {user?.name}
           </Typography>
           <Typography style={{ marginTop: "1rem", fontSize: 14 }}>
-            {tickets?.length} issue(s)
+            {/* {tickets?.length} issue(s) */}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -169,6 +179,7 @@ function Board({ address }) {
               <DragDropContext
                 onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
               >
+                {/* const allData = sanatizeData(data, activeSprintId); */}
                 {Object.entries(columns).map(([columnId, column], index) => {
                   return (
                     <div

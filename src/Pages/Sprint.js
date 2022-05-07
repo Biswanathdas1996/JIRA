@@ -4,22 +4,29 @@ import CreateSprints from "../components/Sprints/CreateSprints";
 import ListAllSprints from "../components/Sprints/ListAllSprints";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
 import TransctionModal from "../components/shared/TransctionModal";
+import Loader from "../components/shared/Loader";
 
 const Sprint = () => {
   const [sprints, setSprints] = useState([]);
+  const [tickets, setTickets] = useState([]);
   const [activeSprint, setActiveSprint] = useState(null);
   const [response, setResponse] = useState(null);
   const [start, setStart] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchAllSprints();
   }, []);
 
   async function fetchAllSprints() {
+    setLoading(true);
     const activeSprintId = await _fetch("activeSprintId");
     setActiveSprint(activeSprintId);
     const getAllSprints = await _fetch("getAllSprints");
     setSprints(getAllSprints);
+    const allTickets = await _fetch("getAllTickets");
+    setTickets(allTickets);
+    setLoading(false);
   }
 
   const activateSprint = async (id) => {
@@ -42,11 +49,16 @@ const Sprint = () => {
           <div style={{ margin: 20 }}>
             <CreateSprints fetchAllSprints={fetchAllSprints} />
             <br />
-            <ListAllSprints
-              sprints={sprints}
-              activateSprint={activateSprint}
-              activeSprint={activeSprint}
-            />
+            {!loading ? (
+              <ListAllSprints
+                sprints={sprints}
+                activateSprint={activateSprint}
+                activeSprint={activeSprint}
+                tickets={tickets}
+              />
+            ) : (
+              <Loader count="1" xs={12} sm={12} md={12} lg={12} />
+            )}
           </div>
         </Grid>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>

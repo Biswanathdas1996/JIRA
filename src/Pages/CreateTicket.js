@@ -95,7 +95,6 @@ const Mint = () => {
     setHtmlCode(val);
   };
 
-  console.log(sprints);
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
