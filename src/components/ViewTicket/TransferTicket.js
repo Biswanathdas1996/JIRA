@@ -11,6 +11,7 @@ import { _fetch } from "../../CONTRACT-ABI/connect";
 import _ from "lodash";
 import { IPFSLink, IpfsViewLink } from "../../config";
 import { mapTicketData } from "../../functions/index";
+
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
@@ -72,6 +73,9 @@ const TransferTicket = ({ tokenId }) => {
 
   const saveData = async ({ receiver }) => {
     setStart(true);
+
+    // transferTicket(receiver, tickets, tokenId, transfredTicket);
+
     const sender = tickets?.owner;
 
     let updatedSenderAbi;

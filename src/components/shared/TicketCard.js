@@ -50,7 +50,7 @@ export default function OutlinedCard({ index, item, showStatus = false }) {
     <>
       {!loading ? (
         <Card
-          style={{ borderRadius: 2 }}
+          style={{ borderRadius: 2, cursor: "pointer" }}
           onClick={() => history(`/ticket/${tickets?.id}`)}
         >
           <CardContent>

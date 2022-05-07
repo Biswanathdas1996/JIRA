@@ -61,20 +61,6 @@ export default function ListAllSprints({
                   {activeSprint === sprint?.id && (
                     <b>Currently Active Sprint</b>
                   )}
-                  {activeSprint !== sprint?.id && (
-                    <Button
-                      type="button"
-                      variant="contained"
-                      sx={{
-                        margin: "12px",
-                        textTransform: "none",
-                        float: "right",
-                      }}
-                      onClick={() => activateSprint(sprint?.id)}
-                    >
-                      Start Sprint
-                    </Button>
-                  )}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -88,6 +74,20 @@ export default function ListAllSprints({
                 </div>
 
                 <ListOfTickets data={filterTicketsForCurrentUser} />
+                {activeSprint !== sprint?.id && (
+                  <Button
+                    type="button"
+                    variant="contained"
+                    sx={{
+                      margin: "12px",
+                      textTransform: "none",
+                      float: "right",
+                    }}
+                    onClick={() => activateSprint(sprint?.id)}
+                  >
+                    Start Sprint
+                  </Button>
+                )}
               </AccordionDetails>
             </Accordion>
           );

@@ -23,34 +23,12 @@ const client = create(IPFSLink);
 //   royelty: Yup.string().required("Royelty amount is required"),
 // });
 
-const TransferTicket = ({ item }) => {
+const TransferTicket = ({ item, getData, totalUserCount, users }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
-  const [tickets, setTickets] = useState(null);
-  const [users, setusers] = useState([]);
-  const [totalUserCount, setTotalUserCount] = useState(0);
-  const [transfredTicket, setTransfredTicket] = useState(null);
   const [loading, setLoading] = useState(false);
 
   let history = useNavigate();
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getData = async () => {
-    setLoading(true);
-    const allUser = await _fetch("getAllUser");
-    setTotalUserCount(allUser?.length);
-    let tempUserData = [];
-    await allUser.map(async (address) => {
-      const result = await _fetch("users", address);
-      tempUserData.push(result);
-      setusers(tempUserData);
-    });
-    setLoading(false);
-  };
 
   const saveData = async ({ receiver }) => {
     setStart(true);
@@ -93,15 +71,15 @@ const TransferTicket = ({ item }) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h4> Assign</h4>
 
-          <Button type="button" onClick={() => getData()}>
+          {/* <Button type="button" onClick={() => getData()}>
             Refresh
-          </Button>
+          </Button> */}
         </div>
 
         {!loading && (
           <Formik
             initialValues={{
-              receiver: transfredTicket?.owner,
+              receiver: "",
             }}
             // validationSchema={VendorSchema}
             onSubmit={(values, { setSubmitting }) => {
@@ -111,7 +89,7 @@ const TransferTicket = ({ item }) => {
           >
             {({ touched, errors, isSubmitting, values }) => (
               <Form>
-                {totalUserCount === users?.length && (
+                {totalUserCount === users?.length ? (
                   <Grid container>
                     <Grid item lg={12} md={12} sm={12} xs={12}>
                       <div
@@ -159,6 +137,8 @@ const TransferTicket = ({ item }) => {
                       </div>
                     </Grid>
                   </Grid>
+                ) : (
+                  <p>Please wait..</p>
                 )}
               </Form>
             )}
