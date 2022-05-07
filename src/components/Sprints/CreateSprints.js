@@ -2,13 +2,8 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
-import { create } from "ipfs-http-client";
 import TransctionModal from "../shared/TransctionModal";
-import TextEditor from "../UI/TextEditor";
 import { _transction } from "../../CONTRACT-ABI/connect";
-import { IPFSLink, IpfsViewLink } from "../../config";
-
-const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -16,18 +11,14 @@ const client = create(IPFSLink);
 //   price: Yup.string().required("Price is required"),
 //   royelty: Yup.string().required("Royelty amount is required"),
 // });
-// WCVDU52748WW4F7EKDEDB89HKH41BIA4N2
 
 const CreateSprint = ({ fetchAllSprints }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
-  // const [htmlCode, setHtmlCode] = useState(null);
 
   const saveData = async ({ title, startdate, enddate }) => {
     setStart(true);
     let responseData;
-
-    // const saveHtmlDescription = await await client.add(htmlCode);
 
     responseData = await _transction(
       "createSprint",
@@ -35,7 +26,6 @@ const CreateSprint = ({ fetchAllSprints }) => {
       startdate,
       enddate,
       ""
-      // IpfsViewLink(saveHtmlDescription.path)
     );
     setResponse(responseData);
     fetchAllSprints();
@@ -45,10 +35,6 @@ const CreateSprint = ({ fetchAllSprints }) => {
     setStart(false);
     setResponse(null);
   };
-
-  // const getEditorValue = (val) => {
-  //   setHtmlCode(val);
-  // };
 
   return (
     <>

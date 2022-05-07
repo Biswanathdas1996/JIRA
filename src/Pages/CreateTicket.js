@@ -24,7 +24,7 @@ const client = create(IPFSLink);
 // });
 // WCVDU52748WW4F7EKDEDB89HKH41BIA4N2
 
-const Mint = () => {
+const CreateTicket = () => {
   const [start, setStart] = useState(false);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
@@ -77,9 +77,9 @@ const Mint = () => {
         sprintId,
         id,
         IpfsViewLink(resultsSaveMetaData.path),
-        account?.uid,
         account?.uid
       );
+
       setResponse(responseData);
     }
   };
@@ -344,4 +344,4 @@ const Mint = () => {
     </>
   );
 };
-export default Mint;
+export default CreateTicket;

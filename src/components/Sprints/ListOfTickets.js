@@ -1,6 +1,7 @@
 import * as React from "react";
 import List from "@mui/material/List";
 import TicketCard from "../../components/shared/TicketCard";
+import AssignTickets from "./AssignTickets";
 
 export default function CheckboxListSecondary({ data }) {
   return (
@@ -9,6 +10,7 @@ export default function CheckboxListSecondary({ data }) {
         return (
           <div style={{ marginBottom: 10 }}>
             <TicketCard index={value?.index} item={value} />
+            <AssignTickets index={value?.index} item={value} />
           </div>
         );
       })}

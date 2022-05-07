@@ -73,6 +73,47 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "ownersBoardData",
+        "type": "string"
+      }
+    ],
+    "name": "assignOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "position",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "changePosition",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
@@ -116,17 +157,60 @@
       },
       {
         "internalType": "string",
-        "name": "ownerUid",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
         "name": "repoterUid",
         "type": "string"
       }
     ],
     "name": "createTicket",
-    "outputs": [],
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sprintId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "abiLink",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "repoter",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "owner",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "position",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "status",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct JIRA.Ticket",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -204,6 +288,11 @@
           {
             "internalType": "string",
             "name": "owner",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "position",
             "type": "string"
           },
           {
@@ -429,6 +518,11 @@
       {
         "internalType": "string",
         "name": "owner",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "position",
         "type": "string"
       },
       {

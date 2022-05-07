@@ -1,5 +1,6 @@
 /* eslint-disable array-callback-return */
 import _ from "lodash";
+
 export const filterNewlyCreatedTicketys = (
   alldata,
   oldDataSet,
@@ -47,4 +48,15 @@ export const mapTicketData = (data) => {
       repoter: val?.repoter,
     };
   });
+};
+
+export const mapSingleTicketData = (data) => {
+  return {
+    index: data?.index,
+    id: data?.id,
+    sprintId: data?.sprintId,
+    abiLink: data?.abiLink,
+    owner: data?.owner,
+    repoter: data?.repoter,
+  };
 };

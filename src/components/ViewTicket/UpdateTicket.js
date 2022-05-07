@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
@@ -25,7 +26,8 @@ const client = create(IPFSLink);
 const UpadteTicket = ({ tokenId }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
-  const [ticketindex, setTicketindex] = useState(false);
+  const [ticketindex, setTicketindex] = useState(null);
+
   const [htmlCode, setHtmlCode] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [defaultEditorValue, setDefaultEditorValue] = useState(null);
@@ -48,6 +50,7 @@ const UpadteTicket = ({ tokenId }) => {
         .then((data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
+
           getDescription(data.description);
         })
         .catch((err) => {
@@ -90,9 +93,7 @@ const UpadteTicket = ({ tokenId }) => {
       description: descIpfsLink,
     };
 
-    const resultsSaveMetaData = await await client.add(
-      JSON.stringify(metaData)
-    );
+    const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
 
     responseData = await _transction(
       "updateTicket",
@@ -141,6 +142,7 @@ const UpadteTicket = ({ tokenId }) => {
                     priority: tickets.priority,
                     storypoint: tickets.storypoint,
                     text: tickets.description,
+                    sprint: tickets?.sprintId,
                   }}
                   // validationSchema={VendorSchema}
                   onSubmit={(values, { setSubmitting }) => {
