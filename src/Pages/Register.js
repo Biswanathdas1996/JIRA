@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Formik, Form, Field } from "formik";
-// import * as Yup from "yup";
+import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction } from "../../src/CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
@@ -15,12 +15,10 @@ import { encode } from "js-base64";
 
 const client = create(IPFSLink);
 
-// const VendorSchema = Yup.object().shape({
-//   name: Yup.string().required("Name is required"),
-//   authorname: Yup.string().required("Authorname is required"),
-//   price: Yup.string().required("Price is required"),
-//   royelty: Yup.string().required("Royelty amount is required"),
-// });
+const VendorSchema = Yup.object().shape({
+  title: Yup.string().required("Name is required"),
+  type: Yup.string().required("type is required"),
+});
 
 const Register = () => {
   const [start, setStart] = useState(false);
@@ -110,7 +108,7 @@ const Register = () => {
                   storypoint: "",
                   text: "",
                 }}
-                // validationSchema={VendorSchema}
+                validationSchema={VendorSchema}
                 onSubmit={(values, { setSubmitting }) => {
                   saveData(values);
                   setSubmitting(false);

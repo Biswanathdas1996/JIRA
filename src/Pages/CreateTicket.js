@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Formik, Form, Field } from "formik";
-// import * as Yup from "yup";
+import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
@@ -15,14 +15,6 @@ import Box from "@mui/material/Box";
 import Loader from "../components/shared/Loader";
 
 const client = create(IPFSLink);
-
-// const VendorSchema = Yup.object().shape({
-//   name: Yup.string().required("Name is required"),
-//   authorname: Yup.string().required("Authorname is required"),
-//   price: Yup.string().required("Price is required"),
-//   royelty: Yup.string().required("Royelty amount is required"),
-// });
-// WCVDU52748WW4F7EKDEDB89HKH41BIA4N2
 
 const CreateTicket = () => {
   const [start, setStart] = useState(false);
@@ -95,6 +87,14 @@ const CreateTicket = () => {
     setHtmlCode(val);
   };
 
+  const VendorSchema = Yup.object().shape({
+    sprint: Yup.string().required("sprint is required"),
+    type: Yup.string().required("type is required"),
+    title: Yup.string().required("title is required"),
+    priority: Yup.string().required("priority is required"),
+    storypoint: Yup.string().required("storypoint is required"),
+  });
+
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
@@ -119,7 +119,7 @@ const CreateTicket = () => {
                     text: "",
                     sprint: activeSprint,
                   }}
-                  // validationSchema={VendorSchema}
+                  validationSchema={VendorSchema}
                   onSubmit={(values, { setSubmitting }) => {
                     saveData(values);
                     setSubmitting(false);

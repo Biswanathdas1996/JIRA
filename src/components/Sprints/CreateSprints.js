@@ -1,32 +1,23 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-// import * as Yup from "yup";
+import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import TransctionModal from "../shared/TransctionModal";
 import { _transction } from "../../CONTRACT-ABI/connect";
 
-// const VendorSchema = Yup.object().shape({
-//   name: Yup.string().required("Name is required"),
-//   authorname: Yup.string().required("Authorname is required"),
-//   price: Yup.string().required("Price is required"),
-//   royelty: Yup.string().required("Royelty amount is required"),
-// });
+const VendorSchema = Yup.object().shape({
+  title: Yup.string().required("Name is required"),
+});
 
 const CreateSprint = ({ fetchAllSprints }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
 
-  const saveData = async ({ title, startdate, enddate }) => {
+  const saveData = async ({ title }) => {
     setStart(true);
     let responseData;
 
-    responseData = await _transction(
-      "createSprint",
-      title,
-      startdate,
-      enddate,
-      ""
-    );
+    responseData = await _transction("createSprint", title, "", "", "");
     setResponse(responseData);
     fetchAllSprints();
   };
@@ -50,10 +41,8 @@ const CreateSprint = ({ fetchAllSprints }) => {
         <Formik
           initialValues={{
             title: "",
-            startdate: "",
-            enddate: "",
           }}
-          // validationSchema={VendorSchema}
+          validationSchema={VendorSchema}
           onSubmit={(values, { setSubmitting }) => {
             saveData(values);
             setSubmitting(false);
@@ -78,50 +67,6 @@ const CreateSprint = ({ fetchAllSprints }) => {
                       placeholder="Enter name"
                       className={`form-control text-muted ${
                         touched.title && errors.title ? "is-invalid" : ""
-                      }`}
-                      style={{ marginRight: 10, padding: 9 }}
-                    />
-                  </div>
-                </Grid>
-                {/* star date */}
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <div
-                    className="form-group"
-                    style={{ marginLeft: 10, marginTop: 10 }}
-                  >
-                    <label htmlFor="title" className="my-2">
-                      Start Date <span className="text-danger">*</span>
-                    </label>
-                    <Field
-                      type="date"
-                      name="startdate"
-                      autoComplete="flase"
-                      placeholder="Enter name"
-                      className={`form-control text-muted ${
-                        touched.startdate && errors.startdate
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      style={{ marginRight: 10, padding: 9 }}
-                    />
-                  </div>
-                </Grid>
-                {/* end date */}
-                <Grid item lg={6} md={6} sm={12} xs={12}>
-                  <div
-                    className="form-group"
-                    style={{ marginLeft: 10, marginTop: 10 }}
-                  >
-                    <label htmlFor="title" className="my-2">
-                      End Date <span className="text-danger">*</span>
-                    </label>
-                    <Field
-                      type="date"
-                      name="enddate"
-                      autoComplete="flase"
-                      placeholder="Enter name"
-                      className={`form-control text-muted ${
-                        touched.enddate && errors.enddate ? "is-invalid" : ""
                       }`}
                       style={{ marginRight: 10, padding: 9 }}
                     />

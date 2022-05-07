@@ -26,7 +26,7 @@ export default function ListAllSprints({
         padding: "20px",
       }}
     >
-      <h4>All Sprints</h4>
+      <h4>Backlog</h4>
       {sprints?.length > 0 &&
         sprints.map((sprint, index) => {
           const filterTicketsForCurrentUser = tickets.filter(
