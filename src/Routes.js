@@ -9,14 +9,25 @@ import Login from "./Pages/Login";
 
 class Routing extends React.Component {
   render() {
+    const uid = localStorage.getItem("uid");
     return (
       <Routes>
-        <Route exact path="/" element={<Dashboard />} />
-        <Route exact path="/sprints" element={<CreateSprint />} />
-        <Route exact path="/create-ticket" element={<CreateTicket />} />
-        <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/login" element={<Login />} />
+        {uid ? (
+          <>
+            <Route exact path="/" element={<Dashboard />} />
+            <Route exact path="/sprints" element={<CreateSprint />} />
+            <Route exact path="/create-ticket" element={<CreateTicket />} />
+            <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
+            <Route exact path="/register" element={<Register />} />
+            <Route exact path="/login" element={<Login />} />
+          </>
+        ) : (
+          <>
+            <Route exact path="/" element={<Login />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
+          </>
+        )}
 
         <Route
           render={function () {
