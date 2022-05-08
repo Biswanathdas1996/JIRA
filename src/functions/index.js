@@ -47,6 +47,7 @@ export const mapTicketData = (data) => {
       owner: val?.owner,
       repoter: val?.repoter,
       position: val?.position,
+      tracking: val?.tracking,
     };
   });
 };
@@ -60,5 +61,6 @@ export const mapSingleTicketData = (data) => {
     owner: data?.owner,
     repoter: data?.repoter,
     position: data?.position,
+    tracking: data?.tracking,
   };
 };

@@ -13,6 +13,7 @@ import { AccountContext } from "../App";
 import { _transction, _fetch } from "../../src/CONTRACT-ABI/connect";
 import Box from "@mui/material/Box";
 import Loader from "../components/shared/Loader";
+import { decode } from "js-base64";
 
 const client = create(IPFSLink);
 
@@ -63,13 +64,23 @@ const CreateTicket = () => {
 
     const sprintId = sprint;
 
+    const trackingData = JSON.stringify([
+      {
+        time: new Date(),
+        status: `${type} created with ${priority} priority & ${storypoint} storypoint on Sprint-${sprintId}`,
+        updatedBy:
+          localStorage.getItem("uid") && decode(localStorage.getItem("uid")),
+      },
+    ]);
+
     if (account?.uid) {
       responseData = await _transction(
         "createTicket",
         sprintId,
         id,
         IpfsViewLink(resultsSaveMetaData.path),
-        account?.uid
+        account?.uid,
+        trackingData
       );
 
       setResponse(responseData);

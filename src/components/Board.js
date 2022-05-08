@@ -17,6 +17,8 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import _ from "lodash";
 import TransctionModal from "../components/shared/TransctionModal";
+import { addTicketTracking } from "../functions/TicketTracking";
+import { Status } from "./utility/Status";
 
 const client = create(IPFSLink);
 
@@ -71,6 +73,7 @@ function Board({ address }) {
     if (!result.destination) return;
     let updatedPosition;
     let dragedCardIndex;
+    let tracking;
     const { source, destination } = result;
     let updatedCard;
     if (source.droppableId !== destination.droppableId) {
@@ -93,6 +96,8 @@ function Board({ address }) {
       };
       updatedPosition = destColumn?.position;
       dragedCardIndex = destItems[0].index;
+      tracking = destItems[0].tracking;
+
       await setColumns(updatedCard);
     } else {
       const column = columns[source.droppableId];
@@ -114,18 +119,20 @@ function Board({ address }) {
       setStart(true);
       const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
 
+      const trackingString = await addTicketTracking(
+        `Ticket moved to ${Status(updatedPosition)}`,
+        dragedCardIndex
+      );
+
       const responseData = await _transction(
         "changePosition",
         updatedPosition.toString(),
         Number(dragedCardIndex),
         IpfsViewLink(resultsSaveMetaData.path),
-        address
+        address,
+        trackingString
       );
-      // const responseData = await _transction(
-      //   "setBoardDataToUser",
-      //   IpfsViewLink(resultsSaveMetaData.path),
-      //   address
-      // );
+
       setResponse(responseData);
       setLoading(false);
 
@@ -183,7 +190,6 @@ function Board({ address }) {
               >
                 {/* const allData = sanatizeData(data, activeSprintId); */}
                 {Object.entries(columns).map(([columnId, column], index) => {
-                  console.log(column?.items);
                   const insideItems = _.uniqBy(column?.items, "id");
                   return (
                     <div

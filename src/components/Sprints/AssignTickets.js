@@ -11,6 +11,7 @@ import TransctionModal from "../shared/TransctionModal";
 import _ from "lodash";
 import { IPFSLink, IpfsViewLink } from "../../config";
 import { mapSingleTicketData } from "../../functions/index";
+import { addTicketTracking } from "../../functions/TicketTracking";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
@@ -32,6 +33,7 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
 
   const saveData = async ({ receiver }) => {
     setStart(true);
+
     const getSenderCurrentABI = await _fetch("users", receiver);
     await fetch(getSenderCurrentABI?.boardData)
       .then((response) => response.json())
@@ -46,8 +48,10 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
           "assignOwner",
           receiver,
           item?.index,
-          IpfsViewLink(resultsSaveMetaData.path)
+          IpfsViewLink(resultsSaveMetaData.path),
+          addTicketTracking(`Assigned to ${receiver}`, item?.index)
         );
+
         setResponse(responseData);
       });
   };

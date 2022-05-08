@@ -85,6 +85,11 @@
         "internalType": "string",
         "name": "ownersBoardData",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "tracking",
+        "type": "string"
       }
     ],
     "name": "assignOwner",
@@ -112,6 +117,11 @@
       {
         "internalType": "string",
         "name": "uid",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "tracking",
         "type": "string"
       }
     ],
@@ -169,6 +179,11 @@
         "internalType": "string",
         "name": "repoterUid",
         "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "tracking",
+        "type": "string"
       }
     ],
     "name": "createTicket",
@@ -214,6 +229,16 @@
             "internalType": "bool",
             "name": "status",
             "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "tracking",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "comments",
+            "type": "string"
           }
         ],
         "internalType": "struct JIRA.Ticket",
@@ -309,6 +334,16 @@
             "internalType": "bool",
             "name": "status",
             "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "tracking",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "comments",
+            "type": "string"
           }
         ],
         "internalType": "struct JIRA.Ticket[]",
@@ -441,6 +476,42 @@
         "type": "string"
       },
       {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "setComments",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTicketTracking",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      },
+      {
         "internalType": "string",
         "name": "uid",
         "type": "string"
@@ -539,6 +610,16 @@
         "internalType": "bool",
         "name": "status",
         "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "tracking",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "comments",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
