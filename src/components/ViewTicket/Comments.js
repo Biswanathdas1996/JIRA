@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Formik, Form } from "formik";
 // import * as Yup from "yup";
-import { Card, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
 import TransctionModal from "../shared/TransctionModal";
 import TextEditor from "../UI/TextEditor";
@@ -24,12 +24,9 @@ const UpadteTicket = ({ tokenId }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
   const [ticketindex, setTicketindex] = useState(null);
-
   const [htmlCode, setHtmlCode] = useState(null);
   const [tickets, setTickets] = useState(null);
-
   const [loading, setLoading] = useState(false);
-  const [currentABI, setCurrentABI] = useState(false);
   const { account } = useContext(AccountContext);
 
   const getData = async () => {
@@ -95,7 +92,7 @@ const UpadteTicket = ({ tokenId }) => {
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
 
-      <Card
+      <div
         style={{
           padding: "20px",
           background: "white",
@@ -169,7 +166,7 @@ const UpadteTicket = ({ tokenId }) => {
             <Skeleton animation="wave" />
           </Stack>
         )}
-      </Card>
+      </div>
     </>
   );
 };

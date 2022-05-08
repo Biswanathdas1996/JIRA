@@ -6,7 +6,6 @@ import TimelineConnector from "@mui/lab/TimelineConnector";
 import TimelineContent from "@mui/lab/TimelineContent";
 import TimelineOppositeContent from "@mui/lab/TimelineOppositeContent";
 import Typography from "@mui/material/Typography";
-import { Card } from "@mui/material";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import UserImage from "../shared/GetUserImage";
 
@@ -33,7 +32,13 @@ export default function CustomizedTimeline({ tokenId }) {
   };
 
   return (
-    <Card>
+    <div
+      style={{
+        padding: "20px",
+        background: "white",
+      }}
+    >
+      <h4> History</h4>
       {!loading && (
         <Timeline>
           {ticketTrack &&
@@ -74,6 +79,6 @@ export default function CustomizedTimeline({ tokenId }) {
             })}
         </Timeline>
       )}
-    </Card>
+    </div>
   );
 }
