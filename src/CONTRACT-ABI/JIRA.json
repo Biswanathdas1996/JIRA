@@ -121,7 +121,7 @@
       },
       {
         "internalType": "string",
-        "name": "tracking",
+        "name": "trackingData",
         "type": "string"
       }
     ],
@@ -651,6 +651,11 @@
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "trackingData",
+        "type": "string"
       }
     ],
     "name": "transferTicket",
@@ -669,6 +674,11 @@
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "trackingData",
+        "type": "string"
       },
       {
         "internalType": "bool",

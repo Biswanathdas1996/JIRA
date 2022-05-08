@@ -12,6 +12,11 @@ contract JIRA  {
         string abiLink;
     }
 
+    struct TicketTracker {
+        string time;
+        string status;
+    }
+
     struct Ticket {
         uint index;
         uint sprintId;
@@ -19,7 +24,10 @@ contract JIRA  {
         string abiLink;
         string repoter;
         string owner;
+        string position;
         bool status;
+        string tracking;
+        string comments;
     }
     
     struct User {
@@ -30,18 +38,14 @@ contract JIRA  {
         string abiLink;
         string uid;
     }
-
-    
      
     mapping(string => User) public users;
-
     Sprint[] public sprints;
     Ticket[] public tickets;
     string[] public userList ;
     address public manager;
     string public project;
     uint public activeSprintId;
-
 
     constructor(string memory projectName)  {
         manager = msg.sender;
@@ -105,22 +109,69 @@ contract JIRA  {
     }
 
 
-    function createTicket(uint sprintId, string memory id, string memory abiLink, string memory ownerUid, string memory repoterUid) public  {
+    function createTicket(
+            uint sprintId, 
+            string memory id, 
+            string memory abiLink,  
+            string memory repoterUid, 
+            string memory tracking
+        ) public returns(Ticket memory) {
+           
+
         Ticket memory newTicket = Ticket({
            index:tickets.length,
            sprintId:sprintId,
            id:id,
            abiLink: abiLink,
            repoter:repoterUid,
-           owner:ownerUid,
-           status:true
+           owner:'',
+           position:"1",
+           status:true,
+           tracking:tracking,
+           comments:""
         });
         tickets.push(newTicket);
+        return newTicket;
     }
 
-    function updateTicket(string memory abiLink, uint index, bool status) public  {
+    
+
+    // add comments to a ticket
+    function setComments(string memory abiLink, uint index) public  {
+        Ticket storage newTicket = tickets[index];
+        newTicket.comments = abiLink;
+    }
+
+    // add tracking to a ticket
+    function setTicketTracking(string memory abiLink, uint index) public  {
+        Ticket storage newTicket = tickets[index];
+        newTicket.tracking = abiLink;
+    }
+    
+    // change position in the board
+    function changePosition(string memory position, uint index, string memory abiLink, string memory uid, string memory trackingData) public  {
+        Ticket storage newTicket = tickets[index];
+        newTicket.position = position;
+        newTicket.tracking = trackingData;
+        setBoardDataToUser(abiLink,uid);
+    }
+
+    // assign a owner to a ticket for the first time
+    function assignOwner(string memory owner, uint index, string memory ownersBoardData, string memory tracking) public  {
+         Ticket storage newTicket = tickets[index];
+         newTicket.owner = owner;
+         newTicket.position = "1";
+         newTicket.tracking = tracking;
+         setBoardDataToUser(ownersBoardData, owner);
+    }
+
+
+
+
+    function updateTicket(string memory abiLink, uint index, string memory trackingData, bool status) public  {
          Ticket storage newTicket = tickets[index];
          newTicket.abiLink = abiLink;
+         newTicket.tracking = trackingData;
          newTicket.status = status;
     }
 
@@ -138,10 +189,20 @@ contract JIRA  {
          return users[newTicket.owner].profileImg;
     }
 
-    function transferTicket(string memory senderUid, string memory receiverUid, string memory updatedSenderAbi, string memory updatedReceiverAbi, uint index) public {
+    function transferTicket(
+        string memory senderUid, 
+        string memory receiverUid, 
+        string memory updatedSenderAbi, 
+        string memory updatedReceiverAbi, 
+        uint index, 
+        string memory trackingData
+        ) public {
         setBoardDataToUser(updatedSenderAbi, senderUid);
         setBoardDataToUser(updatedReceiverAbi, receiverUid);
         updateTicketOwner(receiverUid,index);
+
+        Ticket storage newTicket = tickets[index];
+        newTicket.tracking = trackingData;
 
     }
 
@@ -153,3 +214,6 @@ contract JIRA  {
     
   
 }
+
+
+

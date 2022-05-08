@@ -11,7 +11,7 @@ import { _fetch } from "../../CONTRACT-ABI/connect";
 import _ from "lodash";
 import { IPFSLink, IpfsViewLink } from "../../config";
 import { mapTicketData } from "../../functions/index";
-
+import { addTicketTracking } from "../../functions/TicketTracking";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
@@ -119,6 +119,11 @@ const TransferTicket = ({ tokenId }) => {
         });
     }
 
+    const trackingString = await addTicketTracking(
+      `Ticket transfred from  ${sender} to ${receiver}`,
+      transfredTicket.index
+    );
+
     // return;
     const finalResponse = await _transction(
       "transferTicket",
@@ -126,7 +131,8 @@ const TransferTicket = ({ tokenId }) => {
       receiver,
       updatedSenderAbi,
       updatedReceiverAbi,
-      transfredTicket.index
+      transfredTicket.index,
+      trackingString
     );
 
     setResponse(finalResponse);

@@ -12,6 +12,7 @@ import { IPFSLink, IpfsViewLink } from "../../config";
 import TextEditor from "../UI/TextEditor";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
+import { addTicketTracking } from "../../functions/TicketTracking";
 
 const client = create(IPFSLink);
 
@@ -32,6 +33,7 @@ const UpadteTicket = ({ tokenId }) => {
   const [tickets, setTickets] = useState(null);
   const [defaultEditorValue, setDefaultEditorValue] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [currentABI, setCurrentABI] = useState(false);
 
   let history = useNavigate();
 
@@ -43,6 +45,7 @@ const UpadteTicket = ({ tokenId }) => {
     );
 
     setTicketindex(filterTicketsForCurrentUser.index);
+    setCurrentABI(filterTicketsForCurrentUser?.abiLink);
 
     if (filterTicketsForCurrentUser?.abiLink) {
       await fetch(filterTicketsForCurrentUser?.abiLink)
@@ -95,10 +98,16 @@ const UpadteTicket = ({ tokenId }) => {
 
     const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
 
+    const trackingString = await addTicketTracking(
+      `Ticket details updated from ${currentABI}`,
+      ticketindex
+    );
+
     responseData = await _transction(
       "updateTicket",
       IpfsViewLink(resultsSaveMetaData.path),
       ticketindex,
+      trackingString,
       true
     );
 

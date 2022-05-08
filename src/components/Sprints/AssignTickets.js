@@ -44,12 +44,17 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
           JSON.stringify(senderData)
         );
 
+        const trackingString = await addTicketTracking(
+          `Assigned to ${receiver}`,
+          item?.index
+        );
+
         const responseData = await _transction(
           "assignOwner",
           receiver,
           item?.index,
           IpfsViewLink(resultsSaveMetaData.path),
-          addTicketTracking(`Assigned to ${receiver}`, item?.index)
+          trackingString
         );
 
         setResponse(responseData);
