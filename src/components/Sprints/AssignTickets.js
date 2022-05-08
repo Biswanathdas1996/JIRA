@@ -66,8 +66,8 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
   const modalClose = () => {
     setStart(false);
     setResponse(null);
-    getData();
-    // history("/sprints");
+
+    history("/");
   };
 
   return (
