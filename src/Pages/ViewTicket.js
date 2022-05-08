@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import UpdateTicket from "../components/ViewTicket/UpdateTicket";
 import TransferTicket from "../components/ViewTicket/TransferTicket";
 import TicketTimeline from "../components/ViewTicket/TicketTimeline";
+import Comments from "../components/ViewTicket/Comments";
 import { Grid } from "@mui/material";
 const Mint = () => {
   const { tokenId } = useParams();
@@ -27,6 +28,11 @@ const Mint = () => {
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
         <Grid item lg={8} md={8} sm={12} xs={12}>
           <TicketTimeline tokenId={tokenId} />
+        </Grid>
+        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
+        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
+        <Grid item lg={8} md={8} sm={12} xs={12}>
+          <Comments tokenId={tokenId} />
         </Grid>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
       </Grid>
