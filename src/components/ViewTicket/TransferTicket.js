@@ -147,110 +147,96 @@ const TransferTicket = ({ tokenId }) => {
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
-        <Grid item lg={8} md={8} sm={12} xs={12}>
-          <div style={{ margin: 20 }}>
-            <Card
-              style={{
-                padding: "20px",
-                background: "white",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h4> Assign</h4>
 
-                <Button type="button" onClick={() => getData()}>
-                  Refresh
-                </Button>
-              </div>
+      <Card
+        style={{
+          padding: "20px",
+          background: "white",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h4> Assign</h4>
 
-              {!loading && (
-                <Formik
-                  initialValues={{
-                    receiver: transfredTicket?.owner,
-                  }}
-                  // validationSchema={VendorSchema}
-                  onSubmit={(values, { setSubmitting }) => {
-                    saveData(values);
-                    setSubmitting(false);
-                  }}
-                >
-                  {({ touched, errors, isSubmitting, values }) => (
-                    <Form>
-                      {totalUserCount === users?.length && (
-                        <Grid container>
-                          <Grid item lg={12} md={12} sm={12} xs={12}>
-                            <div
-                              className="form-group"
-                              style={{ marginLeft: 10, marginTop: 10 }}
-                            >
-                              <label for="title" className="my-2">
-                                Select User{" "}
-                                <span className="text-danger">*</span>
-                              </label>
-                              <Field
-                                name="receiver"
-                                component="select"
-                                className={`form-control text-muted ${
-                                  touched.receiver && errors.receiver
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
-                                style={{ marginRight: 10, padding: 9 }}
-                              >
-                                <option>-- Please select --</option>
-                                {users?.map((user) => {
-                                  return (
-                                    <option value={user?.uid}>
-                                      {user?.name}
-                                    </option>
-                                  );
-                                })}
-                              </Field>
-                            </div>
-                          </Grid>
-                          <Grid item lg={12} md={12} sm={12} xs={12}>
-                            <div
-                              className="form-group"
-                              style={{
-                                marginLeft: 10,
-                                marginTop: 10,
-                                float: "right",
-                              }}
-                            >
-                              <span className="input-group-btn">
-                                <input
-                                  className="btn btn-default btn-primary float-right"
-                                  type="submit"
-                                  value={"Assign"}
-                                />
-                              </span>
-                            </div>
-                          </Grid>
-                        </Grid>
-                      )}
-                    </Form>
-                  )}
-                </Formik>
-              )}
+          <Button type="button" onClick={() => getData()}>
+            Refresh
+          </Button>
+        </div>
 
-              {loading && (
-                <Stack spacing={1} style={{ marginTop: 10 }}>
-                  <Skeleton
-                    variant="rectangular"
-                    animation="wave"
-                    height={118}
-                  />
-                  <Skeleton animation="wave" />
-                  <Skeleton animation="wave" />
-                </Stack>
-              )}
-            </Card>
-          </div>
-        </Grid>
-        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
-      </Grid>
+        {!loading && (
+          <Formik
+            initialValues={{
+              receiver: transfredTicket?.owner,
+            }}
+            // validationSchema={VendorSchema}
+            onSubmit={(values, { setSubmitting }) => {
+              saveData(values);
+              setSubmitting(false);
+            }}
+          >
+            {({ touched, errors, isSubmitting, values }) => (
+              <Form>
+                {totalUserCount === users?.length && (
+                  <Grid container>
+                    <Grid item lg={12} md={12} sm={12} xs={12}>
+                      <div
+                        className="form-group"
+                        style={{ marginLeft: 10, marginTop: 10 }}
+                      >
+                        <label for="title" className="my-2">
+                          Select User <span className="text-danger">*</span>
+                        </label>
+                        <Field
+                          name="receiver"
+                          component="select"
+                          className={`form-control text-muted ${
+                            touched.receiver && errors.receiver
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          style={{ marginRight: 10, padding: 9 }}
+                        >
+                          <option>-- Please select --</option>
+                          {users?.map((user) => {
+                            return (
+                              <option value={user?.uid}>{user?.name}</option>
+                            );
+                          })}
+                        </Field>
+                      </div>
+                    </Grid>
+                    <Grid item lg={12} md={12} sm={12} xs={12}>
+                      <div
+                        className="form-group"
+                        style={{
+                          marginLeft: 10,
+                          marginTop: 10,
+                          float: "right",
+                        }}
+                      >
+                        <span className="input-group-btn">
+                          <input
+                            className="btn btn-default btn-primary float-right"
+                            type="submit"
+                            value={"Assign"}
+                          />
+                        </span>
+                      </div>
+                    </Grid>
+                  </Grid>
+                )}
+              </Form>
+            )}
+          </Formik>
+        )}
+
+        {loading && (
+          <Stack spacing={1} style={{ marginTop: 10 }}>
+            <Skeleton variant="rectangular" animation="wave" height={118} />
+            <Skeleton animation="wave" />
+            <Skeleton animation="wave" />
+          </Stack>
+        )}
+      </Card>
     </>
   );
 };

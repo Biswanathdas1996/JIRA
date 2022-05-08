@@ -73,7 +73,7 @@ function Board({ address }) {
     if (!result.destination) return;
     let updatedPosition;
     let dragedCardIndex;
-    let tracking;
+
     const { source, destination } = result;
     let updatedCard;
     if (source.droppableId !== destination.droppableId) {
@@ -96,7 +96,6 @@ function Board({ address }) {
       };
       updatedPosition = destColumn?.position;
       dragedCardIndex = destItems[0].index;
-      tracking = destItems[0].tracking;
 
       await setColumns(updatedCard);
     } else {
