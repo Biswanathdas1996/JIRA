@@ -98,7 +98,7 @@ const UpadteTicket = ({ tokenId }) => {
     const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
 
     const trackingString = await addTicketTracking(
-      `Ticket details updated from <a href="${currentABI}" target="_blank">Old Data</a>`,
+      `<div class="track-div">Ticket details updated from <a href="${currentABI}" target="_blank">Old Data</a></div>`,
       ticketindex
     );
 

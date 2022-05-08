@@ -6,11 +6,12 @@ export async function addTicketTracking(status, dragedCardIndex) {
   let prevTrackingData =
     prevTracking?.tracking && JSON.parse(prevTracking?.tracking);
   console.log("prevTrackingData", prevTrackingData);
-  prevTrackingData.push({
-    time: new Date(),
-    status: status,
-    updatedBy:
-      localStorage.getItem("uid") && decode(localStorage.getItem("uid")),
-  });
+  prevTrackingData &&
+    prevTrackingData.push({
+      time: new Date(),
+      status: status,
+      updatedBy:
+        localStorage.getItem("uid") && decode(localStorage.getItem("uid")),
+    });
   return JSON.stringify(prevTrackingData);
 }

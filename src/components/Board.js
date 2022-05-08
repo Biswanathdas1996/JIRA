@@ -71,6 +71,7 @@ function Board({ address }) {
 
   const onDragEnd = async (result, columns, setColumns) => {
     if (!result.destination) return;
+    let initialPosition;
     let updatedPosition;
     let dragedCardIndex;
 
@@ -94,6 +95,7 @@ function Board({ address }) {
           items: destItems,
         },
       };
+      initialPosition = sourceColumn?.position;
       updatedPosition = destColumn?.position;
       dragedCardIndex = destItems[0].index;
 
@@ -119,7 +121,9 @@ function Board({ address }) {
       const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
 
       const trackingString = await addTicketTracking(
-        `Ticket moved to ${Status(updatedPosition)}`,
+        `<div class="track-div">Ticket moved from <b>${Status(
+          initialPosition
+        )}</b> column to <b>${Status(updatedPosition)}</b> column</div>`,
         dragedCardIndex
       );
 

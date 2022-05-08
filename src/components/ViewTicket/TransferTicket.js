@@ -83,6 +83,9 @@ const TransferTicket = ({ tokenId }) => {
 
     const getSenderCurrentABI = await _fetch("users", sender);
 
+    console.log("--------", getSenderCurrentABI);
+
+    // return;
     await fetch(getSenderCurrentABI?.boardData)
       .then((response) => response.json())
       .then(async (senderData) => {
@@ -120,7 +123,7 @@ const TransferTicket = ({ tokenId }) => {
     }
 
     const trackingString = await addTicketTracking(
-      `Ticket transfred from  ${sender} to ${receiver}`,
+      `<div class="track-div">Ticket <b style="color:#e06a00;">transfred </b> from <img class="track-img-profile" src="${getSenderCurrentABI.profileImg}" height="30px" width="30px" style="border-radius: 50%; margin:5px" /> <b>${getSenderCurrentABI.name}</b> to <img class="track-img-profile" style="border-radius: 50%; margin:5px;" src="${getRecieverrCurrentABI.profileImg}" height="30px" width="30px" /> <b>${getRecieverrCurrentABI.name}</b></div>`,
       transfredTicket.index
     );
 

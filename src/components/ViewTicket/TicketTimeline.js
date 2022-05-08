@@ -63,6 +63,7 @@ export default function CustomizedTimeline({ tokenId }) {
                       style={{ fontSize: 15 }}
                     >
                       <div
+                        className="html-tracking-div"
                         dangerouslySetInnerHTML={{ __html: data?.status }}
                       ></div>
                     </Typography>

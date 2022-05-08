@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
-import { Card, Grid, Button } from "@mui/material";
+import { Card, Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
 import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import { addTicketTracking } from "../../functions/TicketTracking";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
+import { AccountContext } from "../../App";
 const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
@@ -28,13 +29,14 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
   const [start, setStart] = useState(false);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const { account } = useContext(AccountContext);
   let history = useNavigate();
 
   const saveData = async ({ receiver }) => {
     setStart(true);
 
     const getSenderCurrentABI = await _fetch("users", receiver);
+
     await fetch(getSenderCurrentABI?.boardData)
       .then((response) => response.json())
       .then(async (senderData) => {
@@ -45,7 +47,7 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
         );
 
         const trackingString = await addTicketTracking(
-          `Assigned to ${receiver}`,
+          `<div class="track-div">Ticket <b style="color:green;">assigned</b> to <img class="track-img-profile" src="${getSenderCurrentABI.profileImg}" height="30px" width="30px" style="border-radius: 50%; margin:5px" /> <b>${getSenderCurrentABI.name}</b> by <img class="track-img-profile" style="border-radius: 50%; margin:5px;" src="${account.profileImg}" height="30px" width="30px" /> <b>${account.name}</b></div>`,
           item?.index
         );
 
@@ -64,7 +66,8 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
   const modalClose = () => {
     setStart(false);
     setResponse(null);
-    history("/");
+    getData();
+    // history("/sprints");
   };
 
   return (
@@ -98,57 +101,53 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
           >
             {({ touched, errors, isSubmitting, values }) => (
               <Form>
-                {totalUserCount === users?.length ? (
-                  <Grid container>
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
-                      <div
-                        className="form-group"
-                        style={{ marginLeft: 10, marginTop: 10 }}
+                <Grid container>
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <div
+                      className="form-group"
+                      style={{ marginLeft: 10, marginTop: 10 }}
+                    >
+                      <label for="title" className="my-2">
+                        Select User <span className="text-danger">*</span>
+                      </label>
+                      <Field
+                        name="receiver"
+                        component="select"
+                        className={`form-control text-muted ${
+                          touched.receiver && errors.receiver
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        style={{ marginRight: 10, padding: 9 }}
                       >
-                        <label for="title" className="my-2">
-                          Select User <span className="text-danger">*</span>
-                        </label>
-                        <Field
-                          name="receiver"
-                          component="select"
-                          className={`form-control text-muted ${
-                            touched.receiver && errors.receiver
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                          style={{ marginRight: 10, padding: 9 }}
-                        >
-                          <option>-- Please select --</option>
-                          {users?.map((user) => {
-                            return (
-                              <option value={user?.uid}>{user?.name}</option>
-                            );
-                          })}
-                        </Field>
-                      </div>
-                    </Grid>
-                    <Grid item lg={12} md={12} sm={12} xs={12}>
-                      <div
-                        className="form-group"
-                        style={{
-                          marginLeft: 10,
-                          marginTop: 10,
-                          float: "right",
-                        }}
-                      >
-                        <span className="input-group-btn">
-                          <input
-                            className="btn btn-default btn-primary float-right"
-                            type="submit"
-                            value={"Assign"}
-                          />
-                        </span>
-                      </div>
-                    </Grid>
+                        <option>-- Please select --</option>
+                        {users?.map((user) => {
+                          return (
+                            <option value={user?.uid}>{user?.name}</option>
+                          );
+                        })}
+                      </Field>
+                    </div>
                   </Grid>
-                ) : (
-                  <p>Please wait..</p>
-                )}
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <div
+                      className="form-group"
+                      style={{
+                        marginLeft: 10,
+                        marginTop: 10,
+                        float: "right",
+                      }}
+                    >
+                      <span className="input-group-btn">
+                        <input
+                          className="btn btn-default btn-primary float-right"
+                          type="submit"
+                          value={"Assign"}
+                        />
+                      </span>
+                    </div>
+                  </Grid>
+                </Grid>
               </Form>
             )}
           </Formik>
