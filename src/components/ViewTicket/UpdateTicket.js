@@ -29,8 +29,10 @@ const UpadteTicket = ({ tokenId }) => {
   const [ticketindex, setTicketindex] = useState(null);
 
   const [htmlCode, setHtmlCode] = useState(null);
+  const [htmlCodeAC, setHtmlCodeAC] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [defaultEditorValue, setDefaultEditorValue] = useState(null);
+  const [defaultEditorValueAC, setDefaultEditorValueAC] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentABI, setCurrentABI] = useState(false);
 
@@ -49,11 +51,12 @@ const UpadteTicket = ({ tokenId }) => {
     if (filterTicketsForCurrentUser?.abiLink) {
       await fetch(filterTicketsForCurrentUser?.abiLink)
         .then((response) => response.json())
-        .then((data) => {
+        .then(async (data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
 
-          getDescription(data.description);
+          await getDescription(data.description);
+          await getAC(data.AC);
         })
         .catch((err) => {
           setLoading(false);
@@ -61,11 +64,22 @@ const UpadteTicket = ({ tokenId }) => {
     }
   };
 
-  const getDescription = (URI) => {
-    fetch(URI)
+  const getDescription = async (URI) => {
+    await fetch(URI)
       .then((descResponse) => descResponse.text())
       .then((descriptionData) => {
         setDefaultEditorValue(descriptionData);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
+
+  const getAC = async (URI) => {
+    await fetch(URI)
+      .then((descResponse) => descResponse.text())
+      .then((descriptionData) => {
+        setDefaultEditorValueAC(descriptionData);
         setLoading(false);
       })
       .catch((error) => {
@@ -79,11 +93,19 @@ const UpadteTicket = ({ tokenId }) => {
     const id = tokenId;
     let saveHtmlDescription;
     let descIpfsLink;
+    let acIpfsLink;
     if (htmlCode) {
       saveHtmlDescription = await client.add(htmlCode);
       descIpfsLink = IpfsViewLink(saveHtmlDescription.path);
     } else {
       descIpfsLink = tickets?.description;
+    }
+
+    if (htmlCodeAC) {
+      saveHtmlDescription = await client.add(htmlCodeAC);
+      acIpfsLink = IpfsViewLink(saveHtmlDescription.path);
+    } else {
+      acIpfsLink = tickets?.AC;
     }
 
     const metaData = {
@@ -93,6 +115,7 @@ const UpadteTicket = ({ tokenId }) => {
       priority: priority,
       storypoint: storypoint,
       description: descIpfsLink,
+      AC: acIpfsLink,
     };
 
     const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
@@ -120,6 +143,9 @@ const UpadteTicket = ({ tokenId }) => {
 
   const getEditorValue = (val) => {
     setHtmlCode(val);
+  };
+  const getEditorValueAC = (val) => {
+    setHtmlCodeAC(val);
   };
 
   const modalClose = () => {
@@ -274,6 +300,29 @@ const UpadteTicket = ({ tokenId }) => {
                           value={htmlCode}
                           defaultValue={defaultEditorValue}
                           onChange={getEditorValue}
+                        />
+                      )}
+                    </div>
+                  </Grid>
+                  {/* AC */}
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <div
+                      className="form-group"
+                      style={{ marginLeft: 10, marginTop: 10 }}
+                    >
+                      <label for="title" className="my-2">
+                        Acceptance criteria{" "}
+                        <span className="text-danger">*</span>
+                      </label>
+
+                      {defaultEditorValueAC && (
+                        <TextEditor
+                          name="ac"
+                          label="ac"
+                          tip="Describe the project in as much detail as you'd like."
+                          value={htmlCodeAC}
+                          defaultValue={defaultEditorValueAC}
+                          onChange={getEditorValueAC}
                         />
                       )}
                     </div>

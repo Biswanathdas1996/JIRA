@@ -22,6 +22,7 @@ const CreateTicket = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [htmlCode, setHtmlCode] = useState(null);
+  const [htmlCodeAC, setHtmlCodeAC] = useState(null);
   const [sprints, setSprints] = useState([]);
   const [activeSprint, setActiveSprint] = useState(null);
 
@@ -47,7 +48,8 @@ const CreateTicket = () => {
     let responseData;
     const id = uuid();
 
-    const saveHtmlDescription = await await client.add(htmlCode);
+    const saveHtmlDescription = await client.add(htmlCode);
+    const saveHtmlAC = await client.add(htmlCodeAC);
 
     const metaData = {
       id: id,
@@ -56,6 +58,7 @@ const CreateTicket = () => {
       priority: priority,
       storypoint: storypoint,
       description: IpfsViewLink(saveHtmlDescription.path),
+      AC: IpfsViewLink(saveHtmlAC.path),
     };
 
     const resultsSaveMetaData = await await client.add(
@@ -94,8 +97,10 @@ const CreateTicket = () => {
   };
 
   const getEditorValue = (val) => {
-    console.log("-getEditorValue->", val);
     setHtmlCode(val);
+  };
+  const getEditorValueAC = (val) => {
+    setHtmlCodeAC(val);
   };
 
   const VendorSchema = Yup.object().shape({
@@ -145,7 +150,7 @@ const CreateTicket = () => {
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Sprint <span className="text-danger">*</span>
                             </label>
                             <Field
@@ -158,7 +163,7 @@ const CreateTicket = () => {
                               }`}
                               style={{ marginRight: 10, padding: 9 }}
                             >
-                              <option>-- Please select --</option>
+                              <option value="">-- Please select --</option>
                               {sprints?.map((data) => (
                                 <option value={data?.id}>
                                   SPRINT-{data?.id}
@@ -173,7 +178,7 @@ const CreateTicket = () => {
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Issue Type <span className="text-danger">*</span>
                             </label>
                             <Field
@@ -184,7 +189,7 @@ const CreateTicket = () => {
                               }`}
                               style={{ marginRight: 10, padding: 9 }}
                             >
-                              <option>-- Please select --</option>
+                              <option value="">-- Please select --</option>
                               <option value="story">Story</option>
                               <option value="bug">Bug</option>
                             </Field>
@@ -196,7 +201,7 @@ const CreateTicket = () => {
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Repoter <span className="text-danger">*</span>
                             </label>
 
@@ -232,7 +237,7 @@ const CreateTicket = () => {
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Summary <span className="text-danger">*</span>
                             </label>
                             <Field
@@ -256,7 +261,7 @@ const CreateTicket = () => {
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Choose Priority{" "}
                               <span className="text-danger">*</span>
                             </label>
@@ -270,7 +275,7 @@ const CreateTicket = () => {
                               }`}
                               style={{ marginRight: 10, padding: 9 }}
                             >
-                              <option>-- Please select --</option>
+                              <option value="">-- Please select --</option>
                               <option value="blocker">Blocker</option>
                               <option value="critical">Critical</option>
                               <option value="high">High</option>
@@ -286,7 +291,7 @@ const CreateTicket = () => {
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Description <span className="text-danger">*</span>
                             </label>
                             <TextEditor
@@ -298,13 +303,32 @@ const CreateTicket = () => {
                             />
                           </div>
                         </Grid>
+                        {/* Acceptance criteria*/}
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <div
+                            className="form-group"
+                            style={{ marginLeft: 10, marginTop: 10 }}
+                          >
+                            <label htmlFor="title" className="my-2">
+                              Acceptance criteria{" "}
+                              <span className="text-danger">*</span>
+                            </label>
+                            <TextEditor
+                              name="ac"
+                              label="ac"
+                              tip="Describe the project in as much detail as you'd like."
+                              value={htmlCodeAC}
+                              onChange={getEditorValueAC}
+                            />
+                          </div>
+                        </Grid>
                         {/* Story point */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                           <div
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label for="title" className="my-2">
+                            <label htmlFor="title" className="my-2">
                               Story point{" "}
                             </label>
 
