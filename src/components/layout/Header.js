@@ -14,6 +14,8 @@ import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Typography from "@mui/material/Typography";
 import { AccountContext } from "../../App";
+import VoiceNav from "../../VoiceNavigation/Index";
+
 const pages = [
   {
     label: "Home",
@@ -151,6 +153,8 @@ const Header = () => {
           <Box sx={{ flexGrow: 1 }} />
 
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <VoiceNav />
+
             {account?.name ? (
               <>
                 <Avatar
