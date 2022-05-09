@@ -24,7 +24,11 @@ const pages = [
     href: "/profile",
   },
   {
-    label: "BackLog",
+    label: "Backlog",
+    href: "/backlog",
+  },
+  {
+    label: "Sptints",
     href: "/sprints",
   },
 ];

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -23,16 +23,18 @@ const filterData = (tickets) => {
 
 function CheckboxesTags({ tickets, onchangeEpicStoryHandler, defaultValue }) {
   const dataOption = filterData(tickets);
+  const [values, setvalues] = useState(defaultValue ? defaultValue : []);
 
   const onchangeHandler = (newValue) => {
     onchangeEpicStoryHandler(newValue);
+    setvalues(newValue);
   };
 
   return (
     <Autocomplete
       multiple
       id="checkboxes-tags-demo"
-      value={defaultValue}
+      value={values}
       options={dataOption}
       onChange={(event, newValue) => {
         onchangeHandler(newValue);

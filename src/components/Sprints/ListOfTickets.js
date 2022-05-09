@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import List from "@mui/material/List";
 import TicketCard from "../../components/shared/TicketCard";
 import AssignTickets from "./AssignTickets";
+import AssignSprint from "./AssignSprint";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 
-export default function CheckboxListSecondary({ data }) {
+export default function CheckboxListSecondary({ data, sprints }) {
   const [users, setusers] = useState([]);
   const [totalUserCount, setTotalUserCount] = useState(0);
 
@@ -29,14 +30,23 @@ export default function CheckboxListSecondary({ data }) {
       {data?.map((value) => {
         console.log(value);
         return (
-          <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 20 }}>
             <TicketCard item={value} showStatus={true} />
-            {!value?.owner && (
+            {!value?.owner && value?.sprintId !== "" && (
               <AssignTickets
                 index={value?.index}
                 item={value}
                 totalUserCount={totalUserCount}
                 users={users}
+                getData={getData}
+              />
+            )}
+
+            {value?.sprintId === "" && (
+              <AssignSprint
+                index={value?.index}
+                item={value}
+                sprints={sprints}
                 getData={getData}
               />
             )}

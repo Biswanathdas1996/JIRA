@@ -83,8 +83,6 @@ const TransferTicket = ({ tokenId }) => {
 
     const getSenderCurrentABI = await _fetch("users", sender);
 
-    console.log("--------", getSenderCurrentABI);
-
     // return;
     await fetch(getSenderCurrentABI?.boardData)
       .then((response) => response.json())
@@ -158,14 +156,14 @@ const TransferTicket = ({ tokenId }) => {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h4> Assign</h4>
+          <h4> Transfer</h4>
 
           <Button type="button" onClick={() => getData()}>
             Refresh
           </Button>
         </div>
 
-        {!loading && (
+        {!loading && tickets?.owner !== "" && (
           <Formik
             initialValues={{
               receiver: transfredTicket?.owner,

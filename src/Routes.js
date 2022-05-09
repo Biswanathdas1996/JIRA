@@ -6,6 +6,7 @@ import CreateTicket from "./Pages/CreateTicket";
 import ViewTicket from "./Pages/ViewTicket";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
+import Backlog from "./Pages/Backlog";
 
 class Routing extends React.Component {
   render() {
@@ -18,8 +19,7 @@ class Routing extends React.Component {
             <Route exact path="/sprints" element={<CreateSprint />} />
             <Route exact path="/create-ticket" element={<CreateTicket />} />
             <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
-            <Route exact path="/register" element={<Register />} />
-            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/backlog" element={<Backlog />} />
           </>
         ) : (
           <>

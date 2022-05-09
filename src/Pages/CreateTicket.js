@@ -24,8 +24,6 @@ const CreateTicket = () => {
   const [response, setResponse] = useState(null);
   const [htmlCode, setHtmlCode] = useState(null);
   const [htmlCodeAC, setHtmlCodeAC] = useState(null);
-  const [sprints, setSprints] = useState([]);
-  const [activeSprint, setActiveSprint] = useState(null);
   const [tickets, setTickets] = useState([]);
 
   const [linkedStories, setLinkedStories] = useState(null);
@@ -44,10 +42,6 @@ const CreateTicket = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const activeSprintId = await _fetch("activeSprintId");
-    setActiveSprint(activeSprintId);
-    const getAllSprints = await _fetch("getAllSprints");
-    setSprints(getAllSprints);
     const allTickets = await _fetch("getAllTickets");
     setTickets(allTickets);
     setLoading(false);
@@ -90,7 +84,7 @@ const CreateTicket = () => {
     if (account?.uid) {
       responseData = await _transction(
         "createTicket",
-        sprintId,
+        "",
         id,
         IpfsViewLink(resultsSaveMetaData.path),
         account?.uid,
@@ -115,7 +109,7 @@ const CreateTicket = () => {
   };
 
   const VendorSchema = Yup.object().shape({
-    sprint: Yup.string().required("sprint is required"),
+    // sprint: Yup.string().required("sprint is required"),
     type: Yup.string().required("type is required"),
     title: Yup.string().required("title is required"),
     priority: Yup.string().required("priority is required"),
@@ -144,7 +138,7 @@ const CreateTicket = () => {
                     priority: "",
                     storypoint: "",
                     text: "",
-                    sprint: activeSprint,
+                    // sprint: "",
                   }}
                   validationSchema={VendorSchema}
                   onSubmit={(values, { setSubmitting }) => {
@@ -156,7 +150,7 @@ const CreateTicket = () => {
                     <Form>
                       <Grid container>
                         {/* sprint */}
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                        {/* <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
@@ -182,7 +176,7 @@ const CreateTicket = () => {
                               ))}
                             </Field>
                           </div>
-                        </Grid>
+                        </Grid> */}
                         {/* type */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                           <div

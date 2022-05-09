@@ -89,15 +89,16 @@ const UpadteTicket = ({ tokenId }) => {
   };
 
   const getAC = async (URI) => {
-    await fetch(URI)
-      .then((descResponse) => descResponse.text())
-      .then((descriptionData) => {
-        setDefaultEditorValueAC(descriptionData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
+    URI &&
+      (await fetch(URI)
+        .then((descResponse) => descResponse.text())
+        .then((descriptionData) => {
+          setDefaultEditorValueAC(descriptionData);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+        }));
   };
 
   const saveData = async ({ title, type, priority, storypoint }) => {
@@ -282,6 +283,7 @@ const UpadteTicket = ({ tokenId }) => {
                       </label>
 
                       <Field
+                        disabled={tickets?.sprintId !== "" ? true : false}
                         type="number"
                         value={values.storypoint}
                         name="storypoint"
@@ -351,11 +353,13 @@ const UpadteTicket = ({ tokenId }) => {
                         Link Story{" "}
                       </label>
 
-                      <MultipleSelectBox
-                        tickets={allTicketData}
-                        onchangeEpicStoryHandler={onchangeEpicStoryHandler}
-                        defaultValue={linkedStories}
-                      />
+                      {allTicketData !== null && allTicketData?.length > 0 && (
+                        <MultipleSelectBox
+                          tickets={allTicketData}
+                          onchangeEpicStoryHandler={onchangeEpicStoryHandler}
+                          defaultValue={linkedStories}
+                        />
+                      )}
                     </div>
                   </Grid>
                   <Grid item lg={12} md={12} sm={12} xs={12}>
