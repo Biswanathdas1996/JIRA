@@ -63,7 +63,10 @@ const UpadteTicket = ({ tokenId }) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
 
-          setLinkedStories(JSON.parse(updatesTicket?.linkedStories));
+          setLinkedStories(
+            updatesTicket?.linkedStories &&
+              JSON.parse(updatesTicket?.linkedStories)
+          );
 
           await getDescription(data.description);
           await getAC(data.AC);

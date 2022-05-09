@@ -27,6 +27,7 @@ export default function CheckboxListSecondary({ data }) {
   return (
     <List dense sx={{ width: "100%" }}>
       {data?.map((value) => {
+        console.log(value);
         return (
           <div style={{ marginBottom: 10 }}>
             <TicketCard item={value} showStatus={true} />

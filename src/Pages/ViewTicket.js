@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import UpdateTicket from "../components/ViewTicket/UpdateTicket";
 import TransferTicket from "../components/ViewTicket/TransferTicket";
 import TicketTimeline from "../components/ViewTicket/TicketTimeline";
+import ShowLinkedTickets from "../components/ViewTicket/ShowLinkedTickets";
 import Comments from "../components/ViewTicket/Comments";
 import { Grid, Card } from "@mui/material";
 
@@ -34,6 +35,7 @@ const ViewTicket = () => {
         </Grid>
         <Grid item lg={3} md={3} sm={12} xs={12}>
           <TransferTicket tokenId={tokenId} />
+          <ShowLinkedTickets tokenId={tokenId} />
         </Grid>
         <Grid item lg={1} md={1} sm={12} xs={12}></Grid>
         <Grid item lg={1} md={1} sm={12} xs={12}></Grid>

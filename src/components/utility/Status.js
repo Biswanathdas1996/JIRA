@@ -12,7 +12,7 @@ export const Status = (position) => {
       return "Closed";
 
     default:
-      return null;
+      return "Assigned";
   }
 };
 export const StatusColor = (position) => {
@@ -22,13 +22,13 @@ export const StatusColor = (position) => {
     case "2":
       return "#7D3C98";
     case "3":
-      return "In Progress";
-    case "4":
       return "#D4AC0D";
+    case "4":
+      return "#F39C12";
     case "5":
       return "#229954";
 
     default:
-      return null;
+      return "#0d6efd";
   }
 };
