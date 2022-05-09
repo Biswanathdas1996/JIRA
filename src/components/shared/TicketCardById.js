@@ -29,7 +29,6 @@ export default function OutlinedCard({ index, showStatus = false }) {
   const frtchData = async () => {
     setLoading(true);
     const ticket = await _fetch("tickets", index);
-    console.log("====ticketData===>>>>", ticket);
     setTicketData(ticket);
     const ticketAbi = await _fetch("getTicketsAbi", ticket?.index);
     const repoterData = await _fetch("users", ticket?.repoter);
@@ -50,7 +49,6 @@ export default function OutlinedCard({ index, showStatus = false }) {
     }
   };
 
-  console.log("=======>>>>", ticketData);
   return (
     <>
       {!loading ? (
@@ -72,6 +70,7 @@ export default function OutlinedCard({ index, showStatus = false }) {
                 sx={{ fontSize: 15, marginBottom: 1, fontWeight: "bold" }}
               >
                 {tickets?.name}
+                <p style={{ fontSize: 11, fontWeight: 200 }}>{tickets?.id}</p>
 
                 {showStatus && ticketData?.position && (
                   <div
