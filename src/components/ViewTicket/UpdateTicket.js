@@ -12,6 +12,7 @@ import TextEditor from "../UI/TextEditor";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import { addTicketTracking } from "../../functions/TicketTracking";
+import MultipleSelectBox from "../UI/MultipleSelectBox";
 
 const client = create(IPFSLink);
 
@@ -35,12 +36,19 @@ const UpadteTicket = ({ tokenId }) => {
   const [defaultEditorValueAC, setDefaultEditorValueAC] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentABI, setCurrentABI] = useState(false);
-
+  const [linkedStories, setLinkedStories] = useState(null);
+  const [allTicketData, setAllTicketData] = useState(null);
   let history = useNavigate();
+
+  const onchangeEpicStoryHandler = (newValue) => {
+    setLinkedStories(newValue);
+  };
 
   const getData = async () => {
     setLoading(true);
+
     const allTickets = await _fetch("getAllTickets");
+    setAllTicketData(allTickets);
     const filterTicketsForCurrentUser = await allTickets.find(
       (ticket) => ticket.id === tokenId
     );
@@ -54,6 +62,8 @@ const UpadteTicket = ({ tokenId }) => {
         .then(async (data) => {
           const updatesTicket = { ...data, ...filterTicketsForCurrentUser };
           setTickets(updatesTicket);
+
+          setLinkedStories(JSON.parse(updatesTicket?.linkedStories));
 
           await getDescription(data.description);
           await getAC(data.AC);
@@ -116,6 +126,7 @@ const UpadteTicket = ({ tokenId }) => {
       storypoint: storypoint,
       description: descIpfsLink,
       AC: acIpfsLink,
+      linkedStories: JSON.stringify(linkedStories),
     };
 
     const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
@@ -325,6 +336,23 @@ const UpadteTicket = ({ tokenId }) => {
                           onChange={getEditorValueAC}
                         />
                       )}
+                    </div>
+                  </Grid>
+                  {/* link stories */}
+                  <Grid item lg={6} md={6} sm={12} xs={12}>
+                    <div
+                      className="form-group"
+                      style={{ marginLeft: 10, marginTop: 10 }}
+                    >
+                      <label htmlFor="title" className="my-2">
+                        Link Story{" "}
+                      </label>
+
+                      <MultipleSelectBox
+                        tickets={allTicketData}
+                        onchangeEpicStoryHandler={onchangeEpicStoryHandler}
+                        defaultValue={linkedStories}
+                      />
                     </div>
                   </Grid>
                   <Grid item lg={12} md={12} sm={12} xs={12}>

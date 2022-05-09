@@ -29,7 +29,7 @@ export default function CheckboxListSecondary({ data }) {
       {data?.map((value) => {
         return (
           <div style={{ marginBottom: 10 }}>
-            <TicketCard index={value?.index} item={value} showStatus={true} />
+            <TicketCard item={value} showStatus={true} />
             {!value?.owner && (
               <AssignTickets
                 index={value?.index}

@@ -13,7 +13,7 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import { Status, StatusColor } from "../utility/Status";
 
-export default function OutlinedCard({ index, item, showStatus = false }) {
+export default function OutlinedCard({ item, showStatus = false }) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [repoterImg, setRepoterImg] = useState(null);
@@ -27,10 +27,10 @@ export default function OutlinedCard({ index, item, showStatus = false }) {
 
   const frtchData = async () => {
     setLoading(true);
-    const ticketAbi = await _fetch("getTicketsAbi", index);
+    const ticketAbi = await _fetch("getTicketsAbi", item?.index);
     const repoterData = await _fetch("users", item?.repoter);
     setRepoterImg(repoterData?.profileImg);
-    const ownerDataImg = await _fetch("getTicketsOwnerImg", index);
+    const ownerDataImg = await _fetch("getTicketsOwnerImg", item?.index);
     setOwnerImg(ownerDataImg);
 
     if (ticketAbi) {
