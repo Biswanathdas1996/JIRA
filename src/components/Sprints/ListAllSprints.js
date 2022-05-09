@@ -32,7 +32,7 @@ export default function ListAllSprints({
           const filterTicketsForCurrentUser = tickets.filter(
             (ticket) => ticket?.sprintId === sprint?.id
           );
-          console.log(filterTicketsForCurrentUser);
+
           return (
             <Accordion
               expanded={expanded === `panel${index}`}

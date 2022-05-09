@@ -5,11 +5,15 @@ import SpeechRecognition, {
 import IconButton from "@mui/material/IconButton";
 import MicIcon from "@mui/icons-material/Mic";
 import _ from "lodash";
-import { TextData } from "./FunctionalTexts";
 import StringSimilarity from "string-similarity";
 import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import CampaignIcon from "@mui/icons-material/Campaign";
+
+import { TextData } from "./FunctionalTexts";
+import { ActionText } from "./Actiontext";
+
+import { createTicket } from "./Functions";
 
 const VoiceFile = () => {
   const {
@@ -30,27 +34,49 @@ const VoiceFile = () => {
   // throttle
   const debounce_fun = _.debounce(function (transcript) {
     if (transcript) {
-      const search = TextData?.map((data) => {
-        return {
-          nav: data?.nav,
-          score: StringSimilarity.compareTwoStrings(data?.text, transcript),
-        };
-      });
+      let search;
+      const findAction = _.words(transcript, "please");
+      if (findAction.length === 0) {
+        search = TextData?.map((data) => {
+          return {
+            nav: data?.nav,
+            score: StringSimilarity.compareTwoStrings(data?.text, transcript),
+          };
+        });
+      } else {
+        search = ActionText?.map((data) => {
+          return {
+            action: data?.action,
+            score: StringSimilarity.compareTwoStrings(data?.text, transcript),
+          };
+        });
+      }
 
       const shortScore = search.sort(function (a, b) {
         return b?.score - a?.score;
       });
 
-      console.log("--->", transcript, shortScore);
-
       if (shortScore[0]?.score > 0) {
         resetTranscript();
-        history(shortScore[0]?.nav);
+
+        actions(shortScore[0]);
         return;
       } else {
       }
     }
   }, 2000);
+
+  const actions = (data) => {
+    const findAction = _.words(transcript, "please");
+    if (findAction.length === 0) {
+      history(data?.nav);
+    } else {
+      console.log("------>", data);
+
+      createTicket(history);
+    }
+    return;
+  };
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;

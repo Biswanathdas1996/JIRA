@@ -47,7 +47,6 @@ const MyTransaction = () => {
         .then((response) => response.json())
         .then((result) => {
           settransctions(result.result);
-          console.log(result.result);
         })
         .catch((error) => console.log("error", error));
     }

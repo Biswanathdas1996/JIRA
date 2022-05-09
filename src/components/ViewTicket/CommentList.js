@@ -16,7 +16,7 @@ export default function FolderList({ tickets }) {
       {comments &&
         comments.map((data, index) => {
           const comments = JSON.parse(data);
-          console.log(comments);
+
           return (
             <ListItem>
               <ListItemAvatar style={{ marginRight: 10 }}>

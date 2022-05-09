@@ -5,7 +5,6 @@ export async function addTicketTracking(status, dragedCardIndex) {
   const prevTracking = await _fetch("tickets", Number(dragedCardIndex));
   let prevTrackingData =
     prevTracking?.tracking && JSON.parse(prevTracking?.tracking);
-  console.log("prevTrackingData", prevTrackingData);
   prevTrackingData &&
     prevTrackingData.push({
       time: new Date(),

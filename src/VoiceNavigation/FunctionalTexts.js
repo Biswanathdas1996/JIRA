@@ -35,4 +35,8 @@ export const TextData = [
     text: "create story",
     nav: "/create-ticket",
   },
+  {
+    text: "please create a new ticket",
+    action: "create-ticket",
+  },
 ];

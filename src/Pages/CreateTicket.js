@@ -53,7 +53,8 @@ const CreateTicket = () => {
     const id = uuid();
 
     const saveHtmlDescription = await client.add(htmlCode);
-    const saveHtmlAC = await client.add(htmlCodeAC);
+
+    const saveHtmlAC = htmlCodeAC && (await client.add(htmlCodeAC));
 
     const metaData = {
       id: id,
@@ -62,7 +63,7 @@ const CreateTicket = () => {
       priority: priority,
       storypoint: storypoint,
       description: IpfsViewLink(saveHtmlDescription.path),
-      AC: IpfsViewLink(saveHtmlAC.path),
+      AC: htmlCodeAC ? IpfsViewLink(saveHtmlAC.path) : "",
       linkedStories: JSON.stringify(linkedStories),
     };
 
@@ -98,7 +99,7 @@ const CreateTicket = () => {
   const modalClose = () => {
     setStart(false);
     setResponse(null);
-    history("/");
+    history("/backlog");
   };
 
   const getEditorValue = (val) => {
@@ -147,47 +148,21 @@ const CreateTicket = () => {
                   }}
                 >
                   {({ touched, errors, isSubmitting, values }) => (
-                    <Form>
+                    <Form id="create-story-form">
                       <Grid container>
-                        {/* sprint */}
-                        {/* <Grid item lg={12} md={12} sm={12} xs={12}>
-                          <div
-                            className="form-group"
-                            style={{ marginLeft: 10, marginTop: 10 }}
-                          >
-                            <label htmlFor="title" className="my-2">
-                              Sprint <span className="text-danger">*</span>
-                            </label>
-                            <Field
-                              name="sprint"
-                              component="select"
-                              className={`form-control text-muted ${
-                                touched.sprint && errors.sprint
-                                  ? "is-invalid"
-                                  : ""
-                              }`}
-                              style={{ marginRight: 10, padding: 9 }}
-                            >
-                              <option value="">-- Please select --</option>
-                              {sprints?.map((data) => (
-                                <option value={data?.id}>
-                                  SPRINT-{data?.id}
-                                </option>
-                              ))}
-                            </Field>
-                          </div>
-                        </Grid> */}
                         {/* type */}
                         <Grid item lg={6} md={6} sm={12} xs={12}>
                           <div
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
                           >
-                            <label htmlFor="title" className="my-2">
+                            <label htmlFor="issue-type-button" className="my-2">
                               Issue Type <span className="text-danger">*</span>
                             </label>
                             <Field
+                              as="select"
                               name="type"
+                              id="issue-type-button"
                               component="select"
                               className={`form-control text-muted ${
                                 touched.type && errors.type ? "is-invalid" : ""
@@ -248,6 +223,7 @@ const CreateTicket = () => {
                             <Field
                               type="text"
                               name="title"
+                              id="story-summery"
                               autoComplete="flase"
                               placeholder="Enter Summary"
                               className={`form-control text-muted ${
@@ -273,6 +249,7 @@ const CreateTicket = () => {
                             <Field
                               name="priority"
                               component="select"
+                              id="story-priority"
                               className={`form-control text-muted ${
                                 touched.priority && errors.priority
                                   ? "is-invalid"
@@ -300,6 +277,7 @@ const CreateTicket = () => {
                               Description <span className="text-danger">*</span>
                             </label>
                             <TextEditor
+                              id="story-description"
                               name="description"
                               label="Description"
                               tip="Describe the project in as much detail as you'd like."
@@ -339,6 +317,7 @@ const CreateTicket = () => {
 
                             <Field
                               type="number"
+                              id="storypointdata"
                               name="storypoint"
                               autoComplete="flase"
                               placeholder="Enter story point"
@@ -383,6 +362,7 @@ const CreateTicket = () => {
                                 className="btn btn-default btn-primary float-right"
                                 type="submit"
                                 value={"Submit"}
+                                id="story-submit-button"
                               />
                             </span>
                           </div>
