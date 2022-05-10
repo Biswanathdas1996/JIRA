@@ -3,6 +3,7 @@ import uuid from "uuid/v4";
 import { create } from "ipfs-http-client";
 import { IPFSLink, IpfsViewLink } from "../config";
 import { decode } from "js-base64";
+import swal from "sweetalert";
 
 const client = create(IPFSLink);
 // ----------------------------
@@ -27,8 +28,62 @@ const client = create(IPFSLink);
 // }
 ///--------------------------
 
-export const createTicket = async (history) => {
+export const actionFunctions = (history, expression) => {
+  switch (expression) {
+    case "create-story":
+      return createDynamicTicket(history, `story`, `medium`);
+    case "create-bug":
+      return createDynamicTicket(history, `bug`, `high`);
+    case "log-out":
+      return logout();
+    case "create-sprint":
+      return createSprint();
+
+    default:
+  }
+};
+const logout = () => {
+  localStorage.clear();
+  window.location.href = `/login`;
+};
+
+const createSprint = async () => {
+  swal({
+    title: `Please wait!`,
+    text: `Creating a sprint, please update the details as needed.`,
+    icon: "https://www.boasnotas.com/img/loading2.gif",
+    dangerMode: true,
+    button: false,
+  });
+  const responseData = _transction("createSprint", "New sprint", "", "", "");
+  responseData.then((data) => {
+    if (data?.blockHash) {
+      swal.close();
+      swal({
+        title: "Success!",
+        text: `Sprint is created successfully`,
+        icon: "success",
+        button: false,
+        dangerMode: true,
+      }).then(() => {});
+      setTimeout(() => {
+        window.location.href = `/sprints`;
+      }, 1000);
+    }
+  });
+};
+
+const createDynamicTicket = async (history, type, priority) => {
   history("/create-ticket");
+
+  swal({
+    title: `Please wait!`,
+    text: `Creating a ${type}, please update the details as needed.`,
+    icon: "https://www.boasnotas.com/img/loading2.gif",
+    dangerMode: true,
+    button: false,
+  });
+
   const id = uuid();
   const saveHtmlDescription = await client.add(
     `<p>Please enter a description</p>`
@@ -37,8 +92,8 @@ export const createTicket = async (history) => {
   const metaData = {
     id: id,
     name: "Dummy titile (Please update)",
-    type: "story",
-    priority: "high",
+    type: type,
+    priority: priority,
     storypoint: 2,
     description: IpfsViewLink(saveHtmlDescription.path),
     AC: IpfsViewLink(saveHtmlAC.path),
@@ -61,11 +116,21 @@ export const createTicket = async (history) => {
     localStorage.getItem("uid"),
     trackingData
   );
-
   responsedata.then((data) => {
     console.log("--------->", data?.blockHash);
     if (data?.blockHash) {
-      history(`/ticket/${id}`);
+      swal.close();
+
+      swal({
+        title: "Success!",
+        text: `${type} is created successfully`,
+        icon: "success",
+        button: false,
+        dangerMode: true,
+      }).then(() => {});
+      setTimeout(() => {
+        window.location.href = `/ticket/${id}`;
+      }, 1000);
     }
   });
 

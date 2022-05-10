@@ -10,7 +10,6 @@ export const Status = (position) => {
       return "Done";
     case "5":
       return "Closed";
-
     default:
       return "Assigned";
   }
@@ -30,5 +29,19 @@ export const StatusColor = (position) => {
 
     default:
       return "#0d6efd";
+  }
+};
+
+export const TaskStatusColor = (position) => {
+  switch (position) {
+    case "inprogress":
+      return "#AED6F1";
+    case "readyForTest":
+      return "#F9E79F";
+    case "closed":
+      return "#ABEBC6";
+
+    default:
+      return "#D5DBDB";
   }
 };

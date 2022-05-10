@@ -14,6 +14,9 @@ export default function ListAllSprints({ sprints, tickets }) {
     >
       <h4>Backlog</h4>
       <ListOfTickets data={filterTicketsForCurrentUser} sprints={sprints} />
+      {filterTicketsForCurrentUser?.length === 0 && (
+        <h4 style={{ color: "grey" }}>No story available</h4>
+      )}
     </Card>
   );
 }

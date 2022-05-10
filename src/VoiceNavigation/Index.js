@@ -12,8 +12,9 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 
 import { TextData } from "./FunctionalTexts";
 import { ActionText } from "./Actiontext";
+import { actionFunctions } from "./Functions";
 
-import { createTicket } from "./Functions";
+const wordOfIdentification = "please";
 
 const VoiceFile = () => {
   const {
@@ -35,7 +36,7 @@ const VoiceFile = () => {
   const debounce_fun = _.debounce(function (transcript) {
     if (transcript) {
       let search;
-      const findAction = _.words(transcript, "please");
+      const findAction = _.words(transcript, wordOfIdentification);
       if (findAction.length === 0) {
         search = TextData?.map((data) => {
           return {
@@ -58,25 +59,19 @@ const VoiceFile = () => {
 
       if (shortScore[0]?.score > 0) {
         resetTranscript();
-
-        actions(shortScore[0]);
+        const findAction = _.words(transcript, wordOfIdentification);
+        if (findAction.length === 0) {
+          history(shortScore[0]?.nav);
+        } else {
+          // return;
+          console.log("---f--->", shortScore[0]);
+          actionFunctions(history, shortScore[0]?.action);
+        }
         return;
       } else {
       }
     }
   }, 2000);
-
-  const actions = (data) => {
-    const findAction = _.words(transcript, "please");
-    if (findAction.length === 0) {
-      history(data?.nav);
-    } else {
-      console.log("------>", data);
-
-      createTicket(history);
-    }
-    return;
-  };
 
   if (!browserSupportsSpeechRecognition) {
     return <span>Browser doesn't support speech recognition.</span>;
@@ -94,6 +89,9 @@ const VoiceFile = () => {
         aria-haspopup="true"
         color="info"
         onClick={SpeechRecognition.startListening}
+        // onClick={SpeechRecognition.startListening({
+        //   continuous: true,
+        // })}
       >
         {!listening ? <MicIcon /> : <CampaignIcon />}
       </IconButton>

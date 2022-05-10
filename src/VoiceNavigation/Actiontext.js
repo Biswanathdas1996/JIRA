@@ -1,6 +1,19 @@
 export const ActionText = [
   {
-    text: "please create a new ticket",
-    action: "create-ticket",
+    text: "create a new story please",
+    action: "create-story",
+  },
+
+  {
+    text: "create a defect please",
+    action: "create-bug",
+  },
+  {
+    text: "make a sprint please",
+    action: "create-sprint",
+  },
+  {
+    text: "please log me out",
+    action: "log-out",
   },
 ];

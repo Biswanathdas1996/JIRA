@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useEffect } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
@@ -13,7 +13,11 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import { addTicketTracking } from "../../functions/TicketTracking";
 import MultipleSelectBox from "../UI/MultipleSelectBox";
-
+import Button from "@mui/material/Button";
+import DeleteOutlineIcon from "@mui/icons-material/Delete";
+import { pink } from "@mui/material/colors";
+import { mapTaskData } from "../../functions/index";
+import { TaskStatusColor } from "../utility/Status";
 const client = create(IPFSLink);
 
 // const VendorSchema = Yup.object().shape({
@@ -38,6 +42,8 @@ const UpadteTicket = ({ tokenId }) => {
   const [currentABI, setCurrentABI] = useState(false);
   const [linkedStories, setLinkedStories] = useState(null);
   const [allTicketData, setAllTicketData] = useState(null);
+  const [users, setusers] = useState([]);
+
   let history = useNavigate();
 
   const onchangeEpicStoryHandler = (newValue) => {
@@ -46,6 +52,14 @@ const UpadteTicket = ({ tokenId }) => {
 
   const getData = async () => {
     setLoading(true);
+
+    const allUser = await _fetch("getAllUser");
+    let tempUserData = [];
+    await allUser.map(async (address) => {
+      const result = await _fetch("users", address);
+      tempUserData.push(result);
+      setusers(tempUserData);
+    });
 
     const allTickets = await _fetch("getAllTickets");
     setAllTicketData(allTickets);
@@ -101,7 +115,7 @@ const UpadteTicket = ({ tokenId }) => {
         }));
   };
 
-  const saveData = async ({ title, type, priority, storypoint }) => {
+  const saveData = async ({ title, type, priority, storypoint, tasks }) => {
     setStart(true);
     let responseData;
     const id = tokenId;
@@ -122,6 +136,8 @@ const UpadteTicket = ({ tokenId }) => {
       acIpfsLink = tickets?.AC;
     }
 
+    const mappedTaskData = mapTaskData(tasks);
+
     const metaData = {
       id: id,
       name: title,
@@ -131,6 +147,7 @@ const UpadteTicket = ({ tokenId }) => {
       description: descIpfsLink,
       AC: acIpfsLink,
       linkedStories: JSON.stringify(linkedStories),
+      tasks: JSON.stringify(mappedTaskData),
     };
 
     const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
@@ -169,6 +186,8 @@ const UpadteTicket = ({ tokenId }) => {
     history("/");
   };
 
+  console.log(users);
+
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
@@ -189,6 +208,7 @@ const UpadteTicket = ({ tokenId }) => {
               storypoint: tickets.storypoint,
               text: tickets.description,
               sprint: tickets?.sprintId,
+              tasks: tickets?.tasks ? JSON.parse(tickets?.tasks) : [],
             }}
             // validationSchema={VendorSchema}
             onSubmit={(values, { setSubmitting }) => {
@@ -360,6 +380,206 @@ const UpadteTicket = ({ tokenId }) => {
                           defaultValue={linkedStories}
                         />
                       )}
+                    </div>
+                  </Grid>
+                  {/* tasks */}
+                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                    <div
+                      className="form-group"
+                      style={{ marginLeft: 10, marginTop: 10 }}
+                    >
+                      <label htmlFor="title" className="my-2">
+                        Add tasks{" "}
+                      </label>
+                      <FieldArray
+                        name="tasks"
+                        render={(arrayHelpers) => (
+                          <div>
+                            {values.tasks && values.tasks.length > 0 ? (
+                              values.tasks.map((attribut, index) => {
+                                return (
+                                  <div
+                                    style={{
+                                      border: "1px solid #c7c9cc",
+                                      borderRadius: 5,
+                                      padding: 12,
+                                      marginTop: 15,
+                                      backgroundColor: TaskStatusColor(
+                                        attribut.status
+                                      ),
+                                    }}
+                                    key={index}
+                                  >
+                                    <DeleteOutlineIcon
+                                      onClick={() => arrayHelpers.remove(index)}
+                                      sx={{ color: pink[500] }}
+                                      style={{
+                                        marginBottom: 10,
+                                        float: "right",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                    <Grid container>
+                                      <Grid item lg={4} md={4} sm={12} xs={12}>
+                                        <div className="form-group">
+                                          <label for="title" className="my-2">
+                                            Title{" "}
+                                            <span className="text-danger">
+                                              *
+                                            </span>
+                                          </label>
+                                          <Field
+                                            name={`tasks.${index}.trait_type`}
+                                            autoComplete="flase"
+                                            placeholder="Task Title"
+                                            className={`form-control text-muted `}
+                                            style={{
+                                              marginTop: 10,
+                                              padding: 9,
+                                            }}
+                                          />
+                                        </div>
+                                      </Grid>
+
+                                      <Grid item lg={4} md={4} sm={12} xs={12}>
+                                        <div
+                                          className="form-group"
+                                          style={{
+                                            marginLeft: 10,
+                                            marginTop: 10,
+                                          }}
+                                        >
+                                          <label for="title" className="my-2">
+                                            Select User{" "}
+                                            <span className="text-danger">
+                                              *
+                                            </span>
+                                          </label>
+                                          <Field
+                                            name={`tasks.${index}.owner`}
+                                            component="select"
+                                            className={`form-control text-muted `}
+                                            style={{
+                                              marginRight: 10,
+                                              padding: 9,
+                                            }}
+                                          >
+                                            <option>-- Please select --</option>
+                                            {users?.map((user) => {
+                                              return (
+                                                <option value={user?.uid}>
+                                                  {user?.name}
+                                                </option>
+                                              );
+                                            })}
+                                          </Field>
+                                        </div>
+                                      </Grid>
+                                      <Grid item lg={4} md={4} sm={12} xs={12}>
+                                        <div
+                                          className="form-group"
+                                          style={{
+                                            marginLeft: 10,
+                                            marginTop: 10,
+                                          }}
+                                        >
+                                          <label for="title" className="my-2">
+                                            Status{" "}
+                                            <span className="text-danger">
+                                              *
+                                            </span>
+                                          </label>
+                                          <Field
+                                            name={`tasks.${index}.status`}
+                                            component="select"
+                                            className={`form-control text-muted `}
+                                            style={{
+                                              marginRight: 10,
+                                              padding: 9,
+                                            }}
+                                          >
+                                            <option>-- Please select --</option>
+
+                                            <option value="inprogress">
+                                              In progress
+                                            </option>
+                                            <option value="readyForTest">
+                                              Ready for test
+                                            </option>
+                                            <option value="closed">
+                                              Closed
+                                            </option>
+                                          </Field>
+                                        </div>
+                                      </Grid>
+                                      <Grid
+                                        item
+                                        lg={12}
+                                        md={12}
+                                        sm={12}
+                                        xs={12}
+                                      >
+                                        <div
+                                          className="form-group"
+                                          style={{
+                                            marginLeft: 10,
+                                            marginTop: 10,
+                                          }}
+                                        >
+                                          <label for="title" className="my-2">
+                                            Description{" "}
+                                            <span className="text-danger">
+                                              *
+                                            </span>
+                                          </label>
+                                          <Field
+                                            name={`tasks.${index}.value`}
+                                            autoComplete="flase"
+                                            placeholder="Enter description"
+                                            className={`form-control text-muted`}
+                                            style={{
+                                              marginTop: 10,
+                                              padding: 9,
+                                            }}
+                                          />
+                                        </div>
+                                      </Grid>
+                                    </Grid>
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <Button
+                                variant="outlined"
+                                size="medium"
+                                type="button"
+                                onClick={() => arrayHelpers.push("")}
+                              >
+                                {/* show this when user has removed all tasks from the list */}
+                                Add tasks
+                              </Button>
+                            )}
+                            {values.tasks.length !== 0 && (
+                              <Button
+                                variant="outlined"
+                                size="medium"
+                                type="button"
+                                onClick={() =>
+                                  arrayHelpers.insert(
+                                    values.tasks.length + 1,
+                                    ""
+                                  )
+                                }
+                                style={{
+                                  marginTop: 10,
+                                }}
+                              >
+                                + Add
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      />
                     </div>
                   </Grid>
                   <Grid item lg={12} md={12} sm={12} xs={12}>

@@ -64,3 +64,15 @@ export const mapSingleTicketData = (data) => {
     tracking: data?.tracking,
   };
 };
+
+export const mapTaskData = (tasks) => {
+  const temp = tasks.map((task) => {
+    return {
+      trait_type: task?.trait_type,
+      value: task?.value,
+      owner: task?.owner !== "" ? task?.owner : "",
+      status: task?.status !== "" ? task?.status : "",
+    };
+  });
+  return temp;
+};

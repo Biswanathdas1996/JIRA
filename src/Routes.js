@@ -7,6 +7,7 @@ import ViewTicket from "./Pages/ViewTicket";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Backlog from "./Pages/Backlog";
+import BurnDownchart from "./Pages/Reports/BurnDownchart";
 
 class Routing extends React.Component {
   render() {
@@ -20,6 +21,7 @@ class Routing extends React.Component {
             <Route exact path="/create-ticket" element={<CreateTicket />} />
             <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
             <Route exact path="/backlog" element={<Backlog />} />
+            <Route exact path="/report" element={<BurnDownchart />} />
           </>
         ) : (
           <>

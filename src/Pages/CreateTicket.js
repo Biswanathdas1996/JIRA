@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { create } from "ipfs-http-client";
@@ -15,6 +15,10 @@ import Box from "@mui/material/Box";
 import Loader from "../components/shared/Loader";
 import { decode } from "js-base64";
 import MultipleSelectBox from "../components/UI/MultipleSelectBox";
+import Button from "@mui/material/Button";
+import DeleteOutlineIcon from "@mui/icons-material/Delete";
+import { pink } from "@mui/material/colors";
+import { mapTaskData } from "../functions/index";
 
 const client = create(IPFSLink);
 
@@ -47,7 +51,14 @@ const CreateTicket = () => {
     setLoading(false);
   };
 
-  const saveData = async ({ title, type, priority, storypoint, sprint }) => {
+  const saveData = async ({
+    title,
+    type,
+    priority,
+    storypoint,
+    sprint,
+    tasks,
+  }) => {
     setStart(true);
     let responseData;
     const id = uuid();
@@ -55,6 +66,8 @@ const CreateTicket = () => {
     const saveHtmlDescription = await client.add(htmlCode);
 
     const saveHtmlAC = htmlCodeAC && (await client.add(htmlCodeAC));
+
+    const mappedTaskData = mapTaskData(tasks);
 
     const metaData = {
       id: id,
@@ -65,6 +78,7 @@ const CreateTicket = () => {
       description: IpfsViewLink(saveHtmlDescription.path),
       AC: htmlCodeAC ? IpfsViewLink(saveHtmlAC.path) : "",
       linkedStories: JSON.stringify(linkedStories),
+      tasks: JSON.stringify(mappedTaskData),
     };
 
     const resultsSaveMetaData = await await client.add(
@@ -139,7 +153,7 @@ const CreateTicket = () => {
                     priority: "",
                     storypoint: "",
                     text: "",
-                    // sprint: "",
+                    tasks: [],
                   }}
                   validationSchema={VendorSchema}
                   onSubmit={(values, { setSubmitting }) => {
@@ -345,6 +359,116 @@ const CreateTicket = () => {
                               onchangeEpicStoryHandler={
                                 onchangeEpicStoryHandler
                               }
+                            />
+                          </div>
+                        </Grid>
+                        {/* tasks */}
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <div
+                            className="form-group"
+                            style={{ marginLeft: 10, marginTop: 10 }}
+                          >
+                            <label htmlFor="title" className="my-2">
+                              Add tasks{" "}
+                            </label>
+                            <FieldArray
+                              name="tasks"
+                              render={(arrayHelpers) => (
+                                <div>
+                                  {values.tasks && values.tasks.length > 0 ? (
+                                    values.tasks.map((attribut, index) => (
+                                      <div
+                                        style={{
+                                          border: "1px solid #c7c9cc",
+                                          borderRadius: 5,
+                                          padding: 12,
+                                          marginTop: 15,
+                                        }}
+                                        key={index}
+                                      >
+                                        <DeleteOutlineIcon
+                                          onClick={() =>
+                                            arrayHelpers.remove(index)
+                                          }
+                                          sx={{ color: pink[500] }}
+                                          style={{
+                                            marginBottom: 10,
+                                            float: "right",
+                                            cursor: "pointer",
+                                          }}
+                                        />
+                                        <Grid container>
+                                          <Grid
+                                            item
+                                            lg={5}
+                                            md={5}
+                                            sm={12}
+                                            xs={12}
+                                            style={{ marginRight: 20 }}
+                                          >
+                                            <Field
+                                              name={`tasks.${index}.trait_type`}
+                                              autoComplete="flase"
+                                              placeholder="Task Title"
+                                              className={`form-control text-muted `}
+                                              style={{
+                                                marginTop: 10,
+                                                padding: 9,
+                                              }}
+                                            />
+                                          </Grid>
+                                          <Grid
+                                            item
+                                            lg={6}
+                                            md={6}
+                                            sm={12}
+                                            xs={12}
+                                          >
+                                            <Field
+                                              name={`tasks.${index}.value`}
+                                              autoComplete="flase"
+                                              placeholder="Enter description"
+                                              className={`form-control text-muted`}
+                                              style={{
+                                                marginTop: 10,
+                                                padding: 9,
+                                              }}
+                                            />
+                                          </Grid>
+                                        </Grid>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <Button
+                                      variant="outlined"
+                                      size="medium"
+                                      type="button"
+                                      onClick={() => arrayHelpers.push("")}
+                                    >
+                                      {/* show this when user has removed all tasks from the list */}
+                                      Add tasks
+                                    </Button>
+                                  )}
+                                  {values.tasks.length !== 0 && (
+                                    <Button
+                                      variant="outlined"
+                                      size="medium"
+                                      type="button"
+                                      onClick={() =>
+                                        arrayHelpers.insert(
+                                          values.tasks.length + 1,
+                                          ""
+                                        )
+                                      }
+                                      style={{
+                                        marginTop: 10,
+                                      }}
+                                    >
+                                      + Add
+                                    </Button>
+                                  )}
+                                </div>
+                              )}
                             />
                           </div>
                         </Grid>
