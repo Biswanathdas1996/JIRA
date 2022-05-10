@@ -41,7 +41,7 @@ export default function CheckboxListSecondary({ tokenId }) {
 
   return (
     <List dense sx={{ width: "100%", marginTop: 3 }}>
-      <h4> Dependency</h4>
+      <h4 style={{ marginBottom: 20 }}> Dependency Story(s)</h4>
       {linkedTickets && linkedTickets.length > 0
         ? linkedTickets?.map((value) => {
             return (

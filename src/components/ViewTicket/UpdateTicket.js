@@ -370,7 +370,7 @@ const UpadteTicket = ({ tokenId }) => {
                       style={{ marginLeft: 10, marginTop: 10 }}
                     >
                       <label htmlFor="title" className="my-2">
-                        Link Story{" "}
+                        Dependency Story(s){" "}
                       </label>
 
                       {allTicketData !== null && allTicketData?.length > 0 && (

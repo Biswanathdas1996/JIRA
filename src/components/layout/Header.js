@@ -33,6 +33,10 @@ const pages = [
     label: "Sptints",
     href: "/sprints",
   },
+  {
+    label: "Burn Down",
+    href: "/report",
+  },
 ];
 
 const Header = () => {
