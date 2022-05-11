@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
@@ -19,6 +20,7 @@ import Fab from "@mui/material/Fab";
 import ListGroup from "react-bootstrap/ListGroup";
 
 const wordOfIdentification = "for me";
+var base_url = window.location.origin;
 
 const VoiceFile = () => {
   const {
@@ -121,20 +123,32 @@ const VoiceFile = () => {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Are you lookig for </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <ListGroup>
-            {data?.map((val, index) => {
-              return (
-                <ListGroup.Item>
-                  <div className="ms-2 me-auto">
-                    <div className="fw-bold">{val?.page}</div>
-                    <a href={val?.nav}> --></a>
-                  </div>
-                </ListGroup.Item>
-              );
+            {data?.slice(0, 6).map((val, index) => {
+              if (val?.nav) {
+                return (
+                  <ListGroup.Item
+                    onClick={() => {
+                      history(val?.nav);
+                      handleClose();
+                    }}
+                    key={index}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="ms-2 me-auto">
+                      <div className="fw-bold">{val?.page}</div>
+                      <small style={{ color: "#1976d2" }}>
+                        {" "}
+                        {base_url + val?.nav}
+                      </small>
+                    </div>
+                  </ListGroup.Item>
+                );
+              }
             })}
           </ListGroup>
         </Modal.Body>
