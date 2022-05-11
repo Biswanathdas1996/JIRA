@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
@@ -9,7 +9,8 @@ import StringSimilarity from "string-similarity";
 import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import CampaignIcon from "@mui/icons-material/Campaign";
-
+import Modal from "react-bootstrap/Modal";
+import Button from "@mui/material/Button";
 import { TextData } from "./FunctionalTexts";
 import { ActionText } from "./Actiontext";
 import { actionFunctions } from "./Functions";
@@ -26,14 +27,24 @@ const VoiceFile = () => {
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
+  const [show, setShow] = useState(false);
+  // const [data, setData] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = (shortScore) => {
+    setShow(true);
+    console.log(shortScore);
+    // setData(shortScore);
+  };
+
   let history = useNavigate();
 
   useEffect(() => {
-    if (transcript) {
+    if (transcript && !listening) {
       debounce_fun(transcript);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transcript]);
+  }, [transcript, listening]);
   // throttle
   const debounce_fun = _.debounce(function (transcript) {
     if (transcript) {
@@ -60,17 +71,21 @@ const VoiceFile = () => {
       });
 
       if (shortScore[0]?.score > 0) {
+        console.log("---shortScore--->", shortScore);
+        console.log("---f--->", shortScore[0].score);
         resetTranscript();
-        const findAction = _.words(transcript, wordOfIdentification);
-        if (findAction.length === 0) {
-          history(shortScore[0]?.nav);
+        if (shortScore[0].score < 0.45) {
+          handleShow(shortScore);
         } else {
-          // return;
-          console.log("---f--->", shortScore[0]);
-          actionFunctions(history, shortScore[0]?.action);
+          handleClose();
+          const findAction = _.words(transcript, wordOfIdentification);
+          if (findAction.length === 0) {
+            history(shortScore[0]?.nav);
+          } else {
+            actionFunctions(history, shortScore[0]?.action);
+          }
+          return;
         }
-        return;
-      } else {
       }
     }
   }, 2000);
@@ -102,21 +117,42 @@ const VoiceFile = () => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      <Typography variant="h6" component="div" style={{ color: "red" }}>
-        {transcript}
-      </Typography>
+    <>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        {/* data */}
+        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Typography variant="h6" component="div" style={{ color: "red" }}>
+          {transcript}
+        </Typography>
 
-      <Box sx={{ display: { xs: "none", sm: "none", md: "flex", lg: "flex" } }}>
-        {iconActionUI()}
-      </Box>
-
-      <Box sx={{ display: { xs: "flex", sm: "flex", md: "none", lg: "none" } }}>
-        <Fab sx={fabStyle} variant="extended" aria-label="add">
+        <Box
+          sx={{ display: { xs: "none", sm: "none", md: "flex", lg: "flex" } }}
+        >
           {iconActionUI()}
-        </Fab>
-      </Box>
-    </div>
+        </Box>
+
+        <Box
+          sx={{ display: { xs: "flex", sm: "flex", md: "none", lg: "none" } }}
+        >
+          <Fab sx={fabStyle} variant="extended" aria-label="add">
+            {iconActionUI()}
+          </Fab>
+        </Box>
+      </div>
+    </>
   );
 };
 export default VoiceFile;
