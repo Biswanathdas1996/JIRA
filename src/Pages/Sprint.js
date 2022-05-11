@@ -5,6 +5,7 @@ import ListAllSprints from "../components/Sprints/ListAllSprints";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
 import TransctionModal from "../components/shared/TransctionModal";
 import Loader from "../components/shared/Loader";
+import { getCurrentTimestamp } from "../components/helper/Date";
 
 const Sprint = () => {
   const [sprints, setSprints] = useState([]);
@@ -31,7 +32,13 @@ const Sprint = () => {
 
   const activateSprint = async (id) => {
     setStart(true);
-    const responseData = await _transction("activeNewSprint", id);
+    const timeStamp = getCurrentTimestamp();
+
+    const responseData = await _transction(
+      "activeNewSprint",
+      id,
+      timeStamp.toString()
+    );
     setResponse(responseData);
     fetchAllSprints();
   };

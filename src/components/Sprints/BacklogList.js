@@ -10,12 +10,13 @@ export default function ListAllSprints({ sprints, tickets }) {
     <Card
       style={{
         padding: "20px",
+        marginTop: 20,
       }}
     >
       <h4>Backlog</h4>
       <ListOfTickets data={filterTicketsForCurrentUser} sprints={sprints} />
       {filterTicketsForCurrentUser?.length === 0 && (
-        <h4 style={{ color: "grey" }}>No story available</h4>
+        <h4 style={{ color: "grey", margin: 10 }}>No story available</h4>
       )}
     </Card>
   );
