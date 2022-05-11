@@ -183,8 +183,9 @@ function Board({ address }) {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-around",
+              // justifyContent: "center",
               height: "100%",
+              overflowX: "auto",
             }}
           >
             {!loading && tickets && tickets?.length > 0 ? (
@@ -225,7 +226,7 @@ function Board({ address }) {
                                     ? "lightblue"
                                     : "lightgrey",
                                   padding: 4,
-                                  width: 290,
+                                  width: 280,
                                   minHeight: 500,
                                 }}
                               >
