@@ -81,9 +81,7 @@ const CreateTicket = () => {
       tasks: JSON.stringify(mappedTaskData),
     };
 
-    const resultsSaveMetaData = await await client.add(
-      JSON.stringify(metaData)
-    );
+    const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
 
     const sprintId = sprint;
 

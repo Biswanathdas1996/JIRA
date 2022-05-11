@@ -45,6 +45,19 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "abiLink",
+        "type": "string"
+      }
+    ],
+    "name": "addConfluence",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
         "name": "uid",
         "type": "string"
       },
@@ -133,6 +146,19 @@
     "name": "changePosition",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "confluence",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -8,6 +8,7 @@ import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Backlog from "./Pages/Backlog";
 import BurnDownchart from "./Pages/Reports/BurnDownchart";
+import Confluence from "./Pages/Confluence/Index";
 
 class Routing extends React.Component {
   render() {
@@ -22,6 +23,7 @@ class Routing extends React.Component {
             <Route exact path="/ticket/:tokenId" element={<ViewTicket />} />
             <Route exact path="/backlog" element={<Backlog />} />
             <Route exact path="/report" element={<BurnDownchart />} />
+            <Route exact path="/confluence" element={<Confluence />} />
           </>
         ) : (
           <>

@@ -37,6 +37,10 @@ const pages = [
     label: "Burn Down",
     href: "/report",
   },
+  {
+    label: "Confluence",
+    href: "/confluence",
+  },
 ];
 
 const Header = () => {
