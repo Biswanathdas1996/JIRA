@@ -16,6 +16,7 @@ import { ActionText } from "./Actiontext";
 import { actionFunctions } from "./Functions";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
+import ListGroup from "react-bootstrap/ListGroup";
 
 const wordOfIdentification = "for me";
 
@@ -28,13 +29,13 @@ const VoiceFile = () => {
   } = useSpeechRecognition();
 
   const [show, setShow] = useState(false);
-  // const [data, setData] = useState(false);
+  const [data, setData] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = (shortScore) => {
     setShow(true);
     console.log(shortScore);
-    // setData(shortScore);
+    setData(shortScore);
   };
 
   let history = useNavigate();
@@ -55,6 +56,7 @@ const VoiceFile = () => {
           return {
             nav: data?.nav,
             score: StringSimilarity.compareTwoStrings(data?.text, transcript),
+            page: data?.page,
           };
         });
       } else {
@@ -71,7 +73,6 @@ const VoiceFile = () => {
       });
 
       if (shortScore[0]?.score > 0) {
-        console.log("---shortScore--->", shortScore);
         console.log("---f--->", shortScore[0].score);
         resetTranscript();
         if (shortScore[0].score < 0.45) {
@@ -122,14 +123,24 @@ const VoiceFile = () => {
         <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
-        {/* data */}
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+
+        <Modal.Body>
+          <ListGroup>
+            {data?.map((val, index) => {
+              return (
+                <ListGroup.Item>
+                  <div className="ms-2 me-auto">
+                    <div className="fw-bold">{val?.page}</div>
+                    <a href={val?.nav}> --></a>
+                  </div>
+                </ListGroup.Item>
+              );
+            })}
+          </ListGroup>
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
