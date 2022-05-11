@@ -24,7 +24,7 @@ function Dashboard() {
       sx={{
         pt: 4,
         pb: 2,
-        mx: 12,
+        mx: 1,
       }}
     >
       {loading && <Loader count="5" xs={12} sm={2.4} md={2.4} lg={2.4} />}

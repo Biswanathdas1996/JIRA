@@ -164,8 +164,8 @@ function Board({ address }) {
           <Avatar
             alt="Remy Sharp"
             sx={{
-              width: 70,
-              height: 70,
+              width: 50,
+              height: 50,
               borderRadius: "50%",
             }}
             src={user?.profileImg}
@@ -183,7 +183,7 @@ function Board({ address }) {
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around",
               height: "100%",
             }}
           >
@@ -197,7 +197,7 @@ function Board({ address }) {
                   return (
                     <div
                       style={{
-                        display: "flex",
+                        display: "grid",
                         flexDirection: "column",
                         alignItems: "center",
                       }}
@@ -225,7 +225,7 @@ function Board({ address }) {
                                     ? "lightblue"
                                     : "lightgrey",
                                   padding: 4,
-                                  width: 250,
+                                  width: 290,
                                   minHeight: 500,
                                 }}
                               >

@@ -9,7 +9,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { Button } from "@mui/material";
 import Link from "@material-ui/core/Link";
 import { useNavigate } from "react-router-dom";
-import SearchBar from "../shared/SearchBar";
+// import SearchBar from "../shared/SearchBar";
 import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Typography from "@mui/material/Typography";
@@ -63,6 +63,56 @@ const Header = () => {
 
   const menuId = "primary-search-account-menu";
 
+  const DynamicAuthUI = () => (
+    <>
+      {account?.name ? (
+        <>
+          <Avatar
+            alt="Remy Sharp"
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+            }}
+            src={account?.profileImg}
+          ></Avatar>
+          <p style={{ color: "black", margin: 10, fontWeight: "bold" }}>
+            {account?.name}
+          </p>
+          <Button
+            aria-controls={menuId}
+            variant="outlined"
+            sx={{ textTransform: "none" }}
+            style={{ marginLeft: 10 }}
+            onClick={() => logout()}
+          >
+            <LogoutIcon />
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            aria-controls={menuId}
+            variant="contained"
+            sx={{ textTransform: "none" }}
+            style={{ marginRight: 10 }}
+            onClick={() => history("/login")}
+          >
+            Login
+          </Button>
+          <Button
+            aria-controls={menuId}
+            variant="outlined"
+            sx={{ textTransform: "none" }}
+            onClick={() => history("/register")}
+          >
+            Register
+          </Button>
+        </>
+      )}
+    </>
+  );
+
   //  MENU itemssss
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -81,15 +131,25 @@ const Header = () => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <Link to="/profile">My Profile</Link>
-      </MenuItem>
+      {pages.map(({ label, href }) => (
+        <MenuItem>
+          <Link
+            onClick={() => {
+              handleMobileMenuClose();
+              history(href);
+            }}
+          >
+            {" "}
+            {label}
+          </Link>
+        </MenuItem>
+      ))}
 
       <MenuItem>
-        <Link href="/create-ticket">Create</Link>
+        <Link href="/create-ticket">Create Story</Link>
       </MenuItem>
       <MenuItem>
-        <p>Sign In</p>
+        <DynamicAuthUI />
       </MenuItem>
     </Menu>
   );
@@ -107,14 +167,14 @@ const Header = () => {
         <Toolbar>
           <Typography
             className="project-name"
-            style={{ fontSize: 22, fontWeight: "bold" }}
+            style={{ fontSize: 16, fontWeight: "bold" }}
           >
             {projectData?.projectName}
           </Typography>
 
-          <Button disabled>
+          {/* <Button disabled>
             <SearchBar />
-          </Button>
+          </Button> */}
 
           <Box
             sx={{
@@ -159,51 +219,7 @@ const Header = () => {
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <VoiceNav />
 
-            {account?.name ? (
-              <>
-                <Avatar
-                  alt="Remy Sharp"
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                  }}
-                  src={account?.profileImg}
-                ></Avatar>
-                <p style={{ color: "black", margin: 10, fontWeight: "bold" }}>
-                  {account?.name}
-                </p>
-                <Button
-                  aria-controls={menuId}
-                  variant="outlined"
-                  sx={{ textTransform: "none" }}
-                  style={{ marginLeft: 10 }}
-                  onClick={() => logout()}
-                >
-                  <LogoutIcon />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  aria-controls={menuId}
-                  variant="contained"
-                  sx={{ textTransform: "none" }}
-                  style={{ marginRight: 10 }}
-                  onClick={() => history("/login")}
-                >
-                  Login
-                </Button>
-                <Button
-                  aria-controls={menuId}
-                  variant="outlined"
-                  sx={{ textTransform: "none" }}
-                  onClick={() => history("/register")}
-                >
-                  Register
-                </Button>
-              </>
-            )}
+            <DynamicAuthUI />
           </Box>
 
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
