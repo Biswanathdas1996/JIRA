@@ -43,7 +43,7 @@ const Sprint = () => {
   return (
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid container>
         <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
         <Grid item lg={8} md={8} sm={12} xs={12}>
           <div style={{ margin: 20 }}>

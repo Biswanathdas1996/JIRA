@@ -132,16 +132,13 @@ const Header = () => {
       onClose={handleMobileMenuClose}
     >
       {pages.map(({ label, href }) => (
-        <MenuItem>
-          <Link
-            onClick={() => {
-              handleMobileMenuClose();
-              history(href);
-            }}
-          >
-            {" "}
-            {label}
-          </Link>
+        <MenuItem
+          onClick={() => {
+            handleMobileMenuClose();
+            history(href);
+          }}
+        >
+          {label}
         </MenuItem>
       ))}
 
