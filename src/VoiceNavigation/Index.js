@@ -13,8 +13,10 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import { TextData } from "./FunctionalTexts";
 import { ActionText } from "./Actiontext";
 import { actionFunctions } from "./Functions";
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
 
-const wordOfIdentification = "please";
+const wordOfIdentification = "for me";
 
 const VoiceFile = () => {
   const {
@@ -77,24 +79,43 @@ const VoiceFile = () => {
     return <span>Browser doesn't support speech recognition.</span>;
   }
 
+  const iconActionUI = () => (
+    <IconButton
+      size="large"
+      aria-label="account of current user"
+      aria-controls="menu-appbar"
+      aria-haspopup="true"
+      color="info"
+      onClick={SpeechRecognition.startListening}
+      // onClick={SpeechRecognition.startListening({
+      //   continuous: true,
+      // })}
+    >
+      {!listening ? <MicIcon /> : <CampaignIcon />}
+    </IconButton>
+  );
+
+  const fabStyle = {
+    position: "fixed",
+    bottom: 16,
+    right: 16,
+  };
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       <Typography variant="h6" component="div" style={{ color: "red" }}>
         {transcript}
       </Typography>
-      <IconButton
-        size="large"
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        color="info"
-        onClick={SpeechRecognition.startListening}
-        // onClick={SpeechRecognition.startListening({
-        //   continuous: true,
-        // })}
-      >
-        {!listening ? <MicIcon /> : <CampaignIcon />}
-      </IconButton>
+
+      <Box sx={{ display: { xs: "none", sm: "none", md: "flex", lg: "flex" } }}>
+        {iconActionUI()}
+      </Box>
+
+      <Box sx={{ display: { xs: "flex", sm: "flex", md: "none", lg: "none" } }}>
+        <Fab sx={fabStyle} variant="extended" aria-label="add">
+          {iconActionUI()}
+        </Fab>
+      </Box>
     </div>
   );
 };

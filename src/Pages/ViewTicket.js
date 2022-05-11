@@ -33,7 +33,7 @@ const ViewTicket = () => {
         <Grid item lg={7} md={7} sm={12} xs={12}>
           <UpdateTicket tokenId={tokenId} />
         </Grid>
-        <Grid item lg={3} md={3} sm={12} xs={12}>
+        <Grid item lg={3} md={3} sm={12} xs={12} style={{ margin: 10 }}>
           <TransferTicket tokenId={tokenId} />
           <ShowLinkedTickets tokenId={tokenId} />
         </Grid>

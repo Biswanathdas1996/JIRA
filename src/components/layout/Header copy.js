@@ -149,6 +149,7 @@ const Header = () => {
         <Link href="/create-ticket">Create Story</Link>
       </MenuItem>
       <MenuItem>
+        {/* <VoiceNav /> */}
         <DynamicAuthUI />
       </MenuItem>
     </Menu>
@@ -215,8 +216,10 @@ const Header = () => {
           </Box>
 
           <Box sx={{ flexGrow: 1 }} />
-          <VoiceNav />
+
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <VoiceNav />
+
             <DynamicAuthUI />
           </Box>
 
