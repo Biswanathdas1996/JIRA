@@ -19,7 +19,7 @@ contract JIRA  {
 
     struct Ticket {
         uint index;
-        uint sprintId;
+        string sprintId;
         string id;
         string abiLink;
         string repoter;
@@ -45,6 +45,7 @@ contract JIRA  {
     string[] public userList ;
     address public manager;
     string public project;
+    string public confluence;
     uint public activeSprintId;
 
     constructor(string memory projectName)  {
@@ -64,9 +65,18 @@ contract JIRA  {
         sprints.push(newSprint);
     }
 
-    function activeNewSprint(uint id) public  {
-        activeSprintId = id;
+    function addConfluence(string memory abiLink) public  {
+        confluence = abiLink;
     }
+
+
+    function activeNewSprint(uint id, string memory time) public  {
+        activeSprintId = id;
+        Sprint storage sprintData = sprints[id];
+        sprintData.startDate = time;
+    }
+
+    
 
     function getAllSprints() public view returns (Sprint[] memory) {
         return sprints;
@@ -110,7 +120,7 @@ contract JIRA  {
 
 
     function createTicket(
-            uint sprintId, 
+            string memory sprintId, 
             string memory id, 
             string memory abiLink,  
             string memory repoterUid, 
@@ -137,15 +147,23 @@ contract JIRA  {
     
 
     // add comments to a ticket
-    function setComments(string memory abiLink, uint index) public  {
+    function setComments(string memory commentdata, uint index, string memory tracking) public  {
         Ticket storage newTicket = tickets[index];
-        newTicket.comments = abiLink;
+        newTicket.comments = commentdata;
+        newTicket.tracking = tracking;
     }
 
     // add tracking to a ticket
     function setTicketTracking(string memory abiLink, uint index) public  {
         Ticket storage newTicket = tickets[index];
         newTicket.tracking = abiLink;
+    }
+
+    // add sprint to a ticket
+    function setSprintToTicket(string memory sprintId, uint index, string memory tracking) public  {
+        Ticket storage newTicket = tickets[index];
+        newTicket.sprintId = sprintId;
+         newTicket.tracking = tracking;
     }
     
     // change position in the board
