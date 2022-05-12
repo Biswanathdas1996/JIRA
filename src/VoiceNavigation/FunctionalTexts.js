@@ -46,7 +46,27 @@ export const TextData = [
   },
   {
     text: "please create a new ticket",
-    action: "create-ticket",
+    action: "/create-ticket",
+    page: "Create Story Page",
+  },
+  {
+    text: "confluence",
+    action: "/confluence",
+    page: "Confluence Page",
+  },
+  {
+    text: "go to confluence page",
+    action: "/confluence",
+    page: "Confluence Page",
+  },
+  {
+    text: "go to Documentation page",
+    action: "/confluence",
+    page: "Confluence Page",
+  },
+  {
+    text: "go to Burn down page",
+    action: "/report",
     page: "Create Story Page",
   },
 ];
