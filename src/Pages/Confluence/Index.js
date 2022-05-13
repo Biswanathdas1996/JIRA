@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import TreeView from "@mui/lab/TreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -16,31 +16,9 @@ import AddSubPage from "./AddSubPage";
 import Loader from "../../components/shared/Loader";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { AccountContext } from "../../App";
 
 const sampleConfluence = `https://ipfs.infura.io/ipfs/QmcEZBh1dMzxF7suxBL4oB8ZV32cndhhur8cadc6bMzAGa`;
-
-const DummyData = {
-  id: "root",
-  name: "Parent",
-  children: [
-    {
-      id: "1",
-      name: "Page 1",
-      confluence: sampleConfluence,
-    },
-    {
-      id: "3",
-      name: "Geoup",
-      children: [
-        {
-          id: "4",
-          name: "Page 2",
-          confluence: sampleConfluence,
-        },
-      ],
-    },
-  ],
-};
 
 const client = create(IPFSLink);
 
@@ -56,12 +34,22 @@ export default function RichObjectTreeView() {
   const [addNewDoc, setAddNewDoc] = useState(false);
   const [addNewPage, setAddNewPage] = useState(false);
 
+  const { projectData } = useContext(AccountContext);
+
+  const DummyData = {
+    id: "root",
+    name: `${projectData?.projectName}`,
+    children: [],
+  };
+
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchData = async () => {
     setLoading(true);
+
     const alltreeDataAbi = await _fetch("confluence");
 
     if (alltreeDataAbi && alltreeDataAbi !== "") {
