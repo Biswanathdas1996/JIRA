@@ -24,6 +24,8 @@ class Routing extends React.Component {
             <Route exact path="/backlog" element={<Backlog />} />
             <Route exact path="/report" element={<BurnDownchart />} />
             <Route exact path="/confluence" element={<Confluence />} />
+            <Route exact path="/login" element={<Login />} />
+            <Route exact path="/register" element={<Register />} />
           </>
         ) : (
           <>

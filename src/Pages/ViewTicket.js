@@ -38,8 +38,8 @@ const ViewTicket = () => {
           <ShowLinkedTickets tokenId={tokenId} />
         </Grid>
         <Grid item lg={1} md={1} sm={12} xs={12}></Grid>
-        <Grid item lg={1} md={1} sm={12} xs={12}></Grid>
-        <Grid item lg={10} md={10} sm={12} xs={12}>
+
+        <Grid item lg={12} md={12} sm={12} xs={12} style={{ margin: 20 }}>
           <Card style={{ marginTop: 20 }}>
             <Box sx={{ width: "100%", typography: "body1" }}>
               <TabContext value={value}>
@@ -63,7 +63,6 @@ const ViewTicket = () => {
             </Box>
           </Card>
         </Grid>
-        <Grid item lg={1} md={1} sm={12} xs={12}></Grid>
       </Grid>
     </>
   );
