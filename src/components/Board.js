@@ -4,9 +4,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { Avatar } from "@mui/material";
 import TicketCard from "../components/shared/TicketCard";
 import { _fetch, _transction } from "../CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
 import { baseTemplate } from "./utility/BaseBoardDataTemplate";
-import { IPFSLink, IpfsViewLink } from "../config";
 import { mapTicketData, sanatizeData } from "../functions/index";
 import Loader from "../components/shared/Loader";
 import NoData from "../components/shared/NoData";
@@ -20,7 +18,7 @@ import TransctionModal from "../components/shared/TransctionModal";
 import { addTicketTracking } from "../functions/TicketTracking";
 import { Status } from "./utility/Status";
 
-const client = create(IPFSLink);
+import { createAnduploadFileToIpfs } from "../utils/ipfs";
 
 function Board({ address }) {
   const [columns, setColumns] = useState([]);
@@ -118,7 +116,8 @@ function Board({ address }) {
     if (!_.isEqual(columns, updatedCard)) {
       setLoading(true);
       setStart(true);
-      const resultsSaveMetaData = await client.add(JSON.stringify(updatedCard));
+
+      const resultsSaveMetaData = await createAnduploadFileToIpfs(updatedCard);
 
       const trackingString = await addTicketTracking(
         `<div class="track-div">Ticket moved from <b>${Status(
@@ -131,7 +130,7 @@ function Board({ address }) {
         "changePosition",
         updatedPosition.toString(),
         Number(dragedCardIndex),
-        IpfsViewLink(resultsSaveMetaData.path),
+        resultsSaveMetaData.link,
         address,
         trackingString
       );

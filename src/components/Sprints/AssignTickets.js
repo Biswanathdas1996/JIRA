@@ -4,19 +4,16 @@ import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
 import TransctionModal from "../shared/TransctionModal";
-
 import _ from "lodash";
-import { IPFSLink, IpfsViewLink } from "../../config";
 import { mapSingleTicketData } from "../../functions/index";
 import { addTicketTracking } from "../../functions/TicketTracking";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-
 import { AccountContext } from "../../App";
-const client = create(IPFSLink);
+
+import { createAnduploadFileToIpfs } from "../../utils/ipfs";
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -42,9 +39,7 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
       .then(async (senderData) => {
         senderData[1].items.push(mapSingleTicketData(item));
 
-        const resultsSaveMetaData = await client.add(
-          JSON.stringify(senderData)
-        );
+        const resultsSaveMetaData = await createAnduploadFileToIpfs(senderData);
 
         const trackingString = await addTicketTracking(
           `<div class="track-div">Ticket <b style="color:green;">assigned</b> to <img class="track-img-profile" src="${getSenderCurrentABI.profileImg}" height="30px" width="30px" style="border-radius: 50%; margin:5px" /> <b>${getSenderCurrentABI.name}</b> by <img class="track-img-profile" style="border-radius: 50%; margin:5px;" src="${account.profileImg}" height="30px" width="30px" /> <b>${account.name}</b></div>`,
@@ -55,7 +50,7 @@ const TransferTicket = ({ item, getData, totalUserCount, users }) => {
           "assignOwner",
           receiver,
           item?.index,
-          IpfsViewLink(resultsSaveMetaData.path),
+          resultsSaveMetaData.link,
           trackingString
         );
 

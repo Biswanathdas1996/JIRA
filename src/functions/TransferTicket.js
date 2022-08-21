@@ -1,7 +1,6 @@
 // import { _fetch, _transction } from "../../CONTRACT-ABI/connect";
 // import _ from "lodash";
 // import { IPFSLink, IpfsViewLink } from "../../config";
-// import { create } from "ipfs-http-client";
 
 // const client = create(IPFSLink);
 

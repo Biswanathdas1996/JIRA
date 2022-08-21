@@ -4,19 +4,13 @@ import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
 import TransctionModal from "../shared/TransctionModal";
-
 import _ from "lodash";
-import { IPFSLink, IpfsViewLink } from "../../config";
-import { mapSingleTicketData } from "../../functions/index";
 import { addTicketTracking } from "../../functions/TicketTracking";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-
 import { AccountContext } from "../../App";
-const client = create(IPFSLink);
 
 const TransferTicket = ({ index, item, getData, sprints }) => {
   const [start, setStart] = useState(false);

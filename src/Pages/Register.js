@@ -3,17 +3,16 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction } from "../../src/CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
+
 import { useNavigate } from "react-router-dom";
 import TransctionModal from "../components/shared/TransctionModal";
 import { baseTemplate } from "../components/utility/BaseBoardDataTemplate";
-import { IPFSLink, IpfsViewLink } from "../config";
+
 import uuid from "uuid/v4";
 import swal from "sweetalert";
 import { AccountContext } from "../App";
 import { encode } from "js-base64";
-
-const client = create(IPFSLink);
+import { uploadFileToIpfs, createAnduploadFileToIpfs } from "../utils/ipfs";
 
 const VendorSchema = Yup.object().shape({
   title: Yup.string().required("Name is required"),
@@ -43,12 +42,14 @@ const Register = () => {
   const saveData = async ({ title, type }) => {
     setStart(true);
 
-    const results = await client.add(file);
+    const fileInput = document.querySelector('input[type="file"]');
 
-    const initialBoardData = await client.add(JSON.stringify(baseTemplate()));
+    const results = await uploadFileToIpfs(fileInput.files);
 
-    const imgLink = IpfsViewLink(results.path);
-    const initialBoardDataLink = IpfsViewLink(initialBoardData?.path);
+    const initialBoardData = await createAnduploadFileToIpfs(baseTemplate());
+
+    const imgLink = results.link;
+    const initialBoardDataLink = initialBoardData?.link;
     const uid = uuid();
     await _transction(
       "addUser",

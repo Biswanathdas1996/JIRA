@@ -2,13 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
-import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
 import uuid from "uuid/v4";
 import { Avatar } from "@mui/material";
 import TransctionModal from "../components/shared/TransctionModal";
 import TextEditor from "../components/UI/TextEditor";
-import { IPFSLink, IpfsViewLink } from "../config";
 import { AccountContext } from "../App";
 import { _transction, _fetch } from "../../src/CONTRACT-ABI/connect";
 import Box from "@mui/material/Box";
@@ -19,8 +17,7 @@ import Button from "@mui/material/Button";
 import DeleteOutlineIcon from "@mui/icons-material/Delete";
 import { pink } from "@mui/material/colors";
 import { mapTaskData } from "../functions/index";
-
-const client = create(IPFSLink);
+import { createAnduploadFileToIpfs } from "../utils/ipfs";
 
 const CreateTicket = () => {
   const [start, setStart] = useState(false);
@@ -63,9 +60,10 @@ const CreateTicket = () => {
     let responseData;
     const id = uuid();
 
-    const saveHtmlDescription = await client.add(htmlCode);
+    const saveHtmlDescription = await createAnduploadFileToIpfs(htmlCode);
 
-    const saveHtmlAC = htmlCodeAC && (await client.add(htmlCodeAC));
+    const saveHtmlAC =
+      htmlCodeAC && (await createAnduploadFileToIpfs(htmlCodeAC));
 
     const mappedTaskData = mapTaskData(tasks);
 
@@ -75,13 +73,13 @@ const CreateTicket = () => {
       type: type,
       priority: priority,
       storypoint: storypoint,
-      description: IpfsViewLink(saveHtmlDescription.path),
-      AC: htmlCodeAC ? IpfsViewLink(saveHtmlAC.path) : "",
+      description: saveHtmlDescription.link,
+      AC: htmlCodeAC ? saveHtmlAC.link : "",
       linkedStories: JSON.stringify(linkedStories),
       tasks: JSON.stringify(mappedTaskData),
     };
 
-    const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
+    const resultsSaveMetaData = await createAnduploadFileToIpfs(metaData);
 
     const sprintId = sprint;
 
@@ -99,7 +97,7 @@ const CreateTicket = () => {
         "createTicket",
         "",
         id,
-        IpfsViewLink(resultsSaveMetaData.path),
+        resultsSaveMetaData.link,
         account?.uid,
         trackingData
       );

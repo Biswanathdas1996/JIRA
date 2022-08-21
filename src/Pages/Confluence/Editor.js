@@ -24,7 +24,7 @@ export default function RichObjectTreeView({
     setLoading(true);
     setDefaultEditorValue(null);
     await fetch(abilinkData)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((receiverData) => {
         setDefaultEditorValue(receiverData);
       });

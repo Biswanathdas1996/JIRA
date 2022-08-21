@@ -4,10 +4,9 @@ import { Formik, Form, Field, FieldArray } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
+
 import { useNavigate } from "react-router-dom";
 import TransctionModal from "../shared/TransctionModal";
-import { IPFSLink, IpfsViewLink } from "../../config";
 import TextEditor from "../UI/TextEditor";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
@@ -18,7 +17,8 @@ import DeleteOutlineIcon from "@mui/icons-material/Delete";
 import { pink } from "@mui/material/colors";
 import { mapTaskData } from "../../functions/index";
 import { TaskStatusColor } from "../utility/Status";
-const client = create(IPFSLink);
+
+import { createAnduploadFileToIpfs } from "../../utils/ipfs";
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -123,15 +123,16 @@ const UpadteTicket = ({ tokenId }) => {
     let descIpfsLink;
     let acIpfsLink;
     if (htmlCode) {
-      saveHtmlDescription = await client.add(htmlCode);
-      descIpfsLink = IpfsViewLink(saveHtmlDescription.path);
+      saveHtmlDescription = await createAnduploadFileToIpfs(htmlCode);
+
+      descIpfsLink = saveHtmlDescription.link;
     } else {
       descIpfsLink = tickets?.description;
     }
 
     if (htmlCodeAC) {
-      saveHtmlDescription = await client.add(htmlCodeAC);
-      acIpfsLink = IpfsViewLink(saveHtmlDescription.path);
+      saveHtmlDescription = await createAnduploadFileToIpfs(htmlCodeAC);
+      acIpfsLink = saveHtmlDescription.link;
     } else {
       acIpfsLink = tickets?.AC;
     }
@@ -150,7 +151,7 @@ const UpadteTicket = ({ tokenId }) => {
       tasks: JSON.stringify(mappedTaskData),
     };
 
-    const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
+    const resultsSaveMetaData = await saveHtmlDescription(metaData);
 
     const trackingString = await addTicketTracking(
       `<div class="track-div">Ticket details updated from <a href="${currentABI}" target="_blank">Old Data</a></div>`,
@@ -159,7 +160,7 @@ const UpadteTicket = ({ tokenId }) => {
 
     responseData = await _transction(
       "updateTicket",
-      IpfsViewLink(resultsSaveMetaData.path),
+      resultsSaveMetaData.link,
       ticketindex,
       trackingString,
       true

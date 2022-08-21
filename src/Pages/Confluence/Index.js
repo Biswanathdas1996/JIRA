@@ -5,8 +5,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem from "@mui/lab/TreeItem";
 import { Card, Grid } from "@mui/material";
 import { _transction, _fetch } from "../../CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
-import { IPFSLink, IpfsViewLink } from "../../config";
 import Editor from "./Editor";
 import _ from "lodash";
 import TransctionModal from "../../components/shared/TransctionModal";
@@ -18,9 +16,9 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { AccountContext } from "../../App";
 
-const sampleConfluence = `https://ipfs.infura.io/ipfs/QmcEZBh1dMzxF7suxBL4oB8ZV32cndhhur8cadc6bMzAGa`;
+import { createAnduploadFileToIpfs } from "../../utils/ipfs";
 
-const client = create(IPFSLink);
+const sampleConfluence = `https://ipfs.infura.io/ipfs/QmcEZBh1dMzxF7suxBL4oB8ZV32cndhhur8cadc6bMzAGa`;
 
 export default function RichObjectTreeView() {
   const [start, setStart] = useState(false);
@@ -69,8 +67,8 @@ export default function RichObjectTreeView() {
     setStart(true);
     let htmlCodeABILInk;
     if (htmlCodeAC) {
-      const htmlCodeACABI = await client.add(htmlCodeAC);
-      htmlCodeABILInk = IpfsViewLink(htmlCodeACABI.path);
+      const htmlCodeACABI = await createAnduploadFileToIpfs(htmlCodeAC);
+      htmlCodeABILInk = htmlCodeACABI.link;
     } else {
       htmlCodeABILInk = selectedNode?.confluence;
     }
@@ -83,10 +81,10 @@ export default function RichObjectTreeView() {
       };
       return value.id === selectedNode?.id ? { ...value, ...newObj } : _.noop();
     });
-    const resultsSaveMetaData = await client.add(JSON.stringify(result));
+    const resultsSaveMetaData = await createAnduploadFileToIpfs(result);
     const responseData = await _transction(
       "addConfluence",
-      IpfsViewLink(resultsSaveMetaData.path)
+      resultsSaveMetaData.link
     );
     setResponse(responseData);
   };
@@ -111,10 +109,11 @@ export default function RichObjectTreeView() {
     };
     treeData?.children.push(newDoc);
     console.log(treeData);
-    const resultsSaveMetaData = await client.add(JSON.stringify(treeData));
+
+    const resultsSaveMetaData = await createAnduploadFileToIpfs(treeData);
     const responseData = await _transction(
       "addConfluence",
-      IpfsViewLink(resultsSaveMetaData.path)
+      resultsSaveMetaData.link
     );
     setAddNewDoc(false);
     setResponse(responseData);
@@ -132,10 +131,11 @@ export default function RichObjectTreeView() {
       name: values?.title,
       confluence: sampleConfluence,
     });
-    const resultsSaveMetaData = await client.add(JSON.stringify(treeData));
+
+    const resultsSaveMetaData = await createAnduploadFileToIpfs(treeData);
     const responseData = await _transction(
       "addConfluence",
-      IpfsViewLink(resultsSaveMetaData.path)
+      resultsSaveMetaData.link
     );
     setAddNewPage(false);
     setResponse(responseData);

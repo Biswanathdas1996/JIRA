@@ -4,18 +4,16 @@ import { Formik, Form, Field } from "formik";
 // import * as Yup from "yup";
 import { Card, Grid, Button } from "@mui/material";
 import { _transction } from "../../CONTRACT-ABI/connect";
-import { create } from "ipfs-http-client";
 import { useNavigate } from "react-router-dom";
 import TransctionModal from "../shared/TransctionModal";
 import { _fetch } from "../../CONTRACT-ABI/connect";
 import _ from "lodash";
-import { IPFSLink, IpfsViewLink } from "../../config";
 import { mapTicketData } from "../../functions/index";
 import { addTicketTracking } from "../../functions/TicketTracking";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
-const client = create(IPFSLink);
+import { createAnduploadFileToIpfs } from "../../utils/ipfs";
 
 // const VendorSchema = Yup.object().shape({
 //   name: Yup.string().required("Name is required"),
@@ -98,10 +96,9 @@ const TransferTicket = ({ tokenId }) => {
           }
         }
 
-        const resultsSaveMetaData = await client.add(
-          JSON.stringify(senderData)
-        );
-        updatedSenderAbi = IpfsViewLink(resultsSaveMetaData.path);
+        const resultsSaveMetaData = await createAnduploadFileToIpfs(senderData);
+
+        updatedSenderAbi = resultsSaveMetaData.link;
       });
     //////////////////////////////////////////////////////////////////////////////////////////
     const getRecieverrCurrentABI = await _fetch("users", receiver);
@@ -113,10 +110,11 @@ const TransferTicket = ({ tokenId }) => {
           const updatedColumn = receiverData[1].items;
           receiverData[1].items = [...updatedColumn, transfredTicket];
 
-          const resultsSaveMetaData = await client.add(
-            JSON.stringify(receiverData)
+          const resultsSaveMetaData = await createAnduploadFileToIpfs(
+            receiverData
           );
-          updatedReceiverAbi = IpfsViewLink(resultsSaveMetaData.path);
+
+          updatedReceiverAbi = resultsSaveMetaData.link;
         });
     }
 
