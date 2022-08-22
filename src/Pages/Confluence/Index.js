@@ -18,7 +18,7 @@ import { AccountContext } from "../../App";
 
 import { createAnduploadFileToIpfs } from "../../utils/ipfs";
 
-const sampleConfluence = `https://ipfs.io/ipfs/QmcEZBh1dMzxF7suxBL4oB8ZV32cndhhur8cadc6bMzAGa`;
+const sampleConfluence = `https://bafybeiavovm2p2hks7mpvbmfnk6edfzrtrfe565gl2n3ylx3j6p6wqotpq.ipfs.dweb.link/ipfs.json`;
 
 export default function RichObjectTreeView() {
   const [start, setStart] = useState(false);
