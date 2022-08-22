@@ -35,5 +35,5 @@ export const createAnduploadFileToIpfs = async (metaData) => {
 };
 
 export const getIpfsUrI = (fingerprint) => {
-  return `https://ipfs.infura.io/ipfs/${fingerprint}`;
+  return `https://ipfs.io/ipfs/${fingerprint}`;
 };
