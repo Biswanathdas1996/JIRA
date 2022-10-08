@@ -48,7 +48,10 @@ function Board({ address }) {
     const getAllUserUri = result?.boardData;
     if (getAllUserUri) {
       await fetch(getAllUserUri)
-        .then((response) => response.json())
+        .then((response) => {
+          console.log("===response===>", response);
+          return response.json();
+        })
         .then((allData) => {
           const data = sanatizeData(allData, activeSprintId);
           // const anyNewTicket = filterNewlyCreatedTicketys(mappedData, data);

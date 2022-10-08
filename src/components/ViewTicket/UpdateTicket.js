@@ -151,7 +151,7 @@ const UpadteTicket = ({ tokenId }) => {
       tasks: JSON.stringify(mappedTaskData),
     };
 
-    const resultsSaveMetaData = await saveHtmlDescription(metaData);
+    const resultsSaveMetaData = await createAnduploadFileToIpfs(metaData);
 
     const trackingString = await addTicketTracking(
       `<div class="track-div">Ticket details updated from <a href="${currentABI}" target="_blank">Old Data</a></div>`,
