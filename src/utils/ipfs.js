@@ -8,7 +8,7 @@ const client = new Web3Storage({
 
 const uploadToDatabase = (data) => {
   var formdata = new FormData();
-  formdata.append("data", encode(data));
+  formdata.append("data", data);
 
   var requestOptions = {
     method: "POST",

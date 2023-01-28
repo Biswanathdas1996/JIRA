@@ -48,9 +48,8 @@ const TransferTicket = ({ index, item, getData, sprints }) => {
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
 
-      <Card
+      <div
         style={{
-          padding: "20px",
           background: "white",
         }}
       >
@@ -68,11 +67,8 @@ const TransferTicket = ({ index, item, getData, sprints }) => {
             {({ touched, errors, isSubmitting, values }) => (
               <Form>
                 <Grid container>
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
-                    <div
-                      className="form-group"
-                      style={{ marginLeft: 10, marginTop: 10 }}
-                    >
+                  <Grid item lg={6} md={6} sm={6} xs={6}>
+                    <div className="form-group">
                       <label for="title" className="my-2">
                         Assign sprint <span className="text-danger">*</span>
                       </label>
@@ -84,9 +80,9 @@ const TransferTicket = ({ index, item, getData, sprints }) => {
                             ? "is-invalid"
                             : ""
                         }`}
-                        style={{ marginRight: 10, padding: 9 }}
+                        style={{ marginRight: "6rem" }}
                       >
-                        <option>-- Please select --</option>
+                        <option>-- Choose Sprint --</option>
                         {sprints?.map((sprint) => {
                           return (
                             <option value={sprint?.id}>
@@ -97,18 +93,18 @@ const TransferTicket = ({ index, item, getData, sprints }) => {
                       </Field>
                     </div>
                   </Grid>
-                  <Grid item lg={12} md={12} sm={12} xs={12}>
+                  <Grid item lg={6} md={6} sm={6} xs={6}>
                     <div
                       className="form-group"
                       style={{
-                        marginLeft: 10,
-                        marginTop: 10,
-                        float: "right",
+                        float: "left",
+                        marginTop: "2.2rem",
+                        marginLeft: 5,
                       }}
                     >
                       <span className="input-group-btn">
                         <input
-                          className="btn btn-default btn-primary float-right"
+                          className="btn btn-secondary btn-primary float-right"
                           type="submit"
                           value={"Assign"}
                         />
@@ -128,7 +124,7 @@ const TransferTicket = ({ index, item, getData, sprints }) => {
             <Skeleton animation="wave" />
           </Stack>
         )}
-      </Card>
+      </div>
     </>
   );
 };

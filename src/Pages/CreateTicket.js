@@ -55,15 +55,12 @@ const CreateTicket = () => {
     storypoint,
     sprint,
     tasks,
+    description,
+    ac,
   }) => {
     setStart(true);
     let responseData;
     const id = uuid();
-
-    const saveHtmlDescription = await createAnduploadFileToIpfs(htmlCode);
-
-    const saveHtmlAC =
-      htmlCodeAC && (await createAnduploadFileToIpfs(htmlCodeAC));
 
     const mappedTaskData = mapTaskData(tasks);
 
@@ -73,8 +70,8 @@ const CreateTicket = () => {
       type: type,
       priority: priority,
       storypoint: storypoint,
-      description: saveHtmlDescription.link,
-      AC: htmlCodeAC ? saveHtmlAC.link : "",
+      description: description,
+      AC: ac,
       linkedStories: JSON.stringify(linkedStories),
       tasks: JSON.stringify(mappedTaskData),
     };
@@ -148,6 +145,8 @@ const CreateTicket = () => {
                     type: "",
                     priority: "",
                     storypoint: "",
+                    description: "",
+                    ac: "",
                     text: "",
                     tasks: [],
                   }}
@@ -278,7 +277,7 @@ const CreateTicket = () => {
                         </Grid>
 
                         {/* Description */}
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                        {/* <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
@@ -295,9 +294,32 @@ const CreateTicket = () => {
                               onChange={getEditorValue}
                             />
                           </div>
+                        </Grid> */}
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <div
+                            className="form-group"
+                            style={{ marginLeft: 10, marginTop: 10 }}
+                          >
+                            <label htmlFor="description" className="my-2">
+                              Description <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="description"
+                              id="story-summery"
+                              autoComplete="flase"
+                              placeholder="Enter description"
+                              className={`form-control text-muted ${
+                                touched.description && errors.description
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              style={{ marginRight: 10, padding: 9 }}
+                            />
+                          </div>
                         </Grid>
                         {/* Acceptance criteria*/}
-                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                        {/* <Grid item lg={12} md={12} sm={12} xs={12}>
                           <div
                             className="form-group"
                             style={{ marginLeft: 10, marginTop: 10 }}
@@ -312,6 +334,28 @@ const CreateTicket = () => {
                               tip="Describe the project in as much detail as you'd like."
                               value={htmlCodeAC}
                               onChange={getEditorValueAC}
+                            />
+                          </div>
+                        </Grid> */}
+                        <Grid item lg={12} md={12} sm={12} xs={12}>
+                          <div
+                            className="form-group"
+                            style={{ marginLeft: 10, marginTop: 10 }}
+                          >
+                            <label htmlFor="ac" className="my-2">
+                              Acceptance criteria{" "}
+                              <span className="text-danger">*</span>
+                            </label>
+                            <Field
+                              type="text"
+                              name="ac"
+                              id="story-summery"
+                              autoComplete="flase"
+                              placeholder="Enter description"
+                              className={`form-control text-muted ${
+                                touched.ac && errors.ac ? "is-invalid" : ""
+                              }`}
+                              style={{ marginRight: 10, padding: 9 }}
                             />
                           </div>
                         </Grid>

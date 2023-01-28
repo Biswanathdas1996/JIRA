@@ -7,7 +7,7 @@ export default function ListAllSprints({ sprints, tickets }) {
     (ticket) => ticket?.sprintId === ""
   );
   return (
-    <Card
+    <div
       style={{
         padding: "20px",
         marginTop: 20,
@@ -18,6 +18,6 @@ export default function ListAllSprints({ sprints, tickets }) {
       {filterTicketsForCurrentUser?.length === 0 && (
         <h4 style={{ color: "grey", margin: 10 }}>No story available</h4>
       )}
-    </Card>
+    </div>
   );
 }

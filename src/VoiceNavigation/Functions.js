@@ -1,11 +1,9 @@
 import { _transction } from "../CONTRACT-ABI/connect";
 import uuid from "uuid/v4";
-import { create } from "ipfs-http-client";
-import { IPFSLink, IpfsViewLink } from "../config";
+import { createAnduploadFileToIpfs } from "../utils/ipfs";
 import { decode } from "js-base64";
 import swal from "sweetalert";
 
-const client = create(IPFSLink);
 // ----------------------------
 // function waitForElm(selector) {
 //   return new Promise((resolve) => {
@@ -85,21 +83,18 @@ const createDynamicTicket = async (history, type, priority) => {
   });
 
   const id = uuid();
-  const saveHtmlDescription = await client.add(
-    `<p>Please enter a description</p>`
-  );
-  const saveHtmlAC = await client.add(`<p>Please enter a AC</p>`);
+
   const metaData = {
     id: id,
     name: "Dummy titile (Please update)",
     type: type,
     priority: priority,
     storypoint: 2,
-    description: IpfsViewLink(saveHtmlDescription.path),
-    AC: IpfsViewLink(saveHtmlAC.path),
+    description: "Please enter a description",
+    AC: "Please enter a AC",
     linkedStories: JSON.stringify([]),
   };
-  const resultsSaveMetaData = await client.add(JSON.stringify(metaData));
+  const resultsSaveMetaData = await createAnduploadFileToIpfs(metaData);
   const trackingData = JSON.stringify([
     {
       time: new Date(),
@@ -108,11 +103,12 @@ const createDynamicTicket = async (history, type, priority) => {
         localStorage.getItem("uid") && decode(localStorage.getItem("uid")),
     },
   ]);
+
   const responsedata = _transction(
     "createTicket",
     "",
     id,
-    IpfsViewLink(resultsSaveMetaData.path),
+    resultsSaveMetaData.link,
     localStorage.getItem("uid"),
     trackingData
   );

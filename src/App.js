@@ -37,7 +37,7 @@ const App = () => {
       <AccountContext.Provider value={{ account, fetchUserData, projectData }}>
         <Header />
         <Routes />
-        <Footer />
+        {/* <Footer /> */}
       </AccountContext.Provider>
     </>
   );

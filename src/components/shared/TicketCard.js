@@ -13,7 +13,11 @@ import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import { Status, StatusColor } from "../utility/Status";
 
-export default function OutlinedCard({ item, showStatus = false }) {
+export default function OutlinedCard({
+  item,
+  showStatus = false,
+  assignSprint = () => <></>,
+}) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [repoterImg, setRepoterImg] = useState(null);
@@ -49,10 +53,7 @@ export default function OutlinedCard({ item, showStatus = false }) {
   return (
     <>
       {!loading ? (
-        <Card
-          style={{ borderRadius: 2, cursor: "pointer" }}
-          onClick={() => history(`/ticket/${tickets?.id}`)}
-        >
+        <Card style={{ borderRadius: 2, cursor: "pointer" }}>
           <CardContent>
             <div
               style={{
@@ -60,6 +61,7 @@ export default function OutlinedCard({ item, showStatus = false }) {
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
+              onClick={() => history(`/ticket/${tickets?.id}`)}
             >
               <Typography
                 variant="h5"
@@ -90,19 +92,12 @@ export default function OutlinedCard({ item, showStatus = false }) {
               ></Avatar>
             </div>
           </CardContent>
+
           <CardActions>
-            <Grid container justify="flex-start">
-              <Avatar
-                alt="Repoter"
-                title="Repoter"
-                sx={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: "50%",
-                }}
-                src={repoterImg}
-              ></Avatar>
+            <Grid style={{ padding: 10 }} container>
+              {assignSprint()}
             </Grid>
+
             <Badge
               badgeContent={tickets?.storypoint}
               color="info"
@@ -110,6 +105,16 @@ export default function OutlinedCard({ item, showStatus = false }) {
             ></Badge>
             <Priority priority={tickets?.priority} />
             <Type type={tickets?.type} />
+            <Avatar
+              alt="Repoter"
+              title="Repoter"
+              sx={{
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+              }}
+              src={repoterImg}
+            ></Avatar>
           </CardActions>
         </Card>
       ) : (

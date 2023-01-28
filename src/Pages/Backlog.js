@@ -44,8 +44,8 @@ const Sprint = () => {
     <>
       {start && <TransctionModal response={response} modalClose={modalClose} />}
       <Grid container>
-        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
-        <Grid item lg={8} md={8} sm={12} xs={12} style={{ margin: 0 }}>
+        <Grid item lg={1} md={1} sm={12} xs={12}></Grid>
+        <Grid item lg={10} md={10} sm={12} xs={12} style={{ margin: 0 }}>
           {!loading ? (
             <BacklogList
               sprints={sprints}
@@ -57,7 +57,7 @@ const Sprint = () => {
             <Loader count="1" xs={12} sm={12} md={12} lg={12} />
           )}
         </Grid>
-        <Grid item lg={2} md={2} sm={12} xs={12}></Grid>
+        <Grid item lg={1} md={1} sm={12} xs={12}></Grid>
       </Grid>
     </>
   );

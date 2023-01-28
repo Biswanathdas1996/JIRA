@@ -81,9 +81,9 @@ const UpadteTicket = ({ tokenId }) => {
             updatesTicket?.linkedStories &&
               JSON.parse(updatesTicket?.linkedStories)
           );
-
-          await getDescription(data.description);
-          await getAC(data.AC);
+          setDefaultEditorValue(data.description);
+          setDefaultEditorValueAC(data.AC);
+          setLoading(false);
         })
         .catch((err) => {
           setLoading(false);
@@ -91,51 +91,18 @@ const UpadteTicket = ({ tokenId }) => {
     }
   };
 
-  const getDescription = async (URI) => {
-    await fetch(URI)
-      .then((descResponse) => descResponse.text())
-      .then((descriptionData) => {
-        setDefaultEditorValue(descriptionData);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
-  };
-
-  const getAC = async (URI) => {
-    URI &&
-      (await fetch(URI)
-        .then((descResponse) => descResponse.text())
-        .then((descriptionData) => {
-          setDefaultEditorValueAC(descriptionData);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-        }));
-  };
-
-  const saveData = async ({ title, type, priority, storypoint, tasks }) => {
+  const saveData = async ({
+    title,
+    type,
+    priority,
+    storypoint,
+    description,
+    ac,
+    tasks,
+  }) => {
     setStart(true);
     let responseData;
     const id = tokenId;
-    let saveHtmlDescription;
-    let descIpfsLink;
-    let acIpfsLink;
-    if (htmlCode) {
-      saveHtmlDescription = await createAnduploadFileToIpfs(htmlCode);
-
-      descIpfsLink = saveHtmlDescription.link;
-    } else {
-      descIpfsLink = tickets?.description;
-    }
-
-    if (htmlCodeAC) {
-      saveHtmlDescription = await createAnduploadFileToIpfs(htmlCodeAC);
-      acIpfsLink = saveHtmlDescription.link;
-    } else {
-      acIpfsLink = tickets?.AC;
-    }
 
     const mappedTaskData = mapTaskData(tasks);
 
@@ -145,8 +112,8 @@ const UpadteTicket = ({ tokenId }) => {
       type: type,
       priority: priority,
       storypoint: storypoint,
-      description: descIpfsLink,
-      AC: acIpfsLink,
+      description: description,
+      AC: ac,
       linkedStories: JSON.stringify(linkedStories),
       tasks: JSON.stringify(mappedTaskData),
     };
@@ -206,6 +173,8 @@ const UpadteTicket = ({ tokenId }) => {
               title: tickets.name,
               type: tickets.type,
               priority: tickets.priority,
+              description: tickets.description,
+              ac: tickets.ac,
               storypoint: tickets.storypoint,
               text: tickets.description,
               sprint: tickets?.sprintId,
@@ -329,16 +298,19 @@ const UpadteTicket = ({ tokenId }) => {
                         Description <span className="text-danger">*</span>
                       </label>
 
-                      {defaultEditorValue && (
-                        <TextEditor
-                          name="description"
-                          label="Description"
-                          tip="Describe the project in as much detail as you'd like."
-                          value={htmlCode}
-                          defaultValue={defaultEditorValue}
-                          onChange={getEditorValue}
-                        />
-                      )}
+                      <Field
+                        type="text"
+                        name="description"
+                        value={defaultEditorValue}
+                        autoComplete="flase"
+                        placeholder="Enter Description"
+                        className={`form-control text-muted ${
+                          touched.description && errors.description
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        style={{ marginRight: 10, padding: 9 }}
+                      />
                     </div>
                   </Grid>
                   {/* AC */}
@@ -352,16 +324,17 @@ const UpadteTicket = ({ tokenId }) => {
                         <span className="text-danger">*</span>
                       </label>
 
-                      {defaultEditorValueAC && (
-                        <TextEditor
-                          name="ac"
-                          label="ac"
-                          tip="Describe the project in as much detail as you'd like."
-                          value={htmlCodeAC}
-                          defaultValue={defaultEditorValueAC}
-                          onChange={getEditorValueAC}
-                        />
-                      )}
+                      <Field
+                        type="text"
+                        name="ac"
+                        value={defaultEditorValueAC}
+                        autoComplete="flase"
+                        placeholder="Enter Acceptance criteria"
+                        className={`form-control text-muted ${
+                          touched.ac && errors.ac ? "is-invalid" : ""
+                        }`}
+                        style={{ marginRight: 10, padding: 9 }}
+                      />
                     </div>
                   </Grid>
                   {/* link stories */}

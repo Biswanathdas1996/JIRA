@@ -4,6 +4,7 @@ import TicketCard from "../../components/shared/TicketCard";
 import AssignTickets from "./AssignTickets";
 import AssignSprint from "./AssignSprint";
 import { _fetch } from "../../CONTRACT-ABI/connect";
+import { Grid } from "@mui/material";
 
 export default function CheckboxListSecondary({ data, sprints }) {
   const [users, setusers] = useState([]);
@@ -26,32 +27,38 @@ export default function CheckboxListSecondary({ data, sprints }) {
   };
 
   return (
-    <List dense sx={{ width: "100%" }}>
+    <Grid fluid={true} container>
       {data?.map((value) => {
         return (
-          <div style={{ marginBottom: 20 }}>
-            <TicketCard item={value} showStatus={true} />
-            {!value?.owner && value?.sprintId !== "" && (
-              <AssignTickets
-                index={value?.index}
+          <Grid item lg={6} md={6} sm={6} xs={6} style={{ paddingRight: 10 }}>
+            <div style={{ marginBottom: 20 }}>
+              <TicketCard
                 item={value}
-                totalUserCount={totalUserCount}
-                users={users}
-                getData={getData}
+                showStatus={true}
+                assignSprint={() =>
+                  value?.sprintId === "" && (
+                    <AssignSprint
+                      index={value?.index}
+                      item={value}
+                      sprints={sprints}
+                      getData={getData}
+                    />
+                  )
+                }
               />
-            )}
-
-            {value?.sprintId === "" && (
-              <AssignSprint
-                index={value?.index}
-                item={value}
-                sprints={sprints}
-                getData={getData}
-              />
-            )}
-          </div>
+              {!value?.owner && value?.sprintId !== "" && (
+                <AssignTickets
+                  index={value?.index}
+                  item={value}
+                  totalUserCount={totalUserCount}
+                  users={users}
+                  getData={getData}
+                />
+              )}
+            </div>
+          </Grid>
         );
       })}
-    </List>
+    </Grid>
   );
 }
